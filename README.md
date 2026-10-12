@@ -5,6 +5,7 @@ Study notes and exam aids from the BSc in Software Engineering (KT-verkfrøði) 
 | Course | Document | |
 |---|---|---|
 | Diskret støddfrøði (Discrete Mathematics, 005019.23), autumn 2026 | **Discrete Mathematics: Exam Companion** (Kolman chapters 1 to 7 with exam methods and worked examples; built to bring to the MC exams) | [PDF](discrete-math/exam-companion.pdf) · [source](discrete-math/exam-companion.tex) |
+| Innleiðing í teldufrøði (Introduction to Computer Science, 005010.26), autumn 2026 | **Introduction to Computer Science: Exam Companion** (methods and worked examples for the old test exams, plus the rest of the syllabus: data representation, Vole machine code, OS and networks, Python, data structures, databases) | [PDF](intro-cs/exam-companion.pdf) · [source](intro-cs/exam-companion.tex) |
 
 ## Found a mistake?
 
