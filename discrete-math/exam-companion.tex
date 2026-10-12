@@ -17,8 +17,8 @@
 \date{\today}
 \DeclareMathOperator{\lcm}{lcm}
 
-% Exam reference for Diskret støddfrøði (005019.23): the consolidated lecture
-% slides (DM_1_1 ... DM_8_1, Esther Chen, Fall 2026) and my own notes merged
+% Exam companion for Diskret støddfrøði (005019.23): the lecture material
+% (slides, Fall 2026), the textbook and my own notes merged
 % into one printable document, ordered by Kolman chapter, with one index.
 % Meant to travel to the MC exams as permitted notes (notes/books allowed,
 % no electronics).
@@ -124,7 +124,7 @@
 \part{Fundamentals}
 
 \kolman{1}
-\section{Sets}\src{Kolman 1.1; slides DM\_1\_1}
+\section{Sets}\src{Kolman 1.1}
 \index{set}\index{subset}\index{power set}\index{empty set}\index{universal set}\index{cardinality}\index{number sets}\index{natural numbers}\index{integers}%
 
 \begin{defn}
@@ -177,7 +177,7 @@ circle inside it.
 
 
 \kolman{2}
-\section{Operations on sets}\src{Kolman 1.2; DM\_1\_1}
+\section{Operations on sets}\src{Kolman 1.2}
 \index{union}\index{intersection}\index{set difference}\index{symmetric difference}\index{complement!of a set}%
 \begin{align*}
   A\cup B      & = \{x : x\in A \vee x\in B\}      &  & \text{union (OR)}                 \\
@@ -242,7 +242,7 @@ circle inside it.
 
 % =====================================================================
 \kolman{3}
-\section{Sequences and characteristic functions}\src{Kolman 1.3; DM\_1\_1}
+\section{Sequences and characteristic functions}\src{Kolman 1.3}
 \index{sequence}\index{characteristic function}\index{explicit formula}%
 
 A \textbf{sequence} is a list in a definite order; unlike a set, order
@@ -273,7 +273,7 @@ elements gives a different sequence. It can be finite or infinite.
 
 % =====================================================================
 \kolman{4}
-\section{Properties of integers}\src{Kolman 1.4; DM\_1\_1}
+\section{Properties of integers}\src{Kolman 1.4}
 \index{integers!properties}\index{divisibility}\index{prime}%
 
 \begin{rulebox}[title=Theorem 1.4.1 (division with remainder)]
@@ -659,7 +659,7 @@ when a column reaches $2$ (as $1+1=10_2$):\index{binary addition}
 
 % =====================================================================
 \kolman{5}
-\section{Matrices}\src{Kolman 1.5; DM\_1\_1, DM\_1\_2}
+\section{Matrices}\src{Kolman 1.5}
 \index{matrix}\index{matrix multiplication}\index{identity matrix}\index{transpose of a matrix}%
 
 An $m\times n$ matrix has $m$ rows and $n$ columns. \textbf{Square}:
@@ -739,7 +739,7 @@ rows and columns).
 \part{Logic}
 
 \kolman{1}
-\section{Propositions and logical operations}\src{Kolman 2.1; DM\_1\_2}
+\section{Propositions and logical operations}\src{Kolman 2.1}
 \index{proposition}\index{truth table}\index{negation}\index{conjunction}\index{disjunction}%
 
 A \textbf{proposition} is a declarative sentence that is either true or
@@ -769,7 +769,7 @@ $p\to q$ is false \emph{only} when a true $p$ gives a false $q$.
 
 % =====================================================================
 \kolman{2}
-\section{Conditional statements and equivalence}\src{Kolman 2.2; DM\_1\_2, DM\_2\_1}
+\section{Conditional statements and equivalence}\src{Kolman 2.2}
 \index{conditional statement}\index{converse}\index{inverse!of a conditional}\index{contrapositive}\index{biconditional}\index{tautology}\index{contradiction}\index{contingency}\index{logical equivalence}%
 
 \begin{keybox}[title={The conditional family ($p$: it is raining, $q$: I get wet)}]
@@ -840,7 +840,7 @@ $p\to q$ is false \emph{only} when a true $p$ gives a false $q$.
     also $p\leftrightarrow q\equiv(p\wedge q)\vee(\neg p\wedge\neg q)$
   \end{tabular}
 \end{rulebox}
-\erratum{DM\_1\_2 lists (b) as $p\to q\equiv\neg(q\to\neg p)$, which is
+\erratum{The slide lists (b) as $p\to q\equiv\neg(q\to\neg p)$, which is
   false ($\neg(q\to\neg p)\equiv p\wedge q$), and omits (a) and (d). The
   versions above are Kolman's. (d) --- the negation of a conditional is
   $p\wedge\neg q$, \emph{not} $\neg p\to\neg q$ --- is a recurring MC trap.}
@@ -862,7 +862,7 @@ $p\to q$ is false \emph{only} when a true $p$ gives a false $q$.
   Negating a quantified statement: flip $\forall\leftrightarrow\exists$ and
   negate the inside.
 \end{rulepar}
-\erratum{DM\_1\_2 omits (a), prints (d) twice, and gives\\
+\erratum{The slide omits (a), prints (d) twice, and gives\\
   ``$(\exists x\,P(x))\to(\forall x\,Q(x))\equiv\forall x\,(P(x)\to Q(x))$'',
   which is false: take domain $\{1,2\}$ with $P,Q$ true only at $1$ --- the
   right side is true, the left is $T\to F$. The list above is Kolman's.}
@@ -914,7 +914,7 @@ $(p\to q)\to(\neg q\to\neg p)$ as their (f) (also a tautology).
 
 % =====================================================================
 \kolman{3}
-\section{Methods of proof}\src{Kolman 2.3; DM\_2\_1}
+\section{Methods of proof}\src{Kolman 2.3}
 \index{proof}\index{proof!direct}\index{proof!by contrapositive}\index{proof!by contradiction}\index{valid argument form}%
 
 A proof shows that from premises $p_1,\dots,p_n$ the conclusion $q$ must
@@ -956,7 +956,7 @@ argument forms:
 
 % =====================================================================
 \kolman{4}
-\section{Mathematical induction}\src{Kolman 2.4; DM\_2\_1}
+\section{Mathematical induction}\src{Kolman 2.4}
 \index{mathematical induction}\index{induction!base case}\index{induction!hypothesis}\index{induction!strong}%
 
 \begin{keybox}[title={Template (same shape as a recursive function: base case + recursive step)}]
@@ -1000,11 +1000,11 @@ argument forms:
   back three). Step ($k\ge3$):
   $a_{k+1}=a_k+a_{k-1}+a_{k-2}\le2^k+2^{k-1}+2^{k-2}=7\cdot2^{k-2}<8\cdot2^{k-2}=2^{k+1}$.
 \end{example}
-\erratum{DM\_2\_1's conclusion slide says $a_n<2^n$; the claim is
+\erratum{The conclusion slide says $a_n<2^n$; the claim is
   $a_n\le2^n$ (equality holds at $n=1,2,3$).}
 
 \kolman{5}
-\section{From pattern to conjecture to proof}\src{Kolman 2.5; DM\_2\_1}
+\section{From pattern to conjecture to proof}\src{Kolman 2.5}
 \index{conjecture}%
 A \textbf{conjecture} is a statement believed true from a pattern but not
 yet proved: examples $\to$ pattern $\to$ conjecture $\to$ proof.
@@ -1027,7 +1027,7 @@ yet proved: examples $\to$ pattern $\to$ conjecture $\to$ proof.
 \part{Counting}
 
 \kolman{1}
-\section{Permutations and combinations}\src{Kolman 3.1--3.2; DM\_2\_2; own notes}
+\section{Permutations and combinations}\src{Kolman 3.1--3.2; own notes}
 \subsection{Multiplication principle}
 \index{multiplication principle}\index{addition principle}If a task is done in steps, with $n_1$ ways to do the first step,
 $n_2$ ways for the second, and so on, independently of each other,
@@ -1350,7 +1350,7 @@ Choosing $k$ from $n$ always lands in one of four boxes. Ask:
 
 % =====================================================================
 
-\subsection{Worked slide examples (DM\_2\_2)}
+\subsection{Worked slide examples}
 \index{multiplication principle!password}\index{subsets!number of ($2^n$)}\index{distinguishable permutations!MISSISSIPPI}%
 \begin{rulepar}
   \textbf{3.1 Theorem 2.} Tasks $T_1,\dots,T_k$ in sequence, $T_i$ done in
@@ -1385,7 +1385,7 @@ Choosing $k$ from $n$ always lands in one of four boxes. Ask:
   $1140\cdot27\,405=31\,241\,700$.}
 
 \kolman{3}
-\section{Pigeonhole principle}\src{Kolman 3.3; DM\_2\_2}
+\section{Pigeonhole principle}\src{Kolman 3.3}
 \index{pigeonhole principle}\index{generalized pigeonhole principle}\index{ceiling function}%
 \begin{rulebox}[title={3.3 Theorem 1: the pigeonhole principle}]
   If $n+1$ or more objects (pigeons) are put into $n$ boxes
@@ -1415,7 +1415,7 @@ plus one''.
 \end{itemize}
 
 \kolman{4}
-\section{Probability}\src{Kolman 3.4; DM\_3\_1}
+\section{Probability}\src{Kolman 3.4}
 \index{probability}\index{sample space}\index{event}\index{mutually exclusive events}\index{equally likely outcomes}\index{expected value}\index{complement!of an event}%
 
 \textbf{Terms.} Random experiment (e.g.\ rolling a die); outcome (a 4);
@@ -1491,7 +1491,7 @@ $\gcd$.
 
 % =====================================================================
 \kolman{5}
-\section{Recurrence relations}\src{Kolman 3.5; DM\_3\_1}
+\section{Recurrence relations}\src{Kolman 3.5}
 \index{recurrence relation}\index{backtracking}\index{initial conditions}\index{linear homogeneous recurrence}%
 
 A recurrence defines $a_n$ from earlier terms; with \textbf{initial
@@ -1758,7 +1758,7 @@ comes from.
 \part{Relations and Digraphs}
 
 \kolman{1}
-\section{Relations and digraphs}\src{Kolman 4.1--4.3; DM\_3\_2; own notes}
+\section{Relations and digraphs}\src{Kolman 4.1--4.3; own notes}
 \index{relation}\index{digraph}%
 A \textbf{relation} $R$ on a set $A$ is a set of ordered pairs
 $(x, y)$; $x \mathrel{R} y$ means $(x, y) \in R$, ``$x$ is related to
@@ -1950,7 +1950,7 @@ the smallest transitive relation containing $R$ (transitive closure).
   eliminates every option containing $(3,1)$ or $(3,2)$.
 \end{example}
 
-\subsection{Slide results for 4.1--4.3 (DM\_3\_2)}
+\subsection{Slide results for 4.1--4.3}
 \index{product set}\index{Cartesian product}\index{partition}\index{block of a partition}\index{image of a set under a relation}\index{relation!matrix of a relation}%
 \begin{itemize}[nosep]
   \item \textbf{Product set}
@@ -1985,7 +1985,7 @@ the smallest transitive relation containing $R$ (transitive closure).
 \end{rulepar}
 
 \kolman{4}
-\section{Properties of relations}\src{Kolman 4.4; DM\_3\_2; own notes}
+\section{Properties of relations}\src{Kolman 4.4; own notes}
 \index{relation!properties}\index{reflexive}\index{irreflexive}\index{symmetric}\index{antisymmetric}\index{asymmetric}\index{transitive}%
 \textbf{Pen-and-paper tool:} draw $R$ as a $0/1$ grid (the matrix
 $M_R$) --- rows ``from'', columns ``to'', a $1$ for each pair. Check
@@ -2016,7 +2016,7 @@ asymmetric is the stricter version that also forbids it --- any
 $(x, x)$ makes a relation not asymmetric.
 
 \begin{rulepar}
-  \textbf{Special relations on $A$ (DM\_3\_2).} \emph{Empty} $R=\varnothing$;
+  \textbf{Special relations on $A$} \emph{Empty} $R=\varnothing$;
   \emph{full} $R=A\times A$; \emph{identity} (diagonal)
   $\Delta=I_A=\{(a,a)\mid a\in A\}$; \emph{inverse}
   $R^{-1}=\{(b,a)\mid(a,b)\in R\}$. Asymmetric $=$ $aRb\Rightarrow\neg\,bRa$,
@@ -2067,11 +2067,11 @@ $(x, x)$ makes a relation not asymmetric.
 \end{example}
 
 \kolman{5}
-\section{Equivalence relations}\src{Kolman 4.5; DM\_4\_1, DM\_4\_2}
+\section{Equivalence relations}\src{Kolman 4.5}
 \index{equivalence relation}\index{equivalence class}\index{reflexive}\index{symmetric}\index{transitive}\index{relation!matrix of a relation}%
 
-The theory is in DM\_4\_1; the two exercises below (and in 4.7) are the
-ones worked at the end of DM\_4\_2. Row $i$, column $j$ of $M_R$ is
+The two exercises below (and in 4.7) are the ones worked at the end of
+the lecture. Row $i$, column $j$ of $M_R$ is
 $1$ iff $(i,j)\in R$.
 \begin{itemize}
   \item \textbf{Reflexive}: all diagonal entries $1$.
@@ -2081,7 +2081,7 @@ $1$ iff $(i,j)\in R$.
         it splits the set into equivalence classes.
 \end{itemize}
 
-\begin{rulebox}[title={4.5 Theorems 1, 2 and Lemma 1 (DM\_4\_1)}]
+\begin{rulebox}[title={4.5 Theorems 1, 2 and Lemma 1}]
   \textbf{Thm 1.} If $P$ is a partition of $A$ and $aRb$ means ``$a$ and $b$
   lie in the same block'', then $R$ is an equivalence relation.
   (Reflexive: $a$ shares a block with itself. Symmetric: ``same block'' is
@@ -2096,7 +2096,7 @@ $1$ iff $(i,j)\in R$.
 \begin{itemize}[nosep]
   \item Mnemonic: \textbf{equivalence} $=$ reflexive $+$ symmetric $+$
         transitive; \textbf{partial order} $=$ reflexive $+$ antisymmetric $+$
-        transitive (DM\_8\_1).
+        transitive.
   \item $a\le b$ on $\Z$ is reflexive and transitive but \textbf{not
         symmetric} ($1\le2$, $2\not\le1$), so not an equivalence.
   \item \textbf{Congruence mod $n$}: $aRb\iff n\mid(a-b)$ (same remainder
@@ -2121,7 +2121,7 @@ $1$ iff $(i,j)\in R$.
   (answer not on slides).
 \end{example}
 \kolman{7}
-\section{Operations on relations}\src{Kolman 4.7; DM\_4\_1, DM\_4\_2}
+\section{Operations on relations}\src{Kolman 4.7}
 \index{relation!complement}\index{relation!inverse}\index{relation!union and intersection}%
 \begin{rulepar}
   Complement $\overline R$: flip every bit. $R\cap S$: AND. $R\cup S$: OR.
@@ -2137,7 +2137,7 @@ $1$ iff $(i,j)\in R$.
   $M_{R^{-1}}=\begin{bmatrix}1&0&1\\1&0&1\\0&0&1\\1&1&0\end{bmatrix}$.
 \end{example}
 
-\begin{rulebox}[title={4.7 Theorems 1--4 (DM\_4\_1)}]
+\begin{rulebox}[title={4.7 Theorems 1--4}]
   \textbf{Thm 1.} $R\subseteq S\Rightarrow R^{-1}\subseteq S^{-1}$ and
   $\overline S\subseteq\overline R$;
   $(R\cap S)^{-1}=R^{-1}\cap S^{-1}$; $(R\cup S)^{-1}=R^{-1}\cup S^{-1}$;
@@ -2181,7 +2181,7 @@ $1$ iff $(i,j)\in R$.
 \part{Functions}
 
 \kolman{1}
-\section{Functions}\src{Kolman 5.1; DM\_4\_2, DM\_5\_1, DM\_6\_2}
+\section{Functions}\src{Kolman 5.1}
 \index{function}\index{identity function}\index{composition of functions}\index{injective (one-to-one)}\index{surjective (onto)}\index{bijective}\index{everywhere defined function}%
 
 \begin{defn}
@@ -2368,7 +2368,7 @@ $f^{-1}$ reverses the pairs: $f(a)=b\iff f^{-1}(b)=a$.
   $(g\circ f)(x)=x^2+2x+3$;\ $(f\circ g)(x)=x^2+3$;\
   $(f\circ f)(y)=y+2$;\ $(g\circ g)(y)=y^4+4y^2+6$.
 \end{example}
-\begin{example}[MC practice test 5 (DM\_6\_2): composition read off a digraph]\leavevmode\par\noindent
+\begin{example}[MC practice test 5: composition read off a digraph]\leavevmode\par\noindent
   \begin{minipage}[c]{0.2\textwidth}
     \centering
     \begin{tikzpicture}[every node/.style={circle,draw,minimum size=6mm,inner sep=0pt,font=\small},>=stealth]
@@ -2391,7 +2391,7 @@ $f^{-1}$ reverses the pairs: $f(a)=b\iff f^{-1}(b)=a$.
 
 % =====================================================================
 \kolman{2}
-\section{Functions for computer science}\src{Kolman 5.2; DM\_4\_2, DM\_5\_1}
+\section{Functions for computer science}\src{Kolman 5.2}
 \index{floor and ceiling}\index{hash function}\index{fuzzy set}%
 
 Common examples: characteristic function $\chi_A$, $m\bmod n$, $n!$,
@@ -2431,7 +2431,7 @@ in, between = partly). E.g.\ ``tall'': 160\,cm $0.1$, 170 $0.3$, 180 $0.7$,
 
 % =====================================================================
 \kolman{3}
-\section{Growth of functions}\src{Kolman 5.3; DM\_5\_1, DM\_6\_2}
+\section{Growth of functions}\src{Kolman 5.3}
 \index{growth of functions}\index{order of growth}\index{Big-O}\index{Big-Theta@Big-$\Theta$}\index{Theta-class@$\Theta$-class}\index{same order of growth}\index{polynomial versus exponential}\index{doubling the input}%
 
 \begin{rulebox}[title={Growth order (slowest to fastest, for large $n$)}]
@@ -2479,7 +2479,7 @@ $100n^2=O(n^3)$ but $100n^2=\Theta(n^2)$, not $\Theta(n^3)$.
   $\Theta(1{,}000{,}000)=\Theta(1)<\Theta(n^{0.2})<\Theta(n+10^7)=\Theta(n)
     <\Theta(n\lg n)<\Theta(1000n^2-n)=\Theta(n^2)<\Theta(1.3^n)$.
 \end{example}
-\begin{example}[MC practice test 5 (DM\_6\_2): highest order of growth]
+\begin{example}[MC practice test 5: highest order of growth]
   Options: $3^n+n^7$, $2^n+n^7$, $n^7$, $n^8+\log_2n$, $\log_2n$,
   $n^2\cdot3^n+\log_2n$. Keep each dominant term: $3^n$, $2^n$, $n^7$,
   $n^8$, $\log_2n$, $n^23^n$. Since $\log n<n^k<a^n$ ($a>1$) and
@@ -2562,7 +2562,7 @@ $100n^2=O(n^3)$ but $100n^2=\Theta(n^2)$, not $\Theta(n^3)$.
 \part{Order Relations and Structures}
 
 \kolman{1}
-\section{Partial orders and posets}\src{Kolman 6.1; DM\_5\_2}
+\section{Partial orders and posets}\src{Kolman 6.1}
 \index{partial order}\index{poset}\index{antisymmetric}\index{reflexive}\index{transitive}%
 
 \begin{defn}
@@ -2584,8 +2584,7 @@ $100n^2=O(n^3)$ but $100n^2=\Theta(n^2)$, not $\Theta(n^3)$.
   \index{strict order}\index{asymmetric}\index{irreflexive}%
   $<$ fails reflexivity ($a<a$ is never true), so it is not a partial
   order on $\Z^+$/$\R$ --- but it is a useful relation in its own right,
-  a \textbf{strict partial order}. Two more relation properties, from
-  Assignment~2: \textbf{Irreflexive}: $\forall x\in A,\ \neg(xRx)$ (no
+  a \textbf{strict partial order}. Two more relation properties: \textbf{Irreflexive}: $\forall x\in A,\ \neg(xRx)$ (no
   element related to itself). \textbf{Asymmetric}: $xRy\Rightarrow
     \neg(yRx)$ (never both ways).
   \emph{Asymmetric and antisymmetric are not the same}: antisymmetric
@@ -2907,7 +2906,7 @@ valid topological sorts --- \textbf{a topological sort need not be
 
 % =====================================================================
 \kolman{2}
-\section{Extremal elements of posets}\src{Kolman 6.2; DM\_6\_1}
+\section{Extremal elements of posets}\src{Kolman 6.2}
 \index{greatest element}\index{least element}\index{maximal element}\index{minimal element}%
 
 \begin{defn}
@@ -3276,7 +3275,7 @@ $b,a,c,e,d,f,h,g$.
 
 % =====================================================================
 \kolman{3}
-\section{Lattices}\src{Kolman 6.3; DM\_6\_1, DM\_6\_2}
+\section{Lattices}\src{Kolman 6.3}
 \index{lattice}\index{join}\index{meet}\index{lattice!test from a Hasse diagram}%
 
 \begin{defn}
@@ -3560,7 +3559,7 @@ To show a lattice is \emph{not} distributive, \textbf{one
   counterexample is enough}: one triple $a,b,c$ where either identity
 fails. $\mathcal P(S)$, every $D_n$ and every linear order are distributive.
 
-\begin{example}[6.3 Ex.~17 and 18: distributive or not? (DM\_6\_2)]\leavevmode\par\noindent
+\begin{example}[6.3 Ex.~17 and 18: distributive or not?]\leavevmode\par\noindent
   \begin{minipage}[t]{0.3\textwidth}
     \centering
     \begin{tikzpicture}[hasse]
@@ -3774,7 +3773,7 @@ $24\vee36=72$, $24\wedge36=12$.)
 
 \medskip
 \noindent\textbf{Ex.~28--29 (distributive? complemented?)} Both are
-\textbf{neither}. DM\_6\_2 works Ex.~28, with the same triple $c,f,g$
+\textbf{neither}. The slides work Ex.~28, with the same triple $c,f,g$
 and the same complement argument for $c$; Ex.~29 is \emph{(answer not
   on slides)}.
 \begin{itemize}
@@ -3807,7 +3806,7 @@ and the same complement argument for $c$; Ex.~29 is \emph{(answer not
 
 % =====================================================================
 \kolman{4}
-\section{Finite Boolean algebras}\src{Kolman 6.4; DM\_6\_2}
+\section{Finite Boolean algebras}\src{Kolman 6.4}
 \index{Boolean algebra}\index{B n@$B_n$}\index{atom of a Boolean algebra}%
 
 Three ideas from 6.3 --- \textbf{lattice}, \textbf{complement},
@@ -4367,7 +4366,7 @@ like every subset being the union of its one-element subsets.
 
 % =====================================================================
 \kolman{5}
-\section{Functions on Boolean algebras}\src{Kolman 6.5; DM\_6\_2}
+\section{Functions on Boolean algebras}\src{Kolman 6.5}
 \index{Boolean function}\index{truth table!of a Boolean function}\index{Boolean polynomial}%
 
 \begin{defn}
@@ -4602,7 +4601,7 @@ $x=y=0$ ($000$ and $001$) and $1$ on the other six. $z$ doesn't matter.
 
 % ---------------------------------------------------------------------
 \kolman{6}
-\section{Circuit design}\src{Kolman 6.6, pp.~284--292; DM\_8\_1 (Karnaugh maps)}
+\section{Circuit design}\src{Kolman 6.6, pp.~284--292}
 \index{circuit design}\index{minterm}\index{Boolean function!expression from a truth table}\index{truth table!to Boolean expression}\index{S(f)@$S(f)$}%
 
 6.5 goes from an expression to a truth table. This section goes the other
@@ -4782,7 +4781,7 @@ makes neighbours differ in one bit. The left and right edges are
   \end{minipage}
 \end{example}
 
-\subsection{Grouping rules and slide examples (DM\_8\_1)}
+\subsection{Grouping rules and slide examples}
 \index{Karnaugh map!grouping rules}%
 \begin{rulepar}
   \textbf{Grouping rules.} (1) Group adjacent cells containing $1$.
@@ -4839,7 +4838,7 @@ Gray order on the two-variable axis.
 \part{Trees}
 
 \kolman{1}
-\section{Rooted trees}\src{Kolman 7.1; DM\_7\_1}
+\section{Rooted trees}\src{Kolman 7.1}
 \index{tree}\index{rooted tree}\index{root}\index{parent}\index{child}\index{sibling}\index{leaf}\index{level}\index{height of a tree}\index{ordered tree}\index{n-tree@$n$-tree}\index{complete n-tree@complete $n$-tree}\index{binary tree}\index{descendant}\index{subtree}\index{tree!is this relation a tree?}\index{in-degree}%
 
 \begin{defn}
@@ -5047,7 +5046,7 @@ apart from the root and satisfy the in-degree test by itself.
 
 % ---------------------------------------------------------------------
 \kolman{2}
-\section{Labeled trees}\src{Kolman 7.2; DM\_7\_1}
+\section{Labeled trees}\src{Kolman 7.2}
 \index{labeled tree}\index{expression tree}\index{positional tree}\index{Huffman code}\index{array representation of a tree}%
 
 Vertices can carry labels (numbers, words, operators). The \emph{structure}
@@ -5149,7 +5148,7 @@ left, $1$ = go right, and the characters sit at the leaves.
 
 % ---------------------------------------------------------------------
 \kolman{3}
-\section{Tree searching}\src{Kolman 7.3; DM\_7\_1}
+\section{Tree searching}\src{Kolman 7.3}
 \index{tree traversal}\index{preorder}\index{inorder}\index{postorder}\index{Polish notation}\index{prefix form}\index{prefix form!evaluating}%
 
 To do something with \emph{every} vertex (compute, print, count, search)
@@ -5296,7 +5295,7 @@ all three forms --- only the operators move.
 
 % ---------------------------------------------------------------------
 \kolman{4}
-\section{Undirected trees}\src{Kolman 7.4; DM\_7\_2}
+\section{Undirected trees}\src{Kolman 7.4}
 \index{undirected tree}\index{tree!undirected}\index{symmetric closure!undirected tree}\index{undirected edge}\index{adjacent vertices}\index{neighbor}\index{simple path}\index{simple cycle}\index{acyclic}\index{connected}%
 
 Take a rooted tree and forget the hierarchy: no parent/child, only the
@@ -5498,7 +5497,7 @@ undirected edge, which is exactly how the cycle $v_0-v_2-v_5$ is broken.
 
 % ---------------------------------------------------------------------
 \kolman{5}
-\section{Minimal spanning trees}\src{Kolman 7.5; DM\_7\_2}
+\section{Minimal spanning trees}\src{Kolman 7.5}
 \index{weighted graph}\index{weight of an edge}\index{minimal spanning tree}\index{minimum spanning tree|see{minimal spanning tree}}\index{MST|see{minimal spanning tree}}\index{nearest neighbor}\index{Prim's algorithm}\index{greedy algorithm}%
 
 A \textbf{weighted graph} has a number, the \textbf{weight}, on each edge
@@ -5666,8 +5665,8 @@ A weighted graph's matrix holds the weight $w$ at $(i,j)$ and $0$ for
 
 \newpage
 \phantomsection
-\addcontentsline{toc}{part}{Exam review and 2023/2024 practice (DM\_8\_1)}
-\section*{Exam review and past-paper practice (DM\_8\_1)}
+\addcontentsline{toc}{part}{Exam review and 2023/2024 practice}
+\section*{Exam review and past-paper practice}
 \index{exam review}\index{past MC questions!2023}\index{past MC questions!2024}%
 The last lecture reviews the course and works questions from the 2023 and
 2024 MC2 papers. The answers below are the ones highlighted on the slides;
