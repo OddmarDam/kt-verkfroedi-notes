@@ -1,0 +1,22 @@
+% macros.sty
+% Optional personal math/notation shortcuts, shared across courses.
+% Include with: \usepackage{macros}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{macros}[2026/08/14 FKT personal macros]
+
+\RequirePackage{amsmath,amssymb}
+
+% Number sets
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+
+% Common operators
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\E}{E}
+
+\endinput
