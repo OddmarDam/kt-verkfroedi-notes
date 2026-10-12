@@ -1,32 +1,25 @@
-# Discrete Mathematics: Exam Companion
+# BSc KT-verkfrøði Notes
 
-A printable exam companion for **Diskret støddfrøði** (Discrete Mathematics, 005019.23), Setur, autumn 2026. It follows Kolman, Busby & Ross, *Discrete Mathematical Structures*, 6th ed., chapter by chapter, and is meant to be brought to the MC exams, where notes are allowed.
+Study notes and exam aids from the BSc in Software Engineering (KT-verkfrøði) at Setur, University of the Faroe Islands. One folder per course; each document is a LaTeX source with a ready-built PDF next to it.
 
-**[Download the PDF](exam-companion.pdf)** (or see the latest [Release](../../releases/latest)).
-
-## What is in it
-
-- The lecture material (slides DM_1_1 to DM_8_1, Esther Chen) merged with the textbook into one document, ordered by Kolman chapter, with one index.
-- **Exam method** subsections: step-by-step recipes for the typical MC question types, each with worked examples (counting, recurrences, relations, functions, growth, posets and lattices, Boolean algebras, circuits and Karnaugh maps, trees, spanning trees).
-- A multiplication table and a list of primes up to 2500.
-- Yellow shading marks rules, laws and theorems. "Slide erratum" marks a mistake on a slide, with the textbook's correct version.
+| Course | Document | |
+|---|---|---|
+| Diskret støddfrøði (Discrete Mathematics, 005019.23), autumn 2026 | **Discrete Mathematics: Exam Companion** (Kolman chapters 1 to 7 with exam methods and worked examples; built to bring to the MC exams) | [PDF](discrete-math/exam-companion.pdf) · [source](discrete-math/exam-companion.tex) |
 
 ## Found a mistake?
 
-Please [open an issue](../../issues) with the section number and what is wrong, or send a pull request against `exam-companion.tex`. This is an unofficial study aid written by a student and it may contain errors. Check anything important against the textbook.
+Please [open an issue](../../issues) with the document, the section number and what is wrong, or send a pull request against the `.tex` file. These are unofficial study aids written by a student and may contain errors. Check anything important against the course material and the textbook.
 
-## Building it yourself
+## Building
 
-You need a LaTeX distribution (TeX Live or MiKTeX) with `latexmk`:
+You need a LaTeX distribution (TeX Live or MiKTeX) with `latexmk`. From the repo root:
 
 ```
-latexmk exam-companion.tex
+latexmk -r latexmkrc -outdir=.build/discrete-math discrete-math/exam-companion.tex
 ```
 
-The PDF is written to `.build/exam-companion.pdf`.
+The PDF appears in `.build/discrete-math/`. The class and style files are in `latex/`.
 
 ## License
 
-[CC BY-NC-SA 4.0](LICENSE): share and adapt with credit, not for commercial use, under the same license. The lecture slides this builds on belong to their author; the textbook is Kolman, Busby & Ross (Pearson).
-
-Not an official Setur document.
+[CC BY-NC-SA 4.0](LICENSE): share and adapt with credit, not for commercial use, under the same license. Course slides and textbooks used as sources belong to their authors and publishers. Not an official Setur document.
