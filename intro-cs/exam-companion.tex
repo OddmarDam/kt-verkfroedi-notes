@@ -16,7 +16,9 @@
 \semester{Fall 2026}
 \author{Oddmar Dam}
 \title{Introduction to Computer Science: Exam Companion}
-\date{\today}
+% version.tex is written by scripts/publish-notes.sh (public repo: latex/version.tex)
+\IfFileExists{version.tex}{\input{version.tex}}{\newcommand{\docversion}{dev}}
+\date{Version \docversion, \today}
 
 % Exam companion for Innleiðing í teldufrøði (005010.26), built from the two
 % old test exams ("CS Test Exam", "CS Test Exam 2", with the answer key for the
@@ -90,14 +92,14 @@
 \maketitle
 
 \begin{keybox}[title={The exam in one paragraph}]
-\textbf{Wednesday 21 October 2026, 10:00--14:00, in the Aula at Frælsið} (Moodle, 13 Oct).
-4 hours, written, no electronics. Allowed: the textbook (Brookshear \& Brylow),
-notes handed out, \emph{my own notes} and the two required submissions. The old
-test exams are built from 8 sections of about 10--14 points each, with a
-mix of multiple choice, short explanations (\emph{``use between 20--50
-words''}), tracing a program or a data structure, and ``write this in
-Python / SQL / machine code''. Read the \emph{points} per question: a
-2-point question wants one line, a 6-point one wants working shown.
+  \textbf{Wednesday 21 October 2026, 10:00--14:00, in the Aula at Frælsið} (Moodle, 13 Oct).
+  4 hours, written, no electronics. Allowed: the textbook (Brookshear \& Brylow),
+  notes handed out, \emph{my own notes} and the two required submissions. The old
+  test exams are built from 8 sections of about 10--14 points each, with a
+  mix of multiple choice, short explanations (\emph{``use between 20--50
+    words''}), tracing a program or a data structure, and ``write this in
+  Python / SQL / machine code''. Read the \emph{points} per question: a
+  2-point question wants one line, a 6-point one wants working shown.
 \end{keybox}
 
 \subsection*{Question map: where each old question type is covered}
@@ -105,15 +107,15 @@ Python / SQL / machine code''. Read the \emph{points} per question: a
   \small\renewcommand{\arraystretch}{1.2}
   \begin{tabular}{@{}p{4.6cm}p{3.6cm}p{6.4cm}@{}}
     \toprule
-    Old exam section & Topic & This document \\
+    Old exam section                 & Topic                                                        & This document                            \\
     \midrule
-    Test 1 \S1, Test 2 \S1--2  & bits, two's complement, float, parity, Hamming, truth tables & \S1 Data representation \\
-    Test 1 \S2, Test 2 \S4.4   & Vole machine code & \S2 Machine language \\
-    Test 1 \S3, Test 2 \S1.2   & OS, networks, protocols & \S3 Operating systems and networks \\
-    Test 1 \S4--5, Test 2 \S2.2--2.4 & loops, search, Python, translation, scope & \S4 Algorithms and Python, \S5 Languages \\
-    Test 1 \S6, Test 2 \S4.3   & lifecycle, UML class diagrams & \S6 Software engineering \\
-    Test 1 \S7, Test 2 \S3--4  & lists, trees, pointers in memory, traversals & \S7 Data structures \\
-    Test 1 \S8, Test 2 \S5.1   & ER, relational algebra, SQL & \S8 Databases \\
+    Test 1 \S1, Test 2 \S1--2        & bits, two's complement, float, parity, Hamming, truth tables & \S1 Data representation                  \\
+    Test 1 \S2, Test 2 \S4.4         & Vole machine code                                            & \S2 Machine language                     \\
+    Test 1 \S3, Test 2 \S1.2         & OS, networks, protocols                                      & \S3 Operating systems and networks       \\
+    Test 1 \S4--5, Test 2 \S2.2--2.4 & loops, search, Python, translation, scope                    & \S4 Algorithms and Python, \S5 Languages \\
+    Test 1 \S6, Test 2 \S4.3         & lifecycle, UML class diagrams                                & \S6 Software engineering                 \\
+    Test 1 \S7, Test 2 \S3--4        & lists, trees, pointers in memory, traversals                 & \S7 Data structures                      \\
+    Test 1 \S8, Test 2 \S5.1         & ER, relational algebra, SQL                                  & \S8 Databases                            \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -128,9 +130,9 @@ Python / SQL / machine code''. Read the \emph{points} per question: a
 \begin{center}
   \footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.1}
   \begin{tabular}{@{}c|cccccccccccccccc@{}}
-    hex & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F \\
+    hex & 0    & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9    & A    & B    & C    & D    & E    & F    \\
     bin & 0000 & 0001 & 0010 & 0011 & 0100 & 0101 & 0110 & 0111 & 1000 & 1001 & 1010 & 1011 & 1100 & 1101 & 1110 & 1111 \\
-    dec & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\
+    dec & 0    & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9    & 10   & 11   & 12   & 13   & 14   & 15   \\
   \end{tabular}
 \end{center}
 One hex digit is exactly four bits, so conversion is digit by digit.
@@ -144,7 +146,7 @@ $n$ hex digits of address means $16^n$ cells: 2 digits $=256$, 4 digits $=65\,53
   \begin{enumerate}[nosep]
     \item Leading bit $0$: positive, read it as unsigned.
     \item Leading bit $1$: negative. \textbf{Invert all bits, add 1, read
-          the result and put a minus sign in front} (or: unsigned value $-256$).
+            the result and put a minus sign in front} (or: unsigned value $-256$).
     \item Range with $n$ bits: $-2^{n-1}\dots2^{n-1}-1$ (4 bits: $-8\dots7$, 8 bits: $-128\dots127$).
     \item \textbf{Hex shortcut:} first hex digit $\hx{0}$--$\hx{7}$ means non-negative,
           $\hx{8}$--$\hx{F}$ negative. (Test 1 \S1.2: $\hx{6A}$ and $\hx{21}$ are
@@ -207,7 +209,7 @@ Bitwise, column by column. \textbf{AND}: 1 only if both are 1; \textbf{OR}: 0 on
   \small\ttfamily
   \begin{tabular}{@{}lll@{}}
     10110011 AND 01111010 = 00110010 &
-    10110011 OR 01111010 = 11111011 &
+    10110011 OR 01111010 = 11111011  &
     10110011 XOR 01111010 = 11001001
   \end{tabular}
 \end{center}
@@ -218,10 +220,10 @@ compare the last column with the known tables.
   \small\renewcommand{\arraystretch}{1.1}
   \begin{tabular}{@{}cc|c|c|c|c|c|c@{}}
     A & B & AND & OR & NAND & NOR & XOR & $\neg A\wedge B$ \\\hline
-    0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\
-    0 & 1 & 0 & 1 & 1 & 0 & 1 & 1 \\
-    1 & 0 & 0 & 1 & 1 & 0 & 1 & 0 \\
-    1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0   & 0  & 1    & 1   & 0   & 0                \\
+    0 & 1 & 0   & 1  & 1    & 0   & 1   & 1                \\
+    1 & 0 & 0   & 1  & 1    & 0   & 1   & 0                \\
+    1 & 1 & 1   & 1  & 0    & 0   & 0   & 0                \\
   \end{tabular}
 \end{center}
 The last column is a circuit made of a NOT on $A$ feeding an AND with $B$: it
@@ -257,8 +259,8 @@ A..H are $4,2,5,3,3,\mathbf1,2,4$, so F. Doing all six words:
 \begin{center}
   \small
   \begin{tabular}{@{}lcccccc@{}}
-    received & 101101 & 010000 & 011011 & 000010 & 010100 & 100010 \\
-    nearest (distance) & F (1) & A (1) & C (1) & A (1) & D (1) & E (1) \\
+    received           & 101101 & 010000 & 011011 & 000010 & 010100 & 100010 \\
+    nearest (distance) & F (1)  & A (1)  & C (1)  & A (1)  & D (1)  & E (1)  \\
   \end{tabular}
 \end{center}
 The word is \textbf{F A C A D E} (``FACADE'').
@@ -284,20 +286,20 @@ is \textbf{two bytes} (4 hex digits $=$ op, then three operand digits). Instruct
   \small\renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}cll@{}}
     \toprule
-    Code & Meaning & Example \\
+    Code      & Meaning                                      & Example                                                  \\
     \midrule
-    \hx{1RXY} & LOAD register $R$ from memory cell $XY$ & \hx{1A1A}: RA $\leftarrow$ mem[1A] \\
-    \hx{2RXY} & LOAD register $R$ with the \emph{value} $XY$ & \hx{220C}: R2 $\leftarrow$ 0C \\
-    \hx{3RXY} & STORE register $R$ into cell $XY$ & \hx{30A0}: mem[A0] $\leftarrow$ R0 \\
-    \hx{40RS} & MOVE register $R$ to register $S$ & \\
-    \hx{5RST} & ADD $S+T$ as two's complement into $R$ & \hx{5423}: R4 $\leftarrow$ R2$+$R3 \\
-    \hx{6RST} & ADD $S+T$ as floating point into $R$ & \\
-    \hx{7RST} & $R\leftarrow S$ OR $T$ & \hx{70A2}: R0 $\leftarrow$ RA OR R2 \\
-    \hx{8RST} & $R\leftarrow S$ AND $T$ & \\
-    \hx{9RST} & $R\leftarrow S$ XOR $T$ & \\
-    \hx{AR0X} & ROTATE register $R$ right $X$ times & \\
-    \hx{BRXY} & JUMP to $XY$ \textbf{if} $R=\text{R0}$ & \hx{B130}: if R1 $=$ R0 go to 30; \hx{B0XY} always jumps \\
-    \hx{C000} & HALT & \\
+    \hx{1RXY} & LOAD register $R$ from memory cell $XY$      & \hx{1A1A}: RA $\leftarrow$ mem[1A]                       \\
+    \hx{2RXY} & LOAD register $R$ with the \emph{value} $XY$ & \hx{220C}: R2 $\leftarrow$ 0C                            \\
+    \hx{3RXY} & STORE register $R$ into cell $XY$            & \hx{30A0}: mem[A0] $\leftarrow$ R0                       \\
+    \hx{40RS} & MOVE register $R$ to register $S$            &                                                          \\
+    \hx{5RST} & ADD $S+T$ as two's complement into $R$       & \hx{5423}: R4 $\leftarrow$ R2$+$R3                       \\
+    \hx{6RST} & ADD $S+T$ as floating point into $R$         &                                                          \\
+    \hx{7RST} & $R\leftarrow S$ OR $T$                       & \hx{70A2}: R0 $\leftarrow$ RA OR R2                      \\
+    \hx{8RST} & $R\leftarrow S$ AND $T$                      &                                                          \\
+    \hx{9RST} & $R\leftarrow S$ XOR $T$                      &                                                          \\
+    \hx{AR0X} & ROTATE register $R$ right $X$ times          &                                                          \\
+    \hx{BRXY} & JUMP to $XY$ \textbf{if} $R=\text{R0}$       & \hx{B130}: if R1 $=$ R0 go to 30; \hx{B0XY} always jumps \\
+    \hx{C000} & HALT                                         &                                                          \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -321,14 +323,14 @@ are the usual mistakes.
   \small
   \begin{tabular}{@{}cll@{}}
     \toprule
-    addr & instruction & effect \\
+    addr & instruction & effect                                                                             \\
     \midrule
-    1A & \hx{220C} & R2 $=\hx{0C}$ \\
-    1C & \hx{1A1A} & RA $=$ contents of cell 1A $=\hx{22}$ (the cell holds the first byte of \hx{220C}) \\
-    1E & \hx{70A2} & R0 $=$ RA OR R2 $=00100010\vee00001100=00101110=\hx{2E}$ \\
-    20 & \hx{212E} & R1 $=\hx{2E}$ \\
-    22 & \hx{B130} & R1 $=$ R0 ($\hx{2E}=\hx{2E}$), so jump to \hx{30} \\
-    30 & \hx{C000} & halt \\
+    1A   & \hx{220C}   & R2 $=\hx{0C}$                                                                      \\
+    1C   & \hx{1A1A}   & RA $=$ contents of cell 1A $=\hx{22}$ (the cell holds the first byte of \hx{220C}) \\
+    1E   & \hx{70A2}   & R0 $=$ RA OR R2 $=00100010\vee00001100=00101110=\hx{2E}$                           \\
+    20   & \hx{212E}   & R1 $=\hx{2E}$                                                                      \\
+    22   & \hx{B130}   & R1 $=$ R0 ($\hx{2E}=\hx{2E}$), so jump to \hx{30}                                  \\
+    30   & \hx{C000}   & halt                                                                               \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -354,10 +356,10 @@ asks for them). Work out addresses by counting 2 per instruction.
   \small\ttfamily
   \begin{tabular}{@{}lll@{}}
     00 & 10B0 & R0 $\leftarrow$ mem[B0] \\
-    02 & 2103 & R1 $\leftarrow$ 03 \\
+    02 & 2103 & R1 $\leftarrow$ 03      \\
     04 & 5201 & R2 $\leftarrow$ R0 + R1 \\
     06 & 32B1 & mem[B1] $\leftarrow$ R2 \\
-    08 & C000 & halt \\
+    08 & C000 & halt                    \\
   \end{tabular}
 \end{center}
 
@@ -366,14 +368,14 @@ Vole simulator (final \hx{AA} $=\hx{0A}$):
 \begin{center}
   \small\ttfamily
   \begin{tabular}{@{}lll@{}}
-    00 & 2001 & R0 $\leftarrow$ 01 \quad (counter) \\
-    02 & 210A & R1 $\leftarrow$ 0A \quad (limit) \\
-    04 & 2201 & R2 $\leftarrow$ 01 \quad (step) \\
+    00 & 2001 & R0 $\leftarrow$ 01 \quad (counter)                        \\
+    02 & 210A & R1 $\leftarrow$ 0A \quad (limit)                          \\
+    04 & 2201 & R2 $\leftarrow$ 01 \quad (step)                           \\
     06 & 30AA & mem[AA] $\leftarrow$ R0 \quad (loop start: store counter) \\
-    08 & B10E & if R0 = R1 (counter = limit) jump to 0E \\
-    0A & 5002 & R0 $\leftarrow$ R0 + R2 \quad (count up) \\
-    0C & B006 & jump to 06 \quad (R0 = R0, always) \\
-    0E & C000 & halt \\
+    08 & B10E & if R0 = R1 (counter = limit) jump to 0E                   \\
+    0A & 5002 & R0 $\leftarrow$ R0 + R2 \quad (count up)                  \\
+    0C & B006 & jump to 06 \quad (R0 = R0, always)                        \\
+    0E & C000 & halt                                                      \\
   \end{tabular}
 \end{center}
 The jump instruction only tests \emph{equality with R0}: that is why the counter lives in R0 and
@@ -388,29 +390,29 @@ These are the ones the old exams asked, plus the likely siblings. The wording be
 20--50 words; the key's own phrasing is marked (key).
 \begin{description}[leftmargin=0pt,labelindent=0pt,itemsep=3pt]
   \item[Application vs.\ system software (key).] System software provides the infrastructure that
-    application software needs: the operating system and utilities. Application software
-    performs the specific tasks the user wants, e.g.\ word processors, spreadsheets, databases.
+        application software needs: the operating system and utilities. Application software
+        performs the specific tasks the user wants, e.g.\ word processors, spreadsheets, databases.
   \item[Bootstrap (key).] When the machine is switched on, a small boot loader program in ROM runs,
-    loads the operating system from mass storage into main memory and then jumps to it.
-    The operating system takes over from there.
+        loads the operating system from mass storage into main memory and then jumps to it.
+        The operating system takes over from there.
   \item[Device driver.] Software component of the operating system that knows the details of one
-    particular peripheral device and translates general requests into that device's commands
-    (Test 1 \S3.1: the answer is ``device drivers'', not the file or memory manager).
+        particular peripheral device and translates general requests into that device's commands
+        (Test 1 \S3.1: the answer is ``device drivers'', not the file or memory manager).
   \item[Interrupt and time slice.] A process runs for a fixed \textbf{time slice}; the end of it is
-    signalled by an \textbf{interrupt} (Test 1 \S3.2). The CPU saves the state, and the scheduler picks
-    the next process.
+        signalled by an \textbf{interrupt} (Test 1 \S3.2). The CPU saves the state, and the scheduler picks
+        the next process.
   \item[Process vs.\ program.] A program is a static set of instructions; a process is the
-    \emph{activity} of executing it: program plus current state (PC, registers, memory).
+        \emph{activity} of executing it: program plus current state (PC, registers, memory).
   \item[Context switch.] Saving the state of the running process and loading another's, so
-    time-sharing multitasking can alternate between processes. It costs time but no useful work.
+        time-sharing multitasking can alternate between processes. It costs time but no useful work.
   \item[Mutual exclusion / critical region.] Only one process at a time may use shared data; the
-    instructions that touch it form a critical region. Without it, interleaved updates give wrong results.
+        instructions that touch it form a critical region. Without it, interleaved updates give wrong results.
   \item[Test-and-set.] A single indivisible instruction that tests a flag and sets it; since an
-    interrupt cannot split it, it makes locks safe to implement.
+        interrupt cannot split it, it makes locks safe to implement.
   \item[Deadlock.] Processes wait for each other's resources forever. Requires: competition for
-    non-shareable resources, resources requested piecemeal, and no forced retrieval of an allocated resource.
+        non-shareable resources, resources requested piecemeal, and no forced retrieval of an allocated resource.
   \item[Telnet vs.\ SSH (key).] SSH encrypts the communication so eavesdroppers cannot read
-    passwords or other sensitive data; Telnet sends everything in clear text.
+        passwords or other sensitive data; Telnet sends everything in clear text.
 \end{description}
 
 \textbf{Round-robin arithmetic.} 3 processes, 20\,ms slices, 10\,\textmu s per context switch:
@@ -591,7 +593,7 @@ before the recursive call) and returns $3\cdot2\cdot1\cdot1=6$. A \texttt{for}-l
         \emph{without running it}; \textbf{interpreting} executes it directly from the high-level form (key).
   \item \textbf{Translation phases:} lexical analysis (scanner: characters $\to$ tokens), parsing
         (tokens $\to$ parse tree according to the grammar), code generation. \emph{Executing the program
-        is not a translation step} (Test 1 \S5.2: answer A).
+          is not a translation step} (Test 1 \S5.2: answer A).
   \item \textbf{Disadvantages of machine/assembly language that high-level languages overcome (key):}
         they are machine dependent (not portable) and force algorithms into tiny machine-oriented steps
         instead of larger application-oriented ones.
@@ -616,13 +618,13 @@ With \textbf{Expression} $\to$ Term [\texttt{or} Expression], \textbf{Term} $\to
   \begin{forest}
     for tree={draw, rounded corners=2pt, font=\sffamily\small, l sep=0.45cm, s sep=0.4cm, edge={->}},
     where n children=0{ellipse, font=\ttfamily\small}{}
-    [Expression [Term [Factor [true]]] [or] [Expression [Term [Factor [false]] [and] [Term [Factor [true]]]]]]
+      [Expression [Term [Factor [true]]] [or] [Expression [Term [Factor [false]] [and] [Term [Factor [true]]]]]]
   \end{forest}
   \quad
   \begin{forest}
     for tree={draw, rounded corners=2pt, font=\sffamily\small, l sep=0.45cm, s sep=0.4cm, edge={->}},
     where n children=0{ellipse, font=\ttfamily\small}{}
-    [Expression [Term [Factor [(] [Expression [Term [Factor [false]]]] [)]] [and] [Term [Factor [true]]]]]
+      [Expression [Term [Factor [(] [Expression [Term [Factor [false]]]] [)]] [and] [Term [Factor [true]]]]]
   \end{forest}
 \end{center}
 (\texttt{true or false and true} on the left, \texttt{(false) and true} on the right.) In the left tree the \texttt{and} binds tighter than
@@ -662,9 +664,9 @@ the recursion comes from.
     \begin{class}[text width=2.2cm]{Bookshelf}{5,0}\end{class}
     \begin{class}[text width=2.2cm]{Book}{10,0}\end{class}
     \draw[umlcd style, {Diamond[fill=black, length=10pt, width=6pt]}-] (Library) -- (Bookshelf)
-      node[pos=0.12, above] {1} node[pos=0.88, above] {1..*} node[midway, below] {contains};
+    node[pos=0.12, above] {1} node[pos=0.88, above] {1..*} node[midway, below] {contains};
     \draw[umlcd style, {Diamond[fill=black, length=10pt, width=6pt]}-] (Bookshelf) -- (Book)
-      node[pos=0.12, above] {1} node[pos=0.88, above] {0..*} node[midway, below] {holds};
+    node[pos=0.12, above] {1} node[pos=0.88, above] {0..*} node[midway, below] {holds};
   \end{tikzpicture}
 \end{center}
 \textbf{Short description to write:} a library has one or more bookshelves and each bookshelf belongs to exactly one library;
@@ -714,11 +716,11 @@ its right subtree larger (so a tree is \emph{not} a BST as soon as one value sit
 
 \begin{rulebox}[title={Traversal orders (Test 1 \S7.2, Test 2 \S3.1F)}]
   \begin{tabular}{@{}ll@{}}
-    \textbf{in-order} (Left, Value, Right): & prints a BST in sorted order \\
-    \textbf{pre-order} (Value, Left, Right): & root first \\
-    \textbf{post-order} (Left, Right, Value): & root last \\
-    \textbf{reverse in-order} (Right, Value, Left): & sorted in descending order \\
-    \textbf{Value, Right only:} & the root, then follows the right children down
+    \textbf{in-order} (Left, Value, Right):         & prints a BST in sorted order                   \\
+    \textbf{pre-order} (Value, Left, Right):        & root first                                     \\
+    \textbf{post-order} (Left, Right, Value):       & root last                                      \\
+    \textbf{reverse in-order} (Right, Value, Left): & sorted in descending order                     \\
+    \textbf{Value, Right only:}                     & the root, then follows the right children down
   \end{tabular}\\[2pt]
   Read the \emph{code}: the order of the \texttt{print} relative to the two recursive calls is the whole answer.
 \end{rulebox}
@@ -730,7 +732,7 @@ repeating at every node. Result:
 \begin{center}
   \begin{forest}
     for tree={circle, draw, minimum size=0.7cm, inner sep=1pt, font=\sffamily\small, s sep=0.9cm, l sep=0.5cm}
-    [8 [3 [1] [6 [4] [,phantom]]] [10 [,phantom] [14]]]
+      [8 [3 [1] [6 [4] [,phantom]]] [10 [,phantom] [14]]]
   \end{forest}
 \end{center}
 In-order gives 1, 3, 4, 6, 8, 10, 14.
@@ -792,7 +794,7 @@ A 2-D array stored in \textbf{row-major order} is stored row after row, so \text
 \begin{rulebox}[title={Method: crow's foot from PK/FK}]
   Every \textbf{FK\_x} column in table $T$ is a relation to the table whose \textbf{PK} it refers to.
   Draw a line between them with a \textbf{single bar (exactly one)} at the PK table and a \textbf{crow's foot with a circle
-  (zero or many)} at the table holding the FK: \textbf{one row in the PK table relates to many rows in the FK table}.
+    (zero or many)} at the table holding the FK: \textbf{one row in the PK table relates to many rows in the FK table}.
   Name each line with a verb and say it in words from both sides.
 \end{rulebox}
 \textbf{Test 1 \S8.2} (Employee: PK, FK\_Department\_Id, FK\_Job\_Id, Name; Department: PK, FK\_Location\_Id, Name;
@@ -852,12 +854,12 @@ delete from Employee where Name = 'G. Jerry Smith';
   \small
   \begin{tabular}{@{}ll@{}}
     \toprule
-    operation & result \\
+    operation                             & result                                    \\
     \midrule
-    \texttt{PROJECT W from X} & $E,\ B,\ C$ \\
-    \texttt{SELECT from X where U=3} & $(3,C,C)$ \\
+    \texttt{PROJECT W from X}             & $E,\ B,\ C$                               \\
+    \texttt{SELECT from X where U=3}      & $(3,C,C)$                                 \\
     \texttt{JOIN X and Y where X.U = Y.R} & $(2,B,B,2,A),\ (3,C,C,3,Z),\ (3,C,C,3,B)$ \\
-    \texttt{JOIN X and Y where X.U > Y.R} & $(3,C,C,2,A)$ \quad (only $3>2$) \\
+    \texttt{JOIN X and Y where X.U > Y.R} & $(3,C,C,2,A)$ \quad (only $3>2$)          \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -875,7 +877,7 @@ delete from Employee where Name = 'G. Jerry Smith';
   RESULT & PROJECT Name from NEW2 \\
 \end{relalg}
 \erratum{Test 1 \S8.3(2) in the key projects only \texttt{Title}, but the question asks for job titles \emph{and
-  employee names}: project both (as above).}
+    employee names}: project both (as above).}
 
 \subsection{SQL}
 \begin{lstlisting}[language=SQL]
@@ -896,7 +898,7 @@ select distinct Title from Job where Salary > 1000;                -- distinct r
 \end{lstlisting}
 \textbf{Pattern:} \texttt{select} the columns, \texttt{from} the first table, one \texttt{join \dots on FK = PK}
 per extra table, \texttt{where} the conditions; \texttt{distinct} removes repeats. The \textbf{number of joins is one less
-than the number of tables used}. Qualify column names with the table name when two tables share a name (\texttt{Name}!).
+  than the number of tables used}. Qualify column names with the table name when two tables share a name (\texttt{Name}!).
 \erratum{Key \S8.4(2) has \texttt{from Employee, Title}; the table is \texttt{Job}, not \texttt{Title}.
   The key also uses the old comma style (\texttt{from A, B where \dots}), which is equivalent to \texttt{join}.}
 
@@ -1011,36 +1013,36 @@ I cannot read from the text extraction are left out (7.32, 8.8, 8.30, 6.44, 6.36
 \begin{description}[leftmargin=0pt,labelindent=0pt,itemsep=2pt]
   \item[6.1] A language is \textbf{machine independent} if a program written in it can be translated to run on different machines without being rewritten.
   \item[6.2] \texttt{x = 0; while (x < 3): x = x + 1}. Vole has no ``less than'', but $x$ steps by 1, so testing equality with $3$ works. R0 $=x$, R1 $=1$, R2 $=3$:
-    \begin{center}\small\ttfamily
-      \begin{tabular}{@{}lll@{}}
-        00 & 2000 & R0 $\leftarrow$ 0 \\ 02 & 2101 & R1 $\leftarrow$ 1 \\ 04 & 2203 & R2 $\leftarrow$ 3 \\
-        06 & B20C & if R2 = R0 goto 0C \\ 08 & 5001 & R0 $\leftarrow$ R0 + R1 \\ 0A & B006 & goto 06 \\ 0C & C000 & halt
-      \end{tabular}
-    \end{center}
-    (the simulator ends with R0 $=3$).
+        \begin{center}\small\ttfamily
+          \begin{tabular}{@{}lll@{}}
+            00 & 2000 & R0 $\leftarrow$ 0  \\ 02 & 2101 & R1 $\leftarrow$ 1 \\ 04 & 2203 & R2 $\leftarrow$ 3 \\
+            06 & B20C & if R2 = R0 goto 0C \\ 08 & 5001 & R0 $\leftarrow$ R0 + R1 \\ 0A & B006 & goto 06 \\ 0C & C000 & halt
+          \end{tabular}
+        \end{center}
+        (the simulator ends with R0 $=3$).
   \item[6.3] \texttt{Halfway = Length + Width} with floating-point values; put Length at \hx{A0}, Width at \hx{A1}, Halfway at \hx{A2}: \hx{11A0} (R1 $\leftarrow$ Length),
-    \hx{12A1} (R2 $\leftarrow$ Width), \hx{6012} (R0 $\leftarrow$ R1 + R2 \emph{floating point}, opcode 6, not 5), \hx{30A2} (store), \hx{C000}.
+        \hx{12A1} (R2 $\leftarrow$ Width), \hx{6012} (R0 $\leftarrow$ R1 + R2 \emph{floating point}, opcode 6, not 5), \hx{30A2} (store), \hx{C000}.
   \item[6.4] \texttt{if (X == 0): Z = Y + W else: Z = Y + X} (two's complement; X, Y, W, Z at \hx{A0}, \hx{A1}, \hx{A2}, \hx{A3}). A comparison is only possible against R0, so R0 is
-    set to $0$:
-    \begin{center}\small\ttfamily
-      \begin{tabular}{@{}lll@{}}
-        00 & 2000 & R0 $\leftarrow$ 0 \\ 02 & 11A0 & R1 $\leftarrow$ X \\ 04 & B10E & if X = 0 goto then (0E) \\
-        06 & 12A1 & else: R2 $\leftarrow$ Y \\ 08 & 5321 & R3 $\leftarrow$ Y + X \\ 0A & 33A3 & Z $\leftarrow$ R3 \\ 0C & B016 & goto end \\
-        0E & 12A1 & then: R2 $\leftarrow$ Y \\ 10 & 13A2 & R3 $\leftarrow$ W \\ 12 & 5423 & R4 $\leftarrow$ Y + W \\ 14 & 34A3 & Z $\leftarrow$ R4 \\ 16 & C000 & end: halt
-      \end{tabular}
-    \end{center}
-    (tested: $X=0,Y=3,W=4$ gives $Z=7$; $X=5$ gives $Z=8$).
+        set to $0$:
+        \begin{center}\small\ttfamily
+          \begin{tabular}{@{}lll@{}}
+            00 & 2000 & R0 $\leftarrow$ 0       \\ 02 & 11A0 & R1 $\leftarrow$ X \\ 04 & B10E & if X = 0 goto then (0E) \\
+            06 & 12A1 & else: R2 $\leftarrow$ Y \\ 08 & 5321 & R3 $\leftarrow$ Y + X \\ 0A & 33A3 & Z $\leftarrow$ R3 \\ 0C & B016 & goto end \\
+            0E & 12A1 & then: R2 $\leftarrow$ Y \\ 10 & 13A2 & R3 $\leftarrow$ W \\ 12 & 5423 & R4 $\leftarrow$ Y + W \\ 14 & 34A3 & Z $\leftarrow$ R4 \\ 16 & C000 & end: halt
+          \end{tabular}
+        \end{center}
+        (tested: $X=0,Y=3,W=4$ gives $Z=7$; $X=5$ gives $Z=8$).
   \item[6.6] The three levels: \textbf{machine language}, \textbf{assembly language}, \textbf{high-level} (third generation) language.
   \item[6.13] A \textbf{declaration} states a name and its type (that the variable exists); the \textbf{definition} also reserves the storage (and may give an initial value).
   \item[6.14] A \textbf{local} variable is accessible only within the procedure (or block) that declares it and lives while that runs; a \textbf{global} variable is accessible everywhere
-    in the program. Globals couple modules together invisibly, so locals are preferred.
+        in the program. Globals couple modules together invisibly, so locals are preferred.
   \item[6.15] \textbf{Operator precedence} says which operator is applied first when there are no parentheses. With the usual precedence $6+2\cdot3=12$; without it, left to right,
-    $(6+2)\cdot3=24$.
+        $(6+2)\cdot3=24$.
   \item[6.19] \texttt{x=1; while (x != 100): print(x); x = x + 1} $\to$ \texttt{for x in range(1, 100): print(x)} (prints $1$ to $99$).
   \item[6.21] \texttt{for (i=0; i<100; i++) \{ if (i \% 2 == 0) printf(i) \}} as a \texttt{while}: \texttt{i = 0; while (i < 100): if (i \% 2 == 0): print(i); i = i + 1} (the increment must be inside the loop).
   \item[6.40] ``yes$^n$ no$^n$'': Sentence $\to$ \texttt{yes} [Sentence] \texttt{no}, a diagram that contains itself (recursion); it generates ``yes no'', ``yes yes no no'', and so on.
   \item[6.42] \textbf{String} $\to$ \texttt{x} String \texttt{x} $\mid$ \texttt{y}: ``a string is either the single letter y, or a string with an x on each side''. Parse tree of \texttt{xxyxx}:
-    String $\to$ (x, String, x); that inner String $\to$ (x, String, x); the innermost String $\to$ y. So the leaves read x, x, y, x, x.
+        String $\to$ (x, String, x); that inner String $\to$ (x, String, x); the innermost String $\to$ y. So the leaves read x, x, y, x, x.
 \end{description}
 Further ch.~6 problems that are quick to answer: \textbf{6.7} $f$ removes the letters at odd positions: ``programming'' $\to$ ``rgamn'' $\to$ ``gm''. \textbf{6.8} $f(f(a,b),g(a,b))=(a+b)+(a-b)=2a$.
 \textbf{6.23} the rat's nest means \texttt{if X > 5: X = X + 2 else: X = X + 1}. \textbf{6.26} an integer variable receiving $6.0$ stores $6$. \textbf{6.29} by value prints $7$ then $5$; by reference $7$ then $7$.
@@ -1078,9 +1080,9 @@ Further ch.~6 problems that are quick to answer: \textbf{6.7} $f$ removes the le
   \item[9.3] A \textbf{lossless (nonloss) decomposition} splits a relation into smaller ones, repeating the key columns, such that joining them again gives back exactly the original relation: no information lost and no invented tuples.
   \item[9.5] Two benefits of keeping application software separate from the DBMS: the \textbf{data organisation can change without changing the applications} (data independence), and the application programmer \textbf{need not write the storage, security and sharing code} (it is shared, and the same data serves many applications).
   \item[9.12] $A(L,M,N)=\{(X,P,1),(Y,Q,7),(Z,R,6)\}$, $B(X,Y)=\{(9,7),(4,3)\}$.
-    (a) \texttt{SELECT from B where X = 9}: $(9,7)$. (b) \texttt{PROJECT L from A}: $X,\ Y,\ Z$. (c) \texttt{SELECT from A where L = Z}: $(Z,R,6)$.
-    (d) \texttt{JOIN A and B where A.N = B.Y}: only $N=Y=7$ matches, giving $(Y,Q,7,9,7)$.
-  \item[9.13 / 9.14] Course(CName, ID): (Networks, IT655), (Database, CS543), (VLSI, EC653); Branch(BName, ID, Credits). (a) ``Which branches offer IT665?'' (a misprint for IT655; there is no IT665): 
+        (a) \texttt{SELECT from B where X = 9}: $(9,7)$. (b) \texttt{PROJECT L from A}: $X,\ Y,\ Z$. (c) \texttt{SELECT from A where L = Z}: $(Z,R,6)$.
+        (d) \texttt{JOIN A and B where A.N = B.Y}: only $N=Y=7$ matches, giving $(Y,Q,7,9,7)$.
+  \item[9.13 / 9.14] Course(CName, ID): (Networks, IT655), (Database, CS543), (VLSI, EC653); Branch(BName, ID, Credits). (a) ``Which branches offer IT665?'' (a misprint for IT655; there is no IT665):
 \end{description}
 \begin{relalg}
   NEW1   & SELECT from Branch where ID = 'IT655' \\

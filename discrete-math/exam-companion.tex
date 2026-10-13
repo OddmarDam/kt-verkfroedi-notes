@@ -14,7 +14,9 @@
 \semester{Fall 2026}
 \author{Oddmar Dam}
 \title{Discrete Mathematics: Exam Companion}
-\date{\today}
+% version.tex is written by scripts/publish-notes.sh (public repo: latex/version.tex)
+\IfFileExists{version.tex}{\input{version.tex}}{\newcommand{\docversion}{dev}}
+\date{Version \docversion, \today}
 \DeclareMathOperator{\lcm}{lcm}
 
 % Exam companion for Diskret støddfrøði (005019.23): the lecture material
@@ -1158,20 +1160,20 @@ the symmetry $C(n,k)=C(n,n-k)$, so $C(12,8)=C(12,4)=495$.
 \begin{center}
   \small\renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}r|rrrrrrr@{}}
-    $n\backslash k$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\\hline
-      0 & 1 &  &  &  &  &  &  \\
-      1 & 1 & 1 &  &  &  &  &  \\
-      2 & 1 & 2 & 1 &  &  &  &  \\
-      3 & 1 & 3 & 3 & 1 &  &  &  \\
-      4 & 1 & 4 & 6 & 4 & 1 &  &  \\
-      5 & 1 & 5 & 10 & 10 & 5 & 1 &  \\
-      6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
-      7 & 1 & 7 & 21 & 35 & 35 & 21 & 7 \\
-      8 & 1 & 8 & 28 & 56 & 70 & 56 & 28 \\
-      9 & 1 & 9 & 36 & 84 & 126 & 126 & 84 \\
-      10 & 1 & 10 & 45 & 120 & 210 & 252 & 210 \\
-      11 & 1 & 11 & 55 & 165 & 330 & 462 & 462 \\
-      12 & 1 & 12 & 66 & 220 & 495 & 792 & 924 \\
+    $n\backslash k$ & 0 & 1  & 2  & 3   & 4   & 5   & 6   \\\hline
+    0               & 1 &    &    &     &     &     &     \\
+    1               & 1 & 1  &    &     &     &     &     \\
+    2               & 1 & 2  & 1  &     &     &     &     \\
+    3               & 1 & 3  & 3  & 1   &     &     &     \\
+    4               & 1 & 4  & 6  & 4   & 1   &     &     \\
+    5               & 1 & 5  & 10 & 10  & 5   & 1   &     \\
+    6               & 1 & 6  & 15 & 20  & 15  & 6   & 1   \\
+    7               & 1 & 7  & 21 & 35  & 35  & 21  & 7   \\
+    8               & 1 & 8  & 28 & 56  & 70  & 56  & 28  \\
+    9               & 1 & 9  & 36 & 84  & 126 & 126 & 84  \\
+    10              & 1 & 10 & 45 & 120 & 210 & 252 & 210 \\
+    11              & 1 & 11 & 55 & 165 & 330 & 462 & 462 \\
+    12              & 1 & 12 & 66 & 220 & 495 & 792 & 924 \\
   \end{tabular}
 \end{center}
 \begin{rulepar}
@@ -2098,7 +2100,7 @@ $1$ iff $(i,j)\in R$.
         transitive; \textbf{partial order} $=$ reflexive $+$ antisymmetric $+$
         transitive.
   \item $a\le b$ on $\Z$ is reflexive and transitive but \textbf{not
-        symmetric} ($1\le2$, $2\not\le1$), so not an equivalence.
+          symmetric} ($1\le2$, $2\not\le1$), so not an equivalence.
   \item \textbf{Congruence mod $n$}: $aRb\iff n\mid(a-b)$ (same remainder
         on division by $n$) is an equivalence relation on $\Z$. Mod $3$ it
         has three classes
@@ -2172,7 +2174,7 @@ $1$ iff $(i,j)\in R$.
   the \emph{smallest} relation containing $R$ with that property --- add
   only the pairs that are needed. \textbf{Composition}: for $R$ from $A$ to
   $B$ and $S$ from $B$ to $C$, $a\,(S\circ R)\,c\iff\exists b:\ aRb\wedge
-  bSc$; note the matrix order, $M_{S\circ R}=M_R\odot M_S$ (R first). With
+    bSc$; note the matrix order, $M_{S\circ R}=M_R\odot M_S$ (R first). With
   the $M_R,M_S$ above, $M_{S\circ R}=\begin{bmatrix}1&1&1\\0&0&0\\0&0&0\end{bmatrix}$.
 \end{rulepar}
 
@@ -2321,13 +2323,13 @@ properties separately and hunt for a \emph{counterexample} first.
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{@{}lll@{}}
     \toprule
-    $f(x)$ on $\mathbb{Z}$ & injective? & surjective? \\
+    $f(x)$ on $\mathbb{Z}$         & injective?           & surjective?           \\
     \midrule
-    $x+c$                  & yes & yes ($x=y-c$) \\
-    $2x$, $2x+1$, $kx$ ($|k|\ge2$) & yes & no (skips values) \\
-    $x^2+1$, $x^2$         & no ($f(1)=f(-1)$) & no (nothing negative) \\
-    $x^3$, $(x-1)^3$       & yes & no (only cubes) \\
-    $\lfloor x/2\rfloor$   & no ($f(2n)=f(2n+1)$) & yes (hits every $n$) \\
+    $x+c$                          & yes                  & yes ($x=y-c$)         \\
+    $2x$, $2x+1$, $kx$ ($|k|\ge2$) & yes                  & no (skips values)     \\
+    $x^2+1$, $x^2$                 & no ($f(1)=f(-1)$)    & no (nothing negative) \\
+    $x^3$, $(x-1)^3$               & yes                  & no (only cubes)       \\
+    $\lfloor x/2\rfloor$           & no ($f(2n)=f(2n+1)$) & yes (hits every $n$)  \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -3394,10 +3396,10 @@ both reach.
 \noindent The definition of join and meet, written out as four facts:
 \begin{rulepar}
   \begin{tabular}{@{}l@{\qquad}l@{}}
-    (1) $a\le a\vee b$ and $b\le a\vee b$                   & ($a\vee b$ is an upper bound)       \\
-    (2) if $a\le c$ and $b\le c$, then $a\vee b\le c$       & (it is the \emph{least} one)        \\
-    (1$'$) $a\wedge b\le a$ and $a\wedge b\le b$            & ($a\wedge b$ is a lower bound)      \\
-    (2$'$) if $c\le a$ and $c\le b$, then $c\le a\wedge b$  & (it is the \emph{greatest} one)
+    (1) $a\le a\vee b$ and $b\le a\vee b$                  & ($a\vee b$ is an upper bound)   \\
+    (2) if $a\le c$ and $b\le c$, then $a\vee b\le c$      & (it is the \emph{least} one)    \\
+    (1$'$) $a\wedge b\le a$ and $a\wedge b\le b$           & ($a\wedge b$ is a lower bound)  \\
+    (2$'$) if $c\le a$ and $c\le b$, then $c\le a\wedge b$ & (it is the \emph{greatest} one)
   \end{tabular}
 \end{rulepar}
 
@@ -3411,10 +3413,10 @@ both reach.
 
 \begin{rulebox}[title={6.3 Theorem 3 (algebraic laws)}]
   \begin{tabular}{@{}l@{\qquad}l@{\qquad}l@{}}
-    Idempotent  & $a\vee a=a$                     & $a\wedge a=a$                     \\
-    Commutative & $a\vee b=b\vee a$               & $a\wedge b=b\wedge a$             \\
+    Idempotent  & $a\vee a=a$                      & $a\wedge a=a$                            \\
+    Commutative & $a\vee b=b\vee a$                & $a\wedge b=b\wedge a$                    \\
     Associative & $a\vee(b\vee c)=(a\vee b)\vee c$ & $a\wedge(b\wedge c)=(a\wedge b)\wedge c$ \\
-    Absorption  & $a\vee(a\wedge b)=a$            & $a\wedge(a\vee b)=a$
+    Absorption  & $a\vee(a\wedge b)=a$             & $a\wedge(a\vee b)=a$
   \end{tabular}\\
   These hold in \emph{every} lattice. The distributive laws do
   \emph{not} --- see below.
@@ -3679,7 +3681,7 @@ the middle.)
 
 \begin{example}[The mechanics in $D_{12}$ (a distributive lattice)]
   Take $a=2\le b=12$ and $x=3$. Left: $2\vee(3\wedge12)=\lcm(2,\gcd(3,12))
-  =\lcm(2,3)=6$. Right: $(2\vee3)\wedge12=\gcd(\lcm(2,3),12)=\gcd(6,12)=6$.
+    =\lcm(2,3)=6$. Right: $(2\vee3)\wedge12=\gcd(\lcm(2,3),12)=\gcd(6,12)=6$.
   Equal. With $a=2\le b=4$, $x=6$: left $2\vee\gcd(6,4)=2\vee2=2$; right
   $\gcd(\lcm(2,6),4)=\gcd(6,4)=2$. Equal again.
 \end{example}
@@ -4020,15 +4022,15 @@ order). So
   \renewcommand{\arraystretch}{1.25}
   \begin{tabular}{@{}lll@{}}
     \toprule
-    $n$ looks like & shape of $D_n$ & example \\
+    $n$ looks like & shape of $D_n$           & example                                \\
     \midrule
-    $p$           & chain of 2 dots                    & $D_{7}=\{1,7\}$ \\
-    $p^2$         & chain of 3 dots                    & $D_{25}=\{1,5,25\}$, $D_{9}$, $D_{49}$ \\
-    $p^3$         & chain of 4 dots                    & $D_{8}$, $D_{27}$ \\
-    $pq$          & diamond (square, 4 dots)           & $D_{6}$, $D_{15}$, $D_{91}$ \\
-    $p^2q$        & $3\times2$ grid, 6 dots            & $D_{12}$, $D_{20}$, $D_{18}$ \\
-    $p^2q^2$      & $3\times3$ grid, 9 dots            & $D_{36}$ \\
-    $pqr$         & cube $B_3$, 8 dots                 & $D_{30}$, $D_{42}$, $D_{66}$ \\
+    $p$            & chain of 2 dots          & $D_{7}=\{1,7\}$                        \\
+    $p^2$          & chain of 3 dots          & $D_{25}=\{1,5,25\}$, $D_{9}$, $D_{49}$ \\
+    $p^3$          & chain of 4 dots          & $D_{8}$, $D_{27}$                      \\
+    $pq$           & diamond (square, 4 dots) & $D_{6}$, $D_{15}$, $D_{91}$            \\
+    $p^2q$         & $3\times2$ grid, 6 dots  & $D_{12}$, $D_{20}$, $D_{18}$           \\
+    $p^2q^2$       & $3\times3$ grid, 9 dots  & $D_{36}$                               \\
+    $pqr$          & cube $B_3$, 8 dots       & $D_{30}$, $D_{42}$, $D_{66}$           \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -4063,14 +4065,14 @@ $p^2\le n$, each by a quick rule:
   \renewcommand{\arraystretch}{1.25}
   \begin{tabular}{@{}cll@{}}
     \toprule
-    square & divides $n$ when \ldots & only relevant when \\
+    square & divides $n$ when \ldots                           & only relevant when \\
     \midrule
-    $4$   & last two digits are a multiple of $4$ & always \\
-    $9$   & digit sum is a multiple of $9$ & $n\ge9$ \\
-    $25$  & ends in $00$, $25$, $50$ or $75$ & $n\ge25$ \\
-    $49$  & $n$ is a multiple of $49$ ($49,98,147,196,\dots$) & $n\ge49$ \\
-    $121$ & multiples $121,242,363,\dots$ & $n\ge121$ \\
-    $169$ & multiples $169,338,\dots$ & $n\ge169$ \\
+    $4$    & last two digits are a multiple of $4$             & always             \\
+    $9$    & digit sum is a multiple of $9$                    & $n\ge9$            \\
+    $25$   & ends in $00$, $25$, $50$ or $75$                  & $n\ge25$           \\
+    $49$   & $n$ is a multiple of $49$ ($49,98,147,196,\dots$) & $n\ge49$           \\
+    $121$  & multiples $121,242,363,\dots$                     & $n\ge121$          \\
+    $169$  & multiples $169,338,\dots$                         & $n\ge169$          \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -4101,34 +4103,34 @@ exponents (see the two subsections before).
   \small\renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}llrll@{}}
     \toprule
-    $D_n$ & $n=$ & dots & Boolean? & shape \\
+    $D_n$     & $n=$                        & dots & Boolean?             & shape                               \\
     \midrule
-    $D_{9}$ & $3^2$ & 3 & \textbf{no} & chain of 3 \\
-    $D_{12}$ & $2^2 \cdot 3$ & 6 & \textbf{no} & $3\times2$ grid \\
-    $D_{17}$ & $17$ & 2 & \textbf{yes} ($B_1$) & chain of 2 \\
-    $D_{20}$ & $2^2 \cdot 5$ & 6 & \textbf{no} & $3\times2$ grid \\
-    $D_{25}$ & $5^2$ & 3 & \textbf{no} & chain of 3 \\
-    $D_{30}$ & $2 \cdot 3 \cdot 5$ & 8 & \textbf{yes} ($B_3$) & cube $B_3$ \\
-    $D_{36}$ & $2^2 \cdot 3^2$ & 9 & \textbf{no} & $3\times3$ grid \\
-    $D_{37}$ & $37$ & 2 & \textbf{yes} ($B_1$) & chain of 2 \\
-    $D_{38}$ & $2 \cdot 19$ & 4 & \textbf{yes} ($B_2$) & diamond \\
-    $D_{39}$ & $3 \cdot 13$ & 4 & \textbf{yes} ($B_2$) & diamond \\
-    $D_{40}$ & $2^3 \cdot 5$ & 8 & \textbf{no} & $4\times2$ grid \\
-    $D_{41}$ & $41$ & 2 & \textbf{yes} ($B_1$) & chain of 2 \\
-    $D_{42}$ & $2 \cdot 3 \cdot 7$ & 8 & \textbf{yes} ($B_3$) & cube $B_3$ \\
-    $D_{60}$ & $2^2 \cdot 3 \cdot 5$ & 12 & \textbf{no} & $3\times2\times2$ product of chains \\
-    $D_{63}$ & $3^2 \cdot 7$ & 6 & \textbf{no} & $3\times2$ grid \\
-    $D_{66}$ & $2 \cdot 3 \cdot 11$ & 8 & \textbf{yes} ($B_3$) & cube $B_3$ \\
-    $D_{75}$ & $3 \cdot 5^2$ & 6 & \textbf{no} & $3\times2$ grid \\
-    $D_{78}$ & $2 \cdot 3 \cdot 13$ & 8 & \textbf{yes} ($B_3$) & cube $B_3$ \\
-    $D_{84}$ & $2^2 \cdot 3 \cdot 7$ & 12 & \textbf{no} & $3\times2\times2$ product of chains \\
-    $D_{90}$ & $2 \cdot 3^2 \cdot 5$ & 12 & \textbf{no} & $3\times2\times2$ product of chains \\
-    $D_{91}$ & $7 \cdot 13$ & 4 & \textbf{yes} ($B_2$) & diamond \\
-    $D_{92}$ & $2^2 \cdot 23$ & 6 & \textbf{no} & $3\times2$ grid \\
-    $D_{98}$ & $2 \cdot 7^2$ & 6 & \textbf{no} & $3\times2$ grid \\
-    $D_{105}$ & $3 \cdot 5 \cdot 7$ & 8 & \textbf{yes} ($B_3$) & cube $B_3$ \\
-    $D_{210}$ & $2 \cdot 3 \cdot 5 \cdot 7$ & 16 & \textbf{yes} ($B_4$) & $B_4$ \\
-    $D_{646}$ & $2 \cdot 17 \cdot 19$ & 8 & \textbf{yes} ($B_3$) & cube $B_3$ \\
+    $D_{9}$   & $3^2$                       & 3    & \textbf{no}          & chain of 3                          \\
+    $D_{12}$  & $2^2 \cdot 3$               & 6    & \textbf{no}          & $3\times2$ grid                     \\
+    $D_{17}$  & $17$                        & 2    & \textbf{yes} ($B_1$) & chain of 2                          \\
+    $D_{20}$  & $2^2 \cdot 5$               & 6    & \textbf{no}          & $3\times2$ grid                     \\
+    $D_{25}$  & $5^2$                       & 3    & \textbf{no}          & chain of 3                          \\
+    $D_{30}$  & $2 \cdot 3 \cdot 5$         & 8    & \textbf{yes} ($B_3$) & cube $B_3$                          \\
+    $D_{36}$  & $2^2 \cdot 3^2$             & 9    & \textbf{no}          & $3\times3$ grid                     \\
+    $D_{37}$  & $37$                        & 2    & \textbf{yes} ($B_1$) & chain of 2                          \\
+    $D_{38}$  & $2 \cdot 19$                & 4    & \textbf{yes} ($B_2$) & diamond                             \\
+    $D_{39}$  & $3 \cdot 13$                & 4    & \textbf{yes} ($B_2$) & diamond                             \\
+    $D_{40}$  & $2^3 \cdot 5$               & 8    & \textbf{no}          & $4\times2$ grid                     \\
+    $D_{41}$  & $41$                        & 2    & \textbf{yes} ($B_1$) & chain of 2                          \\
+    $D_{42}$  & $2 \cdot 3 \cdot 7$         & 8    & \textbf{yes} ($B_3$) & cube $B_3$                          \\
+    $D_{60}$  & $2^2 \cdot 3 \cdot 5$       & 12   & \textbf{no}          & $3\times2\times2$ product of chains \\
+    $D_{63}$  & $3^2 \cdot 7$               & 6    & \textbf{no}          & $3\times2$ grid                     \\
+    $D_{66}$  & $2 \cdot 3 \cdot 11$        & 8    & \textbf{yes} ($B_3$) & cube $B_3$                          \\
+    $D_{75}$  & $3 \cdot 5^2$               & 6    & \textbf{no}          & $3\times2$ grid                     \\
+    $D_{78}$  & $2 \cdot 3 \cdot 13$        & 8    & \textbf{yes} ($B_3$) & cube $B_3$                          \\
+    $D_{84}$  & $2^2 \cdot 3 \cdot 7$       & 12   & \textbf{no}          & $3\times2\times2$ product of chains \\
+    $D_{90}$  & $2 \cdot 3^2 \cdot 5$       & 12   & \textbf{no}          & $3\times2\times2$ product of chains \\
+    $D_{91}$  & $7 \cdot 13$                & 4    & \textbf{yes} ($B_2$) & diamond                             \\
+    $D_{92}$  & $2^2 \cdot 23$              & 6    & \textbf{no}          & $3\times2$ grid                     \\
+    $D_{98}$  & $2 \cdot 7^2$               & 6    & \textbf{no}          & $3\times2$ grid                     \\
+    $D_{105}$ & $3 \cdot 5 \cdot 7$         & 8    & \textbf{yes} ($B_3$) & cube $B_3$                          \\
+    $D_{210}$ & $2 \cdot 3 \cdot 5 \cdot 7$ & 16   & \textbf{yes} ($B_4$) & $B_4$                               \\
+    $D_{646}$ & $2 \cdot 17 \cdot 19$       & 8    & \textbf{yes} ($B_3$) & cube $B_3$                          \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -4673,9 +4675,9 @@ gates in a row (associativity).
   \begin{minipage}[t]{0.72\textwidth}
     $S(f)=\{011,111\}$, so by Theorem 2
     \begin{align*}
-      f & =(x'\wedge y\wedge z)\vee(x\wedge y\wedge z) \\
-        & =(x'\vee x)\wedge(y\wedge z)       & & \text{distributive}   \\
-        & =1\wedge(y\wedge z)=y\wedge z.     & & x\vee x'=1,\ 1\wedge p=p
+      f & =(x'\wedge y\wedge z)\vee(x\wedge y\wedge z)                               \\
+        & =(x'\vee x)\wedge(y\wedge z)                 &  & \text{distributive}      \\
+        & =1\wedge(y\wedge z)=y\wedge z.               &  & x\vee x'=1,\ 1\wedge p=p
     \end{align*}
     The circuit is a single AND gate.
   \end{minipage}
@@ -4735,7 +4737,7 @@ variable that changes inside the block.
       $x'$ & 00   & 01  \\
       $x$  & 10   & 11
     \end{tabular}
-    &
+                  &
     \begin{tabular}{c|cccc}
            & $y'z'$ & $y'z$ & $yz$ & $yz'$ \\\hline
       $x'$ & 000    & 001   & 011  & 010   \\
@@ -4764,9 +4766,9 @@ makes neighbours differ in one bit. The left and right edges are
     \centering\small
     $S(f)=\{000,011,100,101,111\}$\\[4pt]
     \begin{tabular}{c|cccc}
-           & $y'z'$       & $y'z$        & $yz$         & $yz'$ \\\hline
-      $x'$ & \textbf{1}   & 0            & \textbf{1}   & 0     \\
-      $x$  & \textbf{1}   & \textbf{1}   & \textbf{1}   & 0
+           & $y'z'$     & $y'z$      & $yz$       & $yz'$ \\\hline
+      $x'$ & \textbf{1} & 0          & \textbf{1} & 0     \\
+      $x$  & \textbf{1} & \textbf{1} & \textbf{1} & 0
     \end{tabular}
   \end{minipage}\hfill
   \begin{minipage}[c]{0.52\textwidth}
@@ -5368,7 +5370,7 @@ graph). Count: you delete $|E(R)|-(n-1)$ edges in total.
       \node[pt,label=right:$e$] (e) at (1.2,0) {};
       \node[pt,label=below:$f$] (f) at (0,-1) {};
       \draw (a)--(b) (a)--(c) (a)--(d) (b)--(c) (b)--(d) (c)--(d)
-            (c)--(e) (d)--(e) (d)--(f) (e)--(f);
+      (c)--(e) (d)--(e) (d)--(f) (e)--(f);
       \node at (0,-1.8) {\small $R$};
     \end{tikzpicture}
   \end{minipage}\hfill
@@ -5623,7 +5625,7 @@ A weighted graph's matrix holds the weight $w$ at $(i,j)$ and $0$ for
   \]
   Start at $1$: row $1$'s smallest is $3$ at column $3$, record $\{1,3\}$.
   Merge rows $1,3$ into $1'$: $(\,\cdot\,,\min(4,5),\cdot\,,\min(\text{--},2))
-  =(\,\cdot\,,4,\cdot\,,2)$; smallest $2$ (it came from row $3$), record
+    =(\,\cdot\,,4,\cdot\,,2)$; smallest $2$ (it came from row $3$), record
   $\{3,4\}$. Merge with $4$: weight to $2$ is $\min(4,3)=3$ (from row
   $4$), record $\{2,4\}$. MST $\{1,3\},\{3,4\},\{2,4\}$, weight
   $3+2+3=\mathbf{8}$.
@@ -5674,14 +5676,14 @@ the reasoning is added here.
 
 \begin{rulepar}
   \begin{tabular}{@{}p{0.2\textwidth}p{0.74\textwidth}@{}}
-    \textbf{Relations} & Equivalence $=$ R+S+T; partial order $=$ R+A+T. \\
-    \textbf{Linear order} & $\forall a,b:\ a\le b\vee b\le a$. $(\Z,\le)$ is linear; $(\Z^+,\mid)$ and $(\mathcal P(A),\subseteq)$ are partial only. \\
-    \textbf{Hasse diagram} & lower $=$ smaller; edges are covering pairs; no loops, no shortcuts. Minimal/maximal: nothing strictly below/above. Least/greatest: $\le$ / $\ge$ \emph{every} element. \\
-    \textbf{Lattice} & every pair has a join (lub, $\vee$) and a meet (glb, $\wedge$). \textbf{One pair without a join or meet and it is not a lattice.} Product order on $\Z\times\Z$: join $=$ coordinatewise max, meet $=$ coordinatewise min. \\
-    \textbf{Boolean algebra} & bounded (least $0$, greatest $1$), distributive, complemented ($a\vee a'=1$, $a\wedge a'=0$). \\
-    \textbf{Functions} & injective $f(a)=f(b)\Rightarrow a=b$; surjective every $y$ hit; bijective both; invertible iff bijective. Boolean matrix: \textbf{total} (everywhere defined) $=$ exactly one $1$ per \emph{row}; \textbf{injective} $=$ at most one $1$ per column; \textbf{surjective} $=$ at least one $1$ per column. \\
-    \textbf{Trees} & undirected tree: connected, no cycles, $n$ vertices $\Rightarrow$ $n-1$ edges. Rooted directed tree: exactly one root, every other vertex exactly one parent, all reachable from the root. Preorder root--left--right; inorder left--root--right; postorder left--right--root. \\
-    \textbf{Growth} & $1\ll\log n\ll n\ll n\log n\ll n^2\ll n^3\ll2^n$; $O$ is an upper bound, $\Theta$ a tight one. \\
+    \textbf{Relations}       & Equivalence $=$ R+S+T; partial order $=$ R+A+T.                                                                                                                                                                                                                                                           \\
+    \textbf{Linear order}    & $\forall a,b:\ a\le b\vee b\le a$. $(\Z,\le)$ is linear; $(\Z^+,\mid)$ and $(\mathcal P(A),\subseteq)$ are partial only.                                                                                                                                                                                  \\
+    \textbf{Hasse diagram}   & lower $=$ smaller; edges are covering pairs; no loops, no shortcuts. Minimal/maximal: nothing strictly below/above. Least/greatest: $\le$ / $\ge$ \emph{every} element.                                                                                                                                   \\
+    \textbf{Lattice}         & every pair has a join (lub, $\vee$) and a meet (glb, $\wedge$). \textbf{One pair without a join or meet and it is not a lattice.} Product order on $\Z\times\Z$: join $=$ coordinatewise max, meet $=$ coordinatewise min.                                                                                \\
+    \textbf{Boolean algebra} & bounded (least $0$, greatest $1$), distributive, complemented ($a\vee a'=1$, $a\wedge a'=0$).                                                                                                                                                                                                             \\
+    \textbf{Functions}       & injective $f(a)=f(b)\Rightarrow a=b$; surjective every $y$ hit; bijective both; invertible iff bijective. Boolean matrix: \textbf{total} (everywhere defined) $=$ exactly one $1$ per \emph{row}; \textbf{injective} $=$ at most one $1$ per column; \textbf{surjective} $=$ at least one $1$ per column. \\
+    \textbf{Trees}           & undirected tree: connected, no cycles, $n$ vertices $\Rightarrow$ $n-1$ edges. Rooted directed tree: exactly one root, every other vertex exactly one parent, all reachable from the root. Preorder root--left--right; inorder left--root--right; postorder left--right--root.                            \\
+    \textbf{Growth}          & $1\ll\log n\ll n\ll n\log n\ll n^2\ll n^3\ll2^n$; $O$ is an upper bound, $\Theta$ a tight one.                                                                                                                                                                                                            \\
   \end{tabular}
 \end{rulepar}
 
@@ -5689,19 +5691,19 @@ the reasoning is added here.
   \small\renewcommand{\arraystretch}{1.25}
   \begin{tabular}{@{}llp{0.62\textwidth}@{}}
     \toprule
-    Paper & Question & Answer and why \\
+    Paper & Question     & Answer and why                                                                                                                                                                                                \\
     \midrule
-    2023 & Q3 Hasse   & (a) $g$ is a minimal element. $f,g,h$ are the bottom elements; there is no single least element, $a$ is not above $b$, and $g\not\le h$. \\
-    2023 & Q4 $D_n$   & (f) $D_{105}$. Boolean iff $n$ is square-free: $105=3\cdot5\cdot7$; the others have a square factor ($63=3^2\cdot7$, $75=3\cdot5^2$, $84=2^2\cdots$, $90=2\cdot3^2\cdot5$, $92=2^2\cdot23$). \\
-    2023 & Q5 linear  & (e) $(\{1,2,4\},\mid)$ is the chain $1\mid2\mid4$; the others contain incomparable elements. \\
-    2023 & Q7 growth  & (b) $n^3\lg(n^2)+n=2n^3\lg n+n$ has the same order as $n^3\lg n$. \\
-    2023 & Q8 join    & (d) $(-1,1)\vee(2,-3)=(\max(-1,2),\max(1,-3))=(2,1)$. \\
-    2023 & Q9 functions & (d) $f(2)=f(5)=1$. Not everywhere defined ($6$ has no image), not onto, not one-to-one, $f^{-1}$ not a function. \\
-    2023 & Q12 MST    & (f) $14$ (Kruskal/Prim on the weighted graph; the slide's marked answer). \\
-    2024 & Q2 tree    & (a) $R_1$: root $1$, every other vertex one parent, all reachable. $R_2$: $3$ has two parents; $R_3$: $5,6,7$ unreachable; $R_4$: $5$ has two parents; $R_5$: loop $(3,3)$; $R_6$: cycle $1\to2\to3\to4\to1$. \\
-    2024 & Q9 growth  & (c) $4n^2+n\lg n$ is $\Theta(n^2)$, like $n^2+n+\lg n$. \\
-    2024 & Q10 meet   & (b) $(-1,1)\wedge(2,-3)=(\min,\min)=(-1,-3)$. \\
-    2024 & Q11 function & (d) $\{(1,3),(2,1),(3,2)\}$: a function with $f(2)=1<f(3)=2$; the others have an element with two images or $f(2)\not<f(3)$. \\
+    2023  & Q3 Hasse     & (a) $g$ is a minimal element. $f,g,h$ are the bottom elements; there is no single least element, $a$ is not above $b$, and $g\not\le h$.                                                                      \\
+    2023  & Q4 $D_n$     & (f) $D_{105}$. Boolean iff $n$ is square-free: $105=3\cdot5\cdot7$; the others have a square factor ($63=3^2\cdot7$, $75=3\cdot5^2$, $84=2^2\cdots$, $90=2\cdot3^2\cdot5$, $92=2^2\cdot23$).                  \\
+    2023  & Q5 linear    & (e) $(\{1,2,4\},\mid)$ is the chain $1\mid2\mid4$; the others contain incomparable elements.                                                                                                                  \\
+    2023  & Q7 growth    & (b) $n^3\lg(n^2)+n=2n^3\lg n+n$ has the same order as $n^3\lg n$.                                                                                                                                             \\
+    2023  & Q8 join      & (d) $(-1,1)\vee(2,-3)=(\max(-1,2),\max(1,-3))=(2,1)$.                                                                                                                                                         \\
+    2023  & Q9 functions & (d) $f(2)=f(5)=1$. Not everywhere defined ($6$ has no image), not onto, not one-to-one, $f^{-1}$ not a function.                                                                                              \\
+    2023  & Q12 MST      & (f) $14$ (Kruskal/Prim on the weighted graph; the slide's marked answer).                                                                                                                                     \\
+    2024  & Q2 tree      & (a) $R_1$: root $1$, every other vertex one parent, all reachable. $R_2$: $3$ has two parents; $R_3$: $5,6,7$ unreachable; $R_4$: $5$ has two parents; $R_5$: loop $(3,3)$; $R_6$: cycle $1\to2\to3\to4\to1$. \\
+    2024  & Q9 growth    & (c) $4n^2+n\lg n$ is $\Theta(n^2)$, like $n^2+n+\lg n$.                                                                                                                                                       \\
+    2024  & Q10 meet     & (b) $(-1,1)\wedge(2,-3)=(\min,\min)=(-1,-3)$.                                                                                                                                                                 \\
+    2024  & Q11 function & (d) $\{(1,3),(2,1),(3,2)\}$: a function with $f(2)=1<f(3)=2$; the others have an element with two images or $f(2)\not<f(3)$.                                                                                  \\
     \bottomrule
   \end{tabular}
 \end{center}
