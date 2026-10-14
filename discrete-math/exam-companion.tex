@@ -121,6 +121,30 @@
 
 \tableofcontents
 
+\begin{center}
+  \small\renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}p{0.27\textwidth}p{0.36\textwidth}p{0.2\textwidth}@{}}
+    \toprule
+    \textbf{Question looks like} & \textbf{First thing to ask} & \textbf{Go to} \\
+    \midrule
+    Size of a union of sets & Do the sets overlap? & \S\ref{qg:incl}, p.~\pageref{qg:incl} \\
+    gcd, lcm, $sa+tb$ & Can I divide repeatedly? & \S\ref{qg:gcd}, p.~\pageref{qg:gcd} \\
+    Are two statements equivalent? & Same truth value on every row? & \S\ref{qg:logic}, p.~\pageref{qg:logic} \\
+    Prove $p\Rightarrow q$ & Is $\neg q\Rightarrow\neg p$ easier? & \S\ref{qg:proof}, p.~\pageref{qg:proof} \\
+    Show something is impossible & Does the opposite lead to a clash? & \S\ref{qg:proof}, p.~\pageref{qg:proof} \\
+    Statement for all $n$ & Does $P(k)$ give $P(k+1)$? & \S\ref{qg:induct}, p.~\pageref{qg:induct} \\
+    How many selections? & Does order matter? Repetition? & \S\ref{qg:count}, p.~\pageref{qg:count} \\
+    ``How many to be sure\ldots'' & Objects vs.\ categories, worst case plus one & \S\ref{qg:pigeon}, p.~\pageref{qg:pigeon} \\
+    Chance of an event & Equally likely? Overlap? Complement easier? & \S\ref{qg:prob}, p.~\pageref{qg:prob} \\
+    Closed form of a recurrence & Linear, homogeneous, degree~2? & \S\ref{qg:recipe}, p.~\pageref{qg:recipe} \\
+    Compare running times & Which term dominates as $n\to\infty$? & \S\ref{qg:growth}, p.~\pageref{qg:growth} \\
+    Equivalence relation or partial order & Reflexive, symmetric/antisymmetric, transitive? & \S\ref{qg:equiv}, p.~\pageref{qg:equiv} \\
+    Injective, surjective, invertible & Table, formula, or matrix? & \S\ref{qg:func}, p.~\pageref{qg:func} \\
+    Lattice, Boolean algebra, Hasse diagram, trees & See the one-page recap & p.~\pageref{sec:examreview} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
 % =====================================================================
 \newpage
 \part{Fundamentals}
@@ -218,7 +242,7 @@ circle inside it.
   swap.
 \end{rulepar}
 
-\subsection{Inclusion--exclusion}
+\subsection{Inclusion--exclusion}\label{qg:incl}
 \index{inclusion--exclusion}\index{counting!size of a union}%
 \begin{rulebox}
   \vspace{-0.8em}
@@ -450,7 +474,7 @@ prime.
 \end{example}
 
 
-\subsection{GCD and LCM}
+\subsection{GCD and LCM}\label{qg:gcd}
 \index{greatest common divisor (gcd)}\index{least common multiple (lcm)}%
 $\gcd(a,b)$ is the largest $k$ with $k\mid a$ and $k\mid b$.
 
@@ -771,7 +795,7 @@ $p\to q$ is false \emph{only} when a true $p$ gives a false $q$.
 
 % =====================================================================
 \kolman{2}
-\section{Conditional statements and equivalence}\src{Kolman 2.2}
+\section{Conditional statements and equivalence}\src{Kolman 2.2}\label{qg:logic}
 \index{conditional statement}\index{converse}\index{inverse!of a conditional}\index{contrapositive}\index{biconditional}\index{tautology}\index{contradiction}\index{contingency}\index{logical equivalence}%
 
 \begin{keybox}[title={The conditional family ($p$: it is raining, $q$: I get wet)}]
@@ -916,7 +940,7 @@ $(p\to q)\to(\neg q\to\neg p)$ as their (f) (also a tautology).
 
 % =====================================================================
 \kolman{3}
-\section{Methods of proof}\src{Kolman 2.3}
+\section{Methods of proof}\src{Kolman 2.3}\label{qg:proof}
 \index{proof}\index{proof!direct}\index{proof!by contrapositive}\index{proof!by contradiction}\index{valid argument form}%
 
 A proof shows that from premises $p_1,\dots,p_n$ the conclusion $q$ must
@@ -958,7 +982,7 @@ argument forms:
 
 % =====================================================================
 \kolman{4}
-\section{Mathematical induction}\src{Kolman 2.4}
+\section{Mathematical induction}\src{Kolman 2.4}\label{qg:induct}
 \index{mathematical induction}\index{induction!base case}\index{induction!hypothesis}\index{induction!strong}%
 
 \begin{keybox}[title={Template (same shape as a recursive function: base case + recursive step)}]
@@ -1316,7 +1340,7 @@ primes and collect equal primes. Multiplying powers of the same base
 small. Tip: cancel in prime form from the start, e.g.\
 $C(8, 2) = \frac{8 \cdot 7}{2} = \frac{2^3 \cdot 7}{2} = 2^2 \cdot 7$.
 
-\subsection{Which formula? The four cases}
+\subsection{Which formula? The four cases}\label{qg:count}
 \index{counting!the four cases}%
 Choosing $k$ from $n$ always lands in one of four boxes. Ask:
 \emph{does order matter?} and \emph{can the same thing be picked
@@ -1387,7 +1411,7 @@ Choosing $k$ from $n$ always lands in one of four boxes. Ask:
   $1140\cdot27\,405=31\,241\,700$.}
 
 \kolman{3}
-\section{Pigeonhole principle}\src{Kolman 3.3}
+\section{Pigeonhole principle}\src{Kolman 3.3}\label{qg:pigeon}
 \index{pigeonhole principle}\index{generalized pigeonhole principle}\index{ceiling function}%
 \begin{rulebox}[title={3.3 Theorem 1: the pigeonhole principle}]
   If $n+1$ or more objects (pigeons) are put into $n$ boxes
@@ -1417,7 +1441,7 @@ plus one''.
 \end{itemize}
 
 \kolman{4}
-\section{Probability}\src{Kolman 3.4}
+\section{Probability}\src{Kolman 3.4}\label{qg:prob}
 \index{probability}\index{sample space}\index{event}\index{mutually exclusive events}\index{equally likely outcomes}\index{expected value}\index{complement!of an event}%
 
 \textbf{Terms.} Random experiment (e.g.\ rolling a die); outcome (a 4);
@@ -1493,7 +1517,7 @@ $\gcd$.
 
 % =====================================================================
 \kolman{5}
-\section{Recurrence relations}\src{Kolman 3.5}
+\section{Recurrence relations}\src{Kolman 3.5}\label{qg:rec}
 \index{recurrence relation}\index{backtracking}\index{initial conditions}\index{linear homogeneous recurrence}%
 
 A recurrence defines $a_n$ from earlier terms; with \textbf{initial
@@ -1566,7 +1590,7 @@ $r^{n} = c_1 r^{n-1} + c_2 r^{n-2}$. Dividing every term by $r^{n-2}$
 (the rule above) gives $r^{2} = c_1 r + c_2$ --- the
 \emph{characteristic equation}\index{characteristic equation} of step 1.
 
-\subsection{The four-step recipe for distinct roots (exam method)}
+\subsection{The four-step recipe for distinct roots (exam method)}\label{qg:recipe}
 \index{recurrence relation!four-step recipe}\index{general solution}\begin{rulepar}
   \begin{enumerate}[label=\arabic*.]
     \item \textbf{Characteristic equation.} Replace $a_n$ by $r^2$,
@@ -2069,7 +2093,7 @@ $(x, x)$ makes a relation not asymmetric.
 \end{example}
 
 \kolman{5}
-\section{Equivalence relations}\src{Kolman 4.5}
+\section{Equivalence relations}\src{Kolman 4.5}\label{qg:equiv}
 \index{equivalence relation}\index{equivalence class}\index{reflexive}\index{symmetric}\index{transitive}\index{relation!matrix of a relation}%
 
 The two exercises below (and in 4.7) are the ones worked at the end of
@@ -2183,7 +2207,7 @@ $1$ iff $(i,j)\in R$.
 \part{Functions}
 
 \kolman{1}
-\section{Functions}\src{Kolman 5.1}
+\section{Functions}\src{Kolman 5.1}\label{qg:func}
 \index{function}\index{identity function}\index{composition of functions}\index{injective (one-to-one)}\index{surjective (onto)}\index{bijective}\index{everywhere defined function}%
 
 \begin{defn}
@@ -2433,7 +2457,7 @@ in, between = partly). E.g.\ ``tall'': 160\,cm $0.1$, 170 $0.3$, 180 $0.7$,
 
 % =====================================================================
 \kolman{3}
-\section{Growth of functions}\src{Kolman 5.3}
+\section{Growth of functions}\src{Kolman 5.3}\label{qg:growth}
 \index{growth of functions}\index{order of growth}\index{Big-O}\index{Big-Theta@Big-$\Theta$}\index{Theta-class@$\Theta$-class}\index{same order of growth}\index{polynomial versus exponential}\index{doubling the input}%
 
 \begin{rulebox}[title={Growth order (slowest to fastest, for large $n$)}]
@@ -5668,7 +5692,7 @@ A weighted graph's matrix holds the weight $w$ at $(i,j)$ and $0$ for
 \newpage
 \phantomsection
 \addcontentsline{toc}{part}{Exam review and 2023/2024 practice}
-\section*{Exam review and past-paper practice}
+\section*{Exam review and past-paper practice}\label{sec:examreview}
 \index{exam review}\index{past MC questions!2023}\index{past MC questions!2024}%
 The last lecture reviews the course and works questions from the 2023 and
 2024 MC2 papers. The answers below are the ones highlighted on the slides;
