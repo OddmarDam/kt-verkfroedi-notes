@@ -1,0 +1,590 @@
+\documentclass{fkt-notes}
+\usepackage{macros}
+\usepackage[most]{tcolorbox}
+
+\course{Algoritmur og dátustrukturar}
+\coursecode{005024.24}
+\semester{Fall 2026}
+\author{Oddmar Dam}
+\title{Exam Study Guide --- Rules, Recipes and a Plan}
+
+% Public or private build. scripts/publish-notes.sh writes version.tex into
+% the public repo (latex/version.tex); it does not exist here. In the public
+% copy, \priv{private text}{public text} drops the pointers to files that
+% only exist in this repo and the personal parts of the study plan.
+\newif\ifpublic
+\IfFileExists{version.tex}{\publictrue\input{version.tex}}{}
+\newcommand{\priv}[2]{\ifpublic#2\else#1\fi}
+\date{\priv{Written 17 November 2026 (week 4)}{Version \docversion, \today}}
+
+\newcommand{\Oh}{\mathcal{O}}
+\emergencystretch=3em
+
+\lstdefinestyle{pseudo}{
+  numbers=none, frame=leftline, columns=fullflexible, keepspaces=true,
+  morekeywords={if,then,else,for,to,downto,while,do,begin,end,repeat,until,
+    return,output,input,and,or,not,swap,set},
+  morecomment=[l]{//}
+}
+\lstset{style=pseudo}
+
+% A "rule": something to know by heart and apply on sight.
+\newtcolorbox{rulebox}[1]{colback=yellow!12,colframe=black,boxrule=0.5pt,arc=0pt,
+  left=4pt,right=4pt,top=3pt,bottom=3pt,fonttitle=\bfseries,
+  colbacktitle=yellow!35,coltitle=black,title={#1}}
+% A "trap": a mistake that costs marks.
+\newtcolorbox{trap}{colback=red!6,colframe=red!50!black,boxrule=0.5pt,arc=0pt,
+  left=4pt,right=4pt,top=3pt,bottom=3pt}
+
+\newcommand{\cb}{$\square$\ }
+
+\begin{document}
+\maketitle
+
+\noindent
+The final exam is \textbf{4 hours, pen and paper, no books and no notes}, in January 2027 (date not set yet), and it is the whole grade. Since nothing can be looked up, this guide collects the \textbf{rules}: patterns you recognise on sight and turn straight into an answer, like ``two half-size calls plus linear work means $\Oh(n\log n)$''. Each rule is backed by a method you can write out if the question says \emph{show} or \emph{prove}.
+
+\ifpublic
+\paragraph{How to use it.} This is a companion to Qin Xin's handouts (the \texttt{A\_*} slide PDFs on Moodle), not a replacement: the full pseudocode and examples are there. The references to ``2014, Q\dots'' are to the 2013--14 exam paper on Moodle. Written by a student during the course (topics after week~4 were drafted ahead of the lectures), so check anything important against the handouts.
+\else
+\paragraph{How this fits with the other documents.}
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt]
+  \item \texttt{notes/handout-summaries.tex} --- the content, topic by topic, with all the pseudocode. This guide points there rather than repeating it.
+  \item \texttt{notes/induction.tex} --- induction in depth.
+  \item \texttt{exercises/practice-problems.tex}, \texttt{growth-drill.tex}, \texttt{growth-proofs-drill.tex}, \texttt{induction-drill.tex} --- problems with solutions.
+  \item \texttt{exams/Exam2014\_Jan07\_V2.pdf} with \texttt{exam\_solutions.tex} --- the one past paper.
+\end{itemize}
+\fi
+
+\tableofcontents
+
+%====================================================================
+\section{The exam at a glance}
+
+The 2013--14 paper has \textbf{four questions of 25 marks}, each in parts A ($\approx$4 marks), B ($\approx$8) and C ($\approx$13). Every part is one of a small number of question types:
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{4.3cm}p{5.4cm}p{4.6cm}@{}}
+\toprule
+Question type & What you do & Rules / recipes here \\
+\midrule
+Define a term (greedy, DP, stable, \dots) & One or two exact sentences & \S\ref{sec:paradigms}, \S\ref{sec:sorting} \\
+Order of growth of a formula & Find the dominant term & \S\ref{sec:growth} \\
+Prove $f(n)=\Oh(g(n))$ & Find $c$ and $n_0$ & \S\ref{sec:proofs} \\
+Running time of given pseudocode & Count loop iterations & \S\ref{sec:loops} \\
+Write a recurrence for a recursive algorithm & calls $\times$ size $+$ extra work & \S\ref{sec:write-rec} \\
+Solve a recurrence & Table, then iterate or substitute & \S\ref{sec:recurrences}, \S\ref{sec:proofs} \\
+``Show it is exponential'' & $f(n)>2f(n-2)$ template & \S\ref{sec:proofs} \\
+Write pseudocode and trace it & Handout style, trace table & \S\ref{sec:recipes}, \S\ref{sec:pseudo} \\
+Brute force by hand (TSP, knapsack) & List all cases, count them & \S\ref{sec:counting} \\
+Run Kruskal, Dijkstra, BFS/DFS, Fleury & Fixed table layouts & \S\ref{sec:recipes} \\
+DP table (assembly line) & $f_1,f_2,l_1,l_2$ and trace back & \S\ref{sec:recipes} \\
+``Is greedy always optimal?'' & Give a counterexample & \S\ref{sec:paradigms} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{rulebox}{Rule 0: always finish with the complexity}
+Almost every algorithm question on the 2014 paper ended with ``what is the time complexity?''. Whenever you write or run an algorithm, add one line: \emph{the time is $\Oh(\dots)$ because \dots}. It is the cheapest mark on the paper.
+\end{rulebox}
+
+%====================================================================
+\section{Growth rules: which term wins}
+\label{sec:growth}
+
+\paragraph{What Big-O means.} Big-O describes how fast something \emph{grows} as $n$ gets big, not its exact value. So keep only the fastest-growing part and drop fixed numbers, whether added ($+1$, $-1$) or multiplied ($2\cdot$, $3\cdot$). Example: $T(n)=2^n-1$; the $-1$ stops mattering as $n$ grows ($n=10$: $1023$ against $1024$), so $T(n)=\Oh(2^n)$. Formally, $T(n)=\Oh(g(n))$ if there are numbers $c$ and $n_0$ with $T(n)\le c\cdot g(n)$ for all $n\ge n_0$; for $2^n-1$ take $c=1$, $n_0=1$, since $2^n-1\le 2^n$ always.
+
+\begin{rulebox}{Rule 1: the hierarchy}
+\[
+1 \prec \log n \prec (\log n)^k \prec \sqrt n \prec n \prec n\log n \prec n^2 \prec n^3 \prec \dots \prec 2^n \prec 3^n \prec n! \prec n^n
+\]
+To find the order of a sum, \textbf{keep the fastest-growing term and drop its constant}. That term is the answer.
+\end{rulebox}
+
+The finer points that decide the hard cases:
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Any power of $n$ beats any power of $\log n$}: $n(\log n)^{100}\prec n^{1.01}$. (2014, Q4A-I.)
+  \item \textbf{Rewrite roots as powers}, then compare exponents: $\sqrt[4]{n^7}=n^{7/4}=n^{1.75}$, $n^{18/5}=n^{3.6}$, $\sqrt[3]{n}=n^{0.33}$. (2014, Q4A-II and III.)
+  \item \textbf{Any exponential beats any polynomial}: $n^{100}\prec 1.01^n$.
+  \item \textbf{Different bases of an exponential are different orders}: $3^n\prec4^n$, so $4^n$ is \emph{not} $\Oh(3^n)$. (2014, Q4A-IV.) But $2^{n+1}=2\cdot2^n=\Oh(2^n)$, while $2^{2n}=4^n$ is not.
+  \item \textbf{The base of a logarithm does not matter}: $\log_2 n$ and $\log_{10}n$ differ by a constant factor, so both are $\Oh(\log n)$. Also $\log(n^k)=k\log n=\Oh(\log n)$.
+  \item \textbf{Sum rule}: $\Oh(f)+\Oh(g)=\Oh(\max(f,g))$ --- code blocks one after another add, and the biggest wins. \textbf{Product rule}: $\Oh(f)\cdot\Oh(g)=\Oh(fg)$ --- nested loops multiply.
+  \item \textbf{When in doubt, take the limit} (as in Diskret støddfrøði): $\lim f(n)/g(n)=0$ means $f\prec g$; a positive constant means same order; $\infty$ means $f\succ g$. Use l'Hôpital when both go to infinity.
+\end{enumerate}
+
+\begin{trap}
+``Least order of growth'' means the \emph{tightest} simple bound. $3n^2+n$ is also $\Oh(n^3)$, but the expected answer is $\Oh(n^2)$.
+\end{trap}
+
+%====================================================================
+\section{Loop rules: reading the running time off pseudocode}
+\label{sec:loops}
+
+\begin{rulebox}{Rule 2: count how often the innermost line runs}
+Find the line that runs most often and count its executions as a function of $n$. The shape of the loop variable gives the count:
+\end{rulebox}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{7.4cm}p{3.4cm}l@{}}
+\toprule
+Loop shape & Iterations & Order \\
+\midrule
+\texttt{for i = 1 to n} & $n$ & $\Oh(n)$ \\
+\texttt{for i = 1 to n} / \texttt{for j = 1 to n} & $n\cdot n$ & $\Oh(n^2)$ \\
+\texttt{for i = 1 to n} / \texttt{for j = i+1 to n} & $\frac{n(n-1)}2$ & $\Oh(n^2)$ \\
+three nested loops to $n$ & $n^3$ & $\Oh(n^3)$ \\
+\texttt{i = 1; while i < n do i = 2*i} & $\lceil\log_2 n\rceil$ & $\Oh(\log n)$ \\
+\texttt{i = n; while i > 1 do i = i/2} & $\lfloor\log_2 n\rfloor$ & $\Oh(\log n)$ \\
+\texttt{i = 1; while i*i <= n do i = i+1} & $\lfloor\sqrt n\rfloor$ & $\Oh(\sqrt n)$ \\
+\texttt{for i = 1 to n} / inner \texttt{j} doubling up to $n$ & $n\log_2 n$ & $\Oh(n\log n)$ \\
+\texttt{i} doubling up to $n$ / inner \texttt{for j = 1 to i} & $1+2+4+\dots+n<2n$ & $\Oh(n)$ \\
+\texttt{for i = 1 to n-m+1} / inner up to $m$ (string match) & $(n-m+1)m$ & $\Oh((n-m+1)m)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{trap}
+A dependent inner loop (\texttt{j = i+1 to n}) still gives $\Oh(n^2)$, not $\Oh(n)$: it is about half of $n^2$, and halving is a constant. The doubling-outer loop in the second-last row is the opposite surprise: it looks like $n\log n$ but the geometric sum makes it $\Oh(n)$.
+\end{trap}
+
+\paragraph{Best and worst case.} A \texttt{while} loop with an early exit (searching, string matching, insertion sort) has a best case (exit at once) and a worst case (never exit early). State which one you give. Worst case is the default when the question does not say.
+
+%====================================================================
+\section{Writing a recurrence for a recursive algorithm}
+\label{sec:write-rec}
+
+\begin{rulebox}{Rule 3: calls $\times$ size $+$ the rest}
+\[
+T(n) \;=\; \underbrace{a}_{\text{how many recursive calls}}\cdot\, T\big(\underbrace{\text{size of each}}_{n/2,\ n-1,\ \dots}\big) \;+\; \underbrace{f(n)}_{\text{work outside the calls}},
+\qquad T(\text{base}) = \text{constant}.
+\]
+Look at the pseudocode, count the recursive calls in one run of the body, read off the argument size, and count what the body does besides recursing.
+\end{rulebox}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Algorithm & Calls, size, extra work & Recurrence \\
+\midrule
+Recursive binary search & 1 call, $n/2$, one comparison & $T(n)=T(n/2)+1$ \\
+Sum of an array, halves & 2 calls, $n/2$, one addition & $T(n)=2T(n/2)+1$ \\
+Merge sort & 2 calls, $n/2$, merge $\le n-1$ & $T(n)=2T(n/2)+n$ \\
+Tower of Hanoi & 2 calls, $n-1$, one move & $T(n)=2T(n-1)+1$ \\
+Recursive Fibonacci & 2 calls, $n-1$ and $n-2$, one add & $f(n)=f(n-1)+f(n-2)+1$ \\
+Quicksort, worst case & 1 useful call, $n-1$, partition $n$ & $T(n)=T(n-1)+n$ \\
+Quicksort, best case & 2 calls, $n/2$, partition $n$ & $T(n)=2T(n/2)+n$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+When asked \emph{why} the recurrence is right (2014, Q1B-I), say it in words: ``each call does one comparison and then recurses on one half of the list, so $T(n)=T(\lfloor n/2\rfloor)+1$; a list of one element needs one comparison, so $T(1)=1$.''
+
+%====================================================================
+\section{Recurrence rules: the table and why it works}
+\label{sec:recurrences}
+
+\begin{rulebox}{Rule 4: the course's summary table --- one algorithm per line}
+Each line of the slide's summary (A\_6\_2, slide 21) is the running time of an algorithm from the lectures. Learn them as pairs: see the recurrence, think of the algorithm, and the other way round.
+
+\smallskip
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+Algorithm & Recurrence, $T(1)=1$ & Exact & Order \\
+\midrule
+Binary search (week 2--3) & $T(n)=T(n/2)+1$ & $\log_2 n+1$ & $\Oh(\log n)$ \\
+Array sum by halves (week 4, ex.~1) & $T(n)=2T(n/2)+1$ & $2n-1$ & $\Oh(n)$ \\
+Merge sort (week 3) & $T(n)=2T(n/2)+n$ & $n\log_2 n+n$ & $\Oh(n\log n)$ \\
+Tower of Hanoi (week 4) & $T(n)=2T(n-1)+1$ & $2^n-1$ & $\Oh(2^n)$ \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\raggedright
+Why each one looks the way it does: binary search makes \emph{one} call on half the list and one comparison; the array sum makes \emph{two} calls on halves and one addition; merge sort makes two calls on halves and then a merge costing $n$; Hanoi makes two calls on $n-1$ discs and one move.
+\end{rulebox}
+
+These four are not a general rule; they are four solved cases, one per algorithm. What \emph{is} general is the reasoning behind them, which lets you solve a new algorithm's recurrence on sight. Expect the table to grow: quicksort (week 5) adds $T(n)=T(n-1)+n$ for its worst case, and Fibonacci adds $f(n)=f(n-1)+f(n-2)+1$ (both below).
+
+\begin{rulebox}{Rule 5: levels $\times$ work per level (the recursion tree)}
+Draw the calls as a tree. Then:
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{Number of levels}: size halves each time $\Rightarrow\log_2 n$ levels; size drops by 1 $\Rightarrow n$ levels; size quarters $\Rightarrow\log_4 n$.
+  \item \textbf{Calls on level $k$}: $a^k$ when each call makes $a$ calls.
+  \item \textbf{Total} = the sum over the levels of (calls on the level $\times$ extra work per call).
+\end{itemize}
+Three shapes cover everything in this course:
+\begin{enumerate}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{Work grows going down} (two calls, constant extra work): the leaves dominate, so the answer is the \emph{number of leaves}. $2T(n/2)+1$: $2^{\log_2 n}=n$ leaves. $2T(n-1)+1$: $2^{n-1}$ leaves, so $\Oh(2^n)$.
+  \item \textbf{Same work on every level}: answer = work per level $\times$ number of levels. $2T(n/2)+n$: $n$ per level, $\log n$ levels, $\Oh(n\log n)$. $T(n/2)+1$: 1 per level, $\Oh(\log n)$.
+  \item \textbf{Work shrinks going down}: the top call dominates, so the answer is the \emph{root's own work}. $T(n/2)+n$: $n+n/2+n/4+\dots<2n$, $\Oh(n)$.
+\end{enumerate}
+\end{rulebox}
+
+\begin{rulebox}{Rule 6: halving versus subtracting one}
+Two calls on $n/2$ give $\log n$ levels of doubling, $2^{\log n}=n$: \textbf{polynomial}. Two calls on $n-1$ give $n$ levels of doubling, $2^n$: \textbf{exponential}. More generally, $a\ge2$ calls on $n-1$ (or $n-2$) always give exponential time. Same for Fibonacci: two calls that shrink by a constant.
+\end{rulebox}
+
+\paragraph{Variants you can now solve on sight} (all with $T(1)=1$; check any of them by iteration):
+\begin{center}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Recurrence & Shape & Exact & Order \\
+\midrule
+$T(n)=T(n-1)+1$ & same work, $n$ levels & $n$ & $\Oh(n)$ \\
+$T(n)=T(n-1)+n$ & one chain, $n$ levels & $\frac{n(n+1)}2$ & $\Oh(n^2)$ \\
+$T(n)=T(n/2)+n$ & shrinks (root dominates) & $2n-1$ & $\Oh(n)$ \\
+$T(n)=4T(n/4)+n$ & same work, $\log_4 n$ levels & $n\log_4 n+n$ & $\Oh(n\log n)$ \\
+$T(n)=2T(n/2)+n^2$ & shrinks (root dominates) & $2n^2-n$ & $\Oh(n^2)$ \\
+$T(n)=3T(n-1)+1$ & grows, $3^{n-1}$ leaves & $\frac{3^n-1}2$ & $\Oh(3^n)$ \\
+$f(n)=f(n-1)+f(n-2)+1$ & grows, Fibonacci & --- & $\ge 2^{n/2}$, exponential \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{trap}
+Changing one number changes the answer: $3T(n/2)+n$ is $\Oh(n^{\log_2 3})\approx\Oh(n^{1.58})$, \emph{not} $\Oh(n\log n)$, because the leaves ($3^{\log_2 n}=n^{1.58}$) now outweigh the $n$ per level. The general version of Rules 5--6 is the \emph{Master Theorem} (CLRS ch.~4). It is not on the course plan, so on the exam derive the answer by iteration instead of quoting it.
+\end{trap}
+
+\subsection{The iterative method (unrolling) --- when the question says ``solve''}
+\begin{enumerate}[leftmargin=2em]
+  \item Plug the recurrence into itself two or three times, every line written in full, until you can write a \textbf{general line with $k$ in it}. \emph{This is the line the examiner looks for.}
+  \item Find the base case in the definition (usually $T(1)=1$).
+  \item Set ``what is inside $T$'' equal to the base-case number and solve for $k$: $n-k=1\Rightarrow k=n-1$; $n/2^k=1\Rightarrow k=\log n$.
+  \item Put that $k$ back into the general line.
+  \item Simplify (usually a geometric sum, Rule 7), then drop constants to get the Big-O.
+\end{enumerate}
+
+\begin{rulebox}{Rule 7: the sums and logarithms that finish every iteration}
+\[
+2^0+2^1+\dots+2^{k-1}=2^k-1 \qquad
+1+\tfrac12+\tfrac14+\dots<2 \qquad
+1+2+\dots+n=\tfrac{n(n+1)}2
+\]
+A sum of powers of 2 is one less than the next power: $1+2+4=7=8-1$.
+
+\smallskip
+\textbf{What $\log n$ means} (base 2 on the slides): how many times you can halve $n$ before reaching 1 ($8\to4\to2\to1$, three halvings, so $\log 8=3$); equivalently, the power you put on 2 to get $n$ ($2^3=8$).
+\[
+2^{\log n}=n \qquad 2^{\log n-1}=\tfrac n2,\ \ 2^{\log n-2}=\tfrac n4,\ \dots \qquad 2^{10}=1024
+\]
+\[
+a^{\log n}=n^{\log a} \qquad \log(xy)=\log x+\log y \qquad \log(n^k)=k\log n
+\]
+Each $-1$ in the power divides by 2.
+\end{rulebox}
+
+\subsection{The four table lines, worked by iteration}
+
+Be able to write each of these on blank paper. They are the Rule 4 table, one algorithm each.
+
+\paragraph{Tower of Hanoi: $T(n)=2T(n-1)+1$, $T(1)=1$.}
+\begin{align*}
+T(n) &= 2T(n-1)+2^0\\
+     &= 2^2T(n-2)+2^1+2^0\\
+     &= 2^3T(n-3)+2^2+2^1+2^0\\
+     &= 2^kT(n-k)+2^{k-1}+\dots+2^1+2^0 \qquad\text{(general line)}
+\end{align*}
+\emph{Why the powers of 2 appear:} each unroll multiplies everything inside the bracket by the 2 in front of $T$, so each new ``$+1$'' picks up the current power of 2: $2^0$, then $2^1$, then $2^2$. In the recursion tree: the function calls itself twice, so each level has twice as many calls (1, 2, 4, 8, \dots), each doing 1 unit of work.
+
+\emph{Base case:} inside is $n-k$; set $n-k=1$, so $k=n-1$ (check: $n=5$ gives $k=4$ and $T(1)$). Substitute:
+\[
+T(n)=2^{n-1}T(1)+2^{n-2}+\dots+2^0=2^{n-1}+2^{n-2}+\dots+2^0=2^n-1=\Oh(2^n).
+\]
+
+\paragraph{Binary search: $T(n)=T(n/2)+1$, $T(1)=1$.}
+\[
+T(n)=T(n/2)+1=T(n/2^2)+2=T(n/2^3)+3=\dots=T(n/2^k)+k.
+\]
+Base case: $n/2^k=1$, so $n=2^k$ and $k=\log n$. Then $T(n)=T(1)+\log n=1+\log n=\Oh(\log n)$. In words: the work is the number of times you can halve $n$.
+
+\paragraph{Array sum by halves: $T(n)=2T(n/2)+1$, $T(1)=1$.} The same doubling pattern as Hanoi, but the size halves:
+\[
+T(n)=2T(n/2)+1=2^2T(n/2^2)+2+1=\dots=2^kT(n/2^k)+2^{k-1}+\dots+2+1=2^kT(n/2^k)+2^k-1.
+\]
+Base case: $n/2^k=1$, so $k=\log n$ and $2^k=n$ (the last added term is $2^{\log n-1}=n/2$). Then $T(n)=n\cdot T(1)+n-1=2n-1=\Oh(n)$.
+
+\paragraph{Merge sort: $T(n)=2T(n/2)+n$, $T(1)=1$.}
+\begin{align*}
+T(n) &= 2T(n/2)+n = 2\big(2T(n/4)+\tfrac n2\big)+n = 4T(n/4)+2n\\
+     &= 8T(n/8)+3n = \dots = 2^kT(n/2^k)+kn.
+\end{align*}
+Each level adds one more $n$: the $2^j$ calls on level $j$ each merge $n/2^j$ items. Base case $k=\log n$: $T(n)=n\cdot T(1)+n\log n=n\log n+n=\Oh(n\log n)$.
+
+\subsection{Iteration finds, induction proves}
+
+The unrolling is the iterative method, \textbf{not} induction. Its weak spot is the ``$\dots$'': you spot a pattern and assume it continues. That is good for \emph{finding} the answer but is not a strict proof. Induction \emph{proves} it (the slide notes: ``In MI exercises, we prove by MI that $2^0+2^1+\dots+2^{n-1}=2^n-1$''). For Hanoi:
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{Base case} $n=1$: $T(1)=1$ and $2^1-1=1$. \checkmark
+  \item \textbf{Step}: assume $T(n-1)=2^{n-1}-1$. Then $T(n)=2T(n-1)+1=2(2^{n-1}-1)+1=2^n-2+1=2^n-1$. \checkmark
+\end{itemize}
+
+\subsection{Which method to use}
+\begin{center}
+\small
+\begin{tabular}{@{}p{3.2cm}p{5.2cm}p{5.8cm}@{}}
+\toprule
+Method & How & Good for \\
+\midrule
+Iterative (unrolling) & Plug in repeatedly, find the pattern & $T(n-1)$, $T(n-2)$, and $T(n/2)$ too. \textbf{The course's method.} \\
+Recursion tree & Draw the calls as a tree, sum each level & The same as iteration, as a picture (Rule 5) \\
+Substitution & Guess, then prove by induction & When you already have a guess (Rule 11) \\
+Master theorem & A ready-made formula & Only recurrences that \emph{divide} $n$, e.g.\ $2T(n/2)+n$. \textbf{Not in the handouts}: use it to check an answer, not as the working \\
+\bottomrule
+\end{tabular}
+\end{center}
+Rule of thumb: $T(n-1)$, $T(n-2)$ \dots{} $\Rightarrow$ iterate (the Master theorem does not apply). $T(n/2)$, $T(n/3)$ \dots{} $\Rightarrow$ you may know the answer at once from the table or the Master theorem, but on the exam still show the iteration, since that is what the course taught and what ``solve'' asks for.
+
+%====================================================================
+\section{Proof rules: templates for ``prove'' questions}
+\label{sec:proofs}
+
+\begin{rulebox}{Rule 8: induction, four labelled steps}
+\textbf{Base case} (check the smallest $n$ by computing both sides) $\to$ \textbf{Hypothesis} (``assume it holds for $n=k$'') $\to$ \textbf{Step} (write the $k+1$ target, rewrite the left side so the hypothesis appears, substitute, simplify to the right side) $\to$ \textbf{Conclusion} (``by induction it holds for all $n\ge n_0$''). Label each step; the labels carry marks.
+\end{rulebox}
+Use \textbf{strong induction} (assume it for \emph{all} $m<n$) when the recurrence jumps by more than one, e.g.\ $T(n/2)$. Programmer's view: the hypothesis is trusting the recursive call, the base case is the guard that stops the recursion.
+
+\begin{rulebox}{Rule 9: proving $f(n)=\Oh(g(n))$}
+Find constants $c$ and $n_0$ with $f(n)\le c\,g(n)$ for all $n\ge n_0$. \textbf{Recipe}: bound each term of $f$ by a multiple of $g$, valid from some $n_0$, and add the multiples.
+\[
+3n^2+5n+7\;\le\;3n^2+5n^2+7n^2=15n^2\quad\text{for }n\ge1,\qquad\text{so } c=15,\ n_0=1.
+\]
+A plot or a table of values is \textbf{not} a proof.
+\end{rulebox}
+
+\begin{rulebox}{Rule 10: proving $f(n)$ is \emph{not} $\Oh(g(n))$}
+By contradiction. Suppose $c$ and $n_0$ exist. For $n^2=\Oh(n)$: $n^2\le cn$ gives $n\le c$ for all $n\ge n_0$, which fails for $n=\max(n_0,c)+1$. Contradiction.
+\end{rulebox}
+
+\begin{rulebox}{Rule 11: the substitution method (prove a guessed bound)}
+Guess from the table (Rule 4), then prove $T(n)\le c\,g(n)$ by strong induction:
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item Plug the hypothesis into the recurrence and simplify until you reach \textbf{exactly} $c\,g(n)$, with the \textbf{same} $c$.
+  \item Pick a base case where $g(n)>0$: for $n\log n$ use $n=2$ (and $n=3$ with floors), never $n=1$, where $\log 1=0$.
+  \item With floors, use $\lfloor n/2\rfloor\le n/2$, so $\log\lfloor n/2\rfloor\le\log_2n-1$.
+\end{itemize}
+\end{rulebox}
+
+\begin{trap}
+Ending with $T(n)\le cn+1$ and saying ``that is still $\Oh(n)$'' is the classic invalid proof: the induction only works if the conclusion has exactly the form of the hypothesis. If it will not close, strengthen the guess (e.g.\ prove $T(n)\le cn-1$).
+\end{trap}
+
+\begin{rulebox}{Rule 12: ``show it is exponential'' (the Fibonacci template)}
+\begin{enumerate}[leftmargin=1.5em,itemsep=1pt]
+  \item Show $f(n)>2f(n-2)$: drop or bound terms, using that $f$ is increasing ($f(n-1)>f(n-2)$).
+  \item Iterate: $f(n)>2f(n-2)>2^2f(n-4)>\dots>2^kf(n-2k)$.
+  \item Take $k=n/2$ (even $n$): $f(n)>2^{n/2}f(0)$, i.e.\ at least $(\sqrt2)^n$. Exponential.
+\end{enumerate}
+In general: $f(n)\ge a\cdot f(n-b)$ with $a>1$ gives $f(n)\ge a^{n/b}\cdot\text{const}$. This is a \emph{lower} bound, which is what ``exponential'' needs.
+\end{rulebox}
+
+\begin{rulebox}{Rule 13: correctness of a loop (loop invariant)}
+State what is true after iteration $i$ and prove it by induction on $i$. Standard ones: \emph{selection/bubble sort}: $a[1..i]$ holds the $i$ smallest values in order; \emph{minimum}: $a[\mathit{loc}]=\min a[1..i]$; \emph{string match}: while the inner loop continues, $P[1..j-1]=T[i..i+j-2]$.
+\end{rulebox}
+
+%====================================================================
+\section{Counting rules for brute force}
+\label{sec:counting}
+
+\begin{rulebox}{Rule 14: how many cases exhaustive search tries}
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+Search space & Count & Example \\
+\midrule
+All subsets of $n$ items & $2^n$ & 0/1 knapsack \\
+All orderings of $n$ items & $n!$ & permutations \\
+Tours from a fixed start & $(n-1)!$ & TSP (4 cities: $3!=6$ tours) \\
+Ordered choice of $k$ of $n$ & $\frac{n!}{(n-k)!}$ & \\
+Pairs of $n$ items & $\frac{n(n-1)}2$ & comparisons in selection sort \\
+Positions of a pattern in a text & $n-m+1$ & string matching \\
+\bottomrule
+\end{tabular}
+\end{rulebox}
+
+\noindent $(n-1)!$ is not polynomial: in $n^k$ the number of factors is fixed at $k$, in $(n-1)!$ it grows with $n$. It grows faster than any $c^n$. In the TSP table each tour appears twice (once in each direction); list all $(n-1)!$ anyway, and say so.
+
+%====================================================================
+\section{Sorting facts}
+\label{sec:sorting}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lllcc@{}}
+\toprule
+Algorithm & Best & Worst & Stable & In place \\
+\midrule
+Selection sort & $\frac{n(n-1)}2$ comparisons & same, always & no & yes \\
+Bubble sort (handouts) & $\frac{n(n-1)}2$ & same, always & yes & yes \\
+Insertion sort & $n-1$ (already sorted) & $\frac{n(n-1)}2$ (reversed) & yes & yes \\
+Merge sort & $\Oh(n\log n)$ & $\Oh(n\log n)$ & yes & no (extra $n$) \\
+Quicksort & $\Oh(n\log n)$ & $\Oh(n^2)$ (sorted input) & no & yes \\
+Counting sort, values in $1..k$ & $\Oh(n+k)$ & $\Oh(n+k)$ & yes & no \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{rulebox}{Rule 15: stability}
+\textbf{Stable} = equal keys keep their input order. To show a sort is \emph{not} stable, give a 3-element counterexample: selection sort on $(2_a,2_b,1)$ swaps $1$ with $2_a$ and gives $(1,2_b,2_a)$. Sorts that only swap \emph{neighbours} (bubble, insertion) and merge sort that takes from the \emph{left} half on ties are stable.
+\end{rulebox}
+
+%====================================================================
+\section{Graph rules}
+\label{sec:graphs}
+
+\begin{rulebox}{Rule 16: counting facts}
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{Handshake}: $\sum\deg(v)=2|E|$, so the number of odd-degree vertices is even. Directed: $\sum\text{in}=\sum\text{out}=|E|$.
+  \item A simple undirected graph has at most $\frac{n(n-1)}2$ edges (exactly that for $K_n$).
+  \item A \textbf{tree} on $n$ vertices has exactly $n-1$ edges, one path between any two vertices, and adding any edge makes exactly one cycle. A spanning tree, and so an MST, has $n-1$ edges.
+  \item A binary tree has at most $2^k$ vertices on level $k$, and at most $2^{h+1}-1$ in all for height $h$.
+\end{itemize}
+\end{rulebox}
+
+\begin{rulebox}{Rule 17: Euler versus Hamilton}
+\textbf{Euler} (every \emph{edge} once), connected graph: circuit $\iff$ \textbf{all degrees even}; path (not closed) $\iff$ \textbf{exactly two odd vertices}, and it runs from one to the other. Checking is one pass over the degrees.\\
+\textbf{Hamilton} (every \emph{vertex} once): \textbf{no simple test} is known; deciding it is hard. TSP is the cheapest Hamiltonian circuit, hence brute force.
+\end{rulebox}
+
+\begin{rulebox}{Rule 18: representations and traversal costs}
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item Adjacency \textbf{matrix}: $n\times n$, symmetric for undirected graphs, row sum $=$ degree, space $\Oh(n^2)$.
+  \item Adjacency \textbf{list}: space $\Oh(n+m)$, best for sparse graphs.
+  \item \textbf{Incidence matrix} (edges $\times$ vertices in the handouts): each edge row has exactly two 1s; directed: $+1$ at the tail, $-1$ at the head.
+  \item BFS and DFS: $\Oh(|V|+|E|)$ with lists, $\Oh(|V|^2)$ with a matrix. \textbf{BFS = queue}, visits by distance, gives shortest paths counted in edges. \textbf{DFS = stack} (or recursion), goes deep then backtracks.
+  \item Tree traversals: the name says where the \textbf{root} goes: \textbf{pre}order root first, \textbf{in}order root in the middle, \textbf{post}order root last. Inorder of a binary search tree is sorted.
+\end{itemize}
+\end{rulebox}
+
+%====================================================================
+\section{Paradigm rules: which method fits}
+\label{sec:paradigms}
+
+\begin{rulebox}{Rule 19: one-sentence definitions (2014, Q1A asked for two of them)}
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{Brute force / exhaustive search}: try every candidate solution and keep the best. Correct but usually exponential.
+  \item \textbf{Divide and conquer}: split into \emph{independent} smaller instances of the same problem, solve them recursively, combine the results.
+  \item \textbf{Greedy}: build the solution step by step, always taking the choice that looks best now and never undoing it. Fast, but not always optimal.
+  \item \textbf{Dynamic programming}: split into \emph{overlapping} sub-problems, solve each once, store the results in a table filled bottom-up, and combine them.
+\end{itemize}
+\end{rulebox}
+
+\begin{rulebox}{Rule 20: recognising which applies}
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item The recursion tree computes \textbf{the same call more than once} (Fibonacci) $\Rightarrow$ \textbf{DP}. Its running time is (number of distinct sub-problems) $\times$ (work per entry): Fibonacci and the assembly line are $\Oh(n)$.
+  \item Sub-problems are disjoint halves (merge sort, binary search) $\Rightarrow$ \textbf{divide and conquer}.
+  \item Asked whether a greedy method is optimal: \textbf{one counterexample is enough} to say no. Kruskal and Dijkstra (non-negative weights) are optimal; greedy 0/1 knapsack and nearest-neighbour TSP are not.
+\end{itemize}
+\end{rulebox}
+
+\paragraph{Counterexamples to have ready.}
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{Knapsack}, capacity 50, items (weight, value) $(10,60)$, $(20,100)$, $(30,120)$: greedy by value and greedy by value/weight both get $160$; the optimum is items 2 and 3, $220$.
+  \item \textbf{TSP nearest neighbour} (2014, Q1C): on $ab=3$, $ac=5$, $ad=9$, $bc=5$, $bd=7$, $cd=8$ from $a$ it finds $a\,b\,c\,d\,a=25$; the optimum is $23$. Greedy TSP is $\Oh(n^2)$: $n$ steps, each scanning up to $n-1$ edges.
+  \item \textbf{Dijkstra with a negative edge}: it fixes a vertex before a cheaper route through the negative edge is seen.
+\end{itemize}
+
+%====================================================================
+\section{Recipes for the run-it-by-hand questions}
+\label{sec:recipes}
+
+Most of the marks in part C are for \emph{showing the steps} in a clear layout. Use the same layout every time.
+
+\paragraph{Trace table.} One column per variable plus an output column, one row per iteration (or per changed value). Write the initial values in the first row. Stop at the row where the loop test fails, and say so.
+
+\paragraph{Kruskal.} Sort the edges by weight. Make one table: edge, weight, \emph{accepted} or \emph{rejected (cycle with \dots)}. An edge makes a cycle exactly when its two ends are already in the same component. Stop after $n-1$ accepted edges. Finish with the total weight and a drawing. If equal weights allow different choices, say whether the MST is unique.
+
+\paragraph{Dijkstra.} One row per round. Columns: the vertex fixed in this round, then each remaining vertex's label $(d,p)$ = (distance so far, previous vertex). Start with $d(s)=0$ and $\infty$ elsewhere. Each round: fix the unfixed vertex with the smallest $d$, then relax its neighbours ($d(u)+w(u,v)<d(v)$ updates the label). At the end, read each path backwards through $p$.
+
+\paragraph{BFS / DFS.} Say the tie rule first (``neighbours in alphabetical order''). BFS: show the queue after every step. DFS: show the stack or the recursion path. Give the visiting order as a list.
+
+\paragraph{Fleury.} Check the degrees first (Rule 17). Start at an odd vertex if there are two, anywhere if none. Never cross a bridge of the remaining graph unless there is no other edge. List the edges in order and cross them out on the drawing.
+
+\paragraph{Assembly line.} Two rows $f_1[j]$, $f_2[j]$ and two rows $l_1[j]$, $l_2[j]$ (which line the best way in came from). $f_1[1]=a_{1,1}$, then
+$f_1[j]=\min(f_1[j-1]+a_{1,j},\ f_2[j-1]+t_{2,j-1}+a_{1,j})$, symmetric for line 2. Answer $\min(f_1[n],f_2[n])$, then trace back through $l$ to list the stations. Time $\Oh(n)$, versus $2^n$ routes by brute force.
+
+\paragraph{Recursion order} (merge sort, Fibonacci, Tower of Hanoi). Depth-first, left call completely before the right call. Number the calls in the order they \emph{start}. Results flow back up on return. For Hanoi with 3 discs: A$\to$C, A$\to$B, C$\to$B, A$\to$C, B$\to$A, B$\to$C, A$\to$C\priv{ (\texttt{code/hanoi.py} steps through it)}{}.
+
+%====================================================================
+\section{Pseudocode to reproduce from memory}
+\label{sec:pseudo}
+
+All of these are in \priv{\texttt{handout-summaries.tex}}{the handouts}. The test is to write each one on blank paper, in handout style (\texttt{begin}/\texttt{end}, arrays from 1), trace it on a small input, and state its complexity.
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{7.2cm}p{7cm}@{}}
+\cb Quotient and remainder by subtraction & \cb Sequential and binary search (loop and recursive) \\
+\cb GCD / common factors by counting down & \cb Brute-force string matching \\
+\cb Minimum and its location & \cb Selection, bubble and insertion sort \\
+\cb The two smallest values & \cb Merge and merge sort \\
+\cb Tower of Hanoi & \cb Fibonacci: recursive and DP \\
+\cb BFS (queue) and DFS (recursive and stack) & \cb Kruskal \\
+\cb Dijkstra & \cb Greedy knapsack \\
+\cb Assembly line DP with trace back & \cb Partition for quicksort \\
+\end{tabular}
+\end{center}
+
+\begin{trap}
+Pseudocode is marked on content, not syntax, but it must be precise: initialise every variable, give every loop its bounds, and \texttt{return} or \texttt{output} the answer. The course's Fibonacci starts $F(0)=F(1)=1$, not $F(0)=0$.
+\end{trap}
+
+%====================================================================
+\section{Traps that cost marks}
+
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt]
+  \item Giving $\Oh(n^3)$ when $\Oh(n^2)$ is tight (Rule 1).
+  \item Treating $4^n$ as $\Oh(3^n)$, or $2^{2n}$ as $\Oh(2^n)$.
+  \item Using $n=1$ as the base case for an $n\log n$ bound.
+  \item Closing a substitution proof with a different constant, or with ``$+$ lower-order terms''.
+  \item Quoting the answer to a ``solve by iteration'' question without the general line after $k$ steps.
+  \item Forgetting the base case in an induction proof, or not checking it numerically.
+  \item Kruskal: not listing the rejected edges, or stopping before $n-1$ edges.
+  \item Dijkstra: not showing the labels after every round.
+  \item Fleury: not checking the degree condition first.
+  \item BFS/DFS: not stating the order in which neighbours are taken.
+  \item Forgetting the time complexity at the end of an algorithm question (Rule 0).
+  \item Mixing up Euler (edges) and Hamilton (vertices).
+\end{itemize}
+
+%====================================================================
+\section{Self-test against Moodle's exam checklist}
+
+Tick an item only when you can do it on blank paper without looking.
+
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt,label={}]
+  \item \textbf{Basics.} \cb define an algorithm \quad \cb write and trace pseudocode \quad \cb count operations for time and space \quad \cb min/max and two-smallest
+  \item \textbf{Maths.} \cb Big-O definition \quad \cb prove $f=\Oh(g)$ with $c,n_0$ \quad \cb order of growth of a sum (Rule 1) \quad \cb induction proof, all four steps
+  \item \textbf{Polynomial and exponential.} \cb linear vs binary search, best and worst \quad \cb string matching and its worst-case input \quad \cb selection/bubble/merge sort, stability \quad \cb TSP and knapsack by brute force, with the counts
+  \item \textbf{Divide and conquer.} \cb merge sort, execution order \quad \cb quicksort, best and worst \quad \cb Tower of Hanoi, moves for $n=3$ \quad \cb Fibonacci is exponential (Rule 12) \quad \cb the four recurrences, by iteration and by substitution
+  \item \textbf{Graphs.} \cb terminology and handshake \quad \cb adjacency/incidence matrix and list \quad \cb Euler circuit, Fleury \quad \cb Hamiltonian circuit \quad \cb BFS and DFS \quad \cb trees and the three traversals
+  \item \textbf{Greedy.} \cb Kruskal on an example, with pseudocode \quad \cb Dijkstra on an example, with pseudocode \quad \cb greedy knapsack and why it is not optimal
+  \item \textbf{Dynamic programming.} \cb Fibonacci: recursion tree vs DP, both complexities \quad \cb assembly line table and trace back
+\end{itemize}
+
+%====================================================================
+\section{Study plan to the exam}
+
+The exam date in January 2027 is not set yet; this plan assumes mid-January.\priv{ The Python oral is in week 4 of 2027 as well, so the algorithms work should be essentially done by the end of the first week of January.}{}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{3.1cm}p{11.2cm}@{}}
+\toprule
+When & What \\
+\midrule
+Weeks 4--7 \newline (16 Nov -- 13 Dec) & Follow the lectures. After each week: add the week's rules to the self-test above, \priv{do that topic's section of \texttt{practice-problems.tex} without looking, and write that week's pseudocode from memory once. Weekends: one drill (\texttt{growth-drill}, \texttt{growth-proofs-drill}, \texttt{induction-drill}).}{do that week's exercise sheet without looking at the solutions, and write that week's pseudocode from memory once.} \\
+Week 7 & \textbf{Trial exam}, 09:30--13:30, compulsory hand-in report by email by 13:40. Treat it as a real sitting: no notes, timed. \\
+Week 8 \newline (14 -- 20 Dec) & Go through the trial exam feedback with Qin Xin. Every mistake becomes a line in the Traps section. \textbf{More old exams are handed out in week 7 or 8}: \priv{pull them with \texttt{moodle-pull.sh}, put them in \texttt{exams/}, and}{download them, but} \emph{do not look at them yet} --- they are the mock papers for the holiday. Do skim the question \emph{types} and add any new one to the table in \S1. \\
+21 Dec -- 6 Jan & One old paper every two or three days, timed at 4 hours, no notes, then marked. Start with the 2013--14 paper\priv{ (\texttt{exam\_solutions.tex})}{}, then the new ones, newest last so the final mock is closest to the real thing.\priv{ If there are fewer papers than days, use the mock paper plan in \texttt{practice-problems.tex}.}{} Between papers: the pseudocode list (\S\ref{sec:pseudo}) on blank paper, two algorithms a day, and the recurrence table from memory. \\
+Thu 7 Jan & Tutorial and question session, 10:00--11:59, room 71. Bring the items still unticked. \\
+Exam week & Last day: read the rule boxes only. On the day: read all four questions first, start with the one you are surest of, and write the complexity line on every algorithm. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
