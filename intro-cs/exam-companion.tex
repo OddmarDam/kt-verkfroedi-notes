@@ -48,6 +48,7 @@
   before skip=4pt,after skip=4pt}
 \newcommand{\erratum}[1]{\par\noindent\textbf{Key erratum.} #1\par}
 \newcommand{\hx}[1]{\texttt{#1}}
+\newcommand{\bsub}[2]{#1_{#2}}  % \bsub{1101}{2} = 1101 in base 2
 
 % Crow's foot ER tables (plain background).
 \tikzset{
@@ -141,25 +142,188 @@ Unsigned value $=\sum$ (bit $\times$ position value $128,64,32,16,8,4,2,1$).
 $11111111$, and read as two's complement it is $-1$.
 $n$ hex digits of address means $16^n$ cells: 2 digits $=256$, 4 digits $=65\,536$.
 
+\subsection{Powers table and ranges}
+\begin{center}
+  \small\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}c|ccccccccccc@{}}
+    $k$   & 0 & 1 & 2 & 3 & 4 & 5  & 6  & 7   & 8   & 9   & 10   \\
+    $2^k$ & 1 & 2 & 4 & 8 & 16 & 32 & 64 & 128 & 256 & 512 & 1024 \\
+  \end{tabular}
+  \qquad
+  \begin{tabular}{@{}c|cccc@{}}
+    $k$    & 0 & 1  & 2   & 3    \\
+    $16^k$ & 1 & 16 & 256 & 4096 \\
+  \end{tabular}
+  \qquad
+  \begin{tabular}{@{}c|cccc@{}}
+    $k$   & 0 & 1 & 2  & 3   \\
+    $8^k$ & 1 & 8 & 64 & 512 \\
+  \end{tabular}
+\end{center}
+An $n$-bit pattern holds $2^n$ values: unsigned $0,\dots,2^n-1$ (8 bits: 0--255;
+16 bits: 0--65\,535). Hex digits needed for $n$ bits: $n/4$; octal digits: $n/3$.
+Octal digit table: $0$--$7$ are themselves; $8=10_8$, $15=17_8$.
+
+\subsection{Converting between bases: any base $\to$ decimal}
+\begin{rulebox}[title={Method: positional sum (or Horner's rule)}]
+  The digits $d_n\dots d_1d_0$ in base $b$ have value
+  $\sum d_i\,b^i=d_nb^n+\dots+d_1b+d_0$.
+  Horner's rule does the same with no powers: start with $v=0$, and for each
+  digit from the left do $v\leftarrow v\cdot b+d$. It is the loop
+  \texttt{v = v * b + d}.
+\end{rulebox}
+\begin{itemize}
+  \item $\bsub{11010011}{2}=128+64+16+2+1=211$.
+  \item $\bsub{\texttt{3F8}}{16}=3\cdot256+15\cdot16+8=768+240+8=1016$.
+        Horner: $(3\cdot16+15)\cdot16+8=63\cdot16+8=1016$.
+  \item $\bsub{1770}{8}=1\cdot512+7\cdot64+7\cdot8+0=512+448+56=1016$ (same number as the line above).
+  \item $\bsub{\texttt{D3}}{16}=13\cdot16+3=211$.
+\end{itemize}
+
+\subsection{Decimal $\to$ any base}
+\begin{rulebox}[title={Method: repeated division (whole numbers)}]
+  Divide the number by $b$; write down the remainder; repeat on the quotient
+  until the quotient is 0. The remainders read \emph{from last to first} are the digits.
+  In code: \texttt{digits.append(n \% b); n = n // b}, then reverse.
+\end{rulebox}
+\noindent\textbf{$211\to$ binary:}
+\begin{center}\small\renewcommand{\arraystretch}{1.05}
+  \begin{tabular}{@{}r@{ $\div2=$ }r@{ remainder }l@{}}
+    211 & 105 & 1 \\ 105 & 52 & 1 \\ 52 & 26 & 0 \\ 26 & 13 & 0 \\
+    13 & 6 & 1 \\ 6 & 3 & 0 \\ 3 & 1 & 1 \\ 1 & 0 & 1
+  \end{tabular}
+\end{center}
+Read the remainders bottom to top: $\bsub{11010011}{2}$. Check: $128+64+16+2+1=211$. \checkmark
+
+\noindent\textbf{$211\to$ hex:} $211\div16=13$ r $3$; $13\div16=0$ r $13$. Digits (last first): $13,3=\texttt{D3}$.
+\textbf{$211\to$ octal:} $211\div8=26$ r $3$; $26\div8=3$ r $2$; $3\div8=0$ r $3$. Digits: $\bsub{323}{8}$.
+Check: $3\cdot64+2\cdot8+3=211$. \checkmark
+
+\begin{rulebox}[title={Alternative by hand: subtract powers of the base}]
+  Find the largest power of $b$ that fits, write how many times it fits, subtract,
+  and continue downwards. $211$: $128$ fits once (rest 83); $64$ once (rest 19); $32$ no;
+  $16$ once (rest 3); $8$ no; $4$ no; $2$ once (rest 1); $1$ once.
+  Bits: $1\,1\,0\,1\,0\,0\,1\,1$.
+\end{rulebox}
+
+\subsection{Binary $\leftrightarrow$ hexadecimal $\leftrightarrow$ octal (no arithmetic)}
+\begin{rulebox}[title={Method: group the bits}]
+  \textbf{Hex}: 1 hex digit = 4 bits. Group from the \emph{right} in fours, pad the left with zeros, replace each group using the table.\\
+  \textbf{Octal}: 1 octal digit = 3 bits. Same, in threes.\\
+  Reverse: expand each digit into 4 (or 3) bits. To go hex $\leftrightarrow$ octal, go through binary.
+\end{rulebox}
+\begin{itemize}
+  \item $\bsub{11010011}{2}\to$ hex: $1101\,|\,0011=\texttt{D}\,\texttt{3}$. Octal: pad to $011\,|\,010\,|\,011=3\,2\,3$.
+  \item $\texttt{3F8}\to$ binary: $0011\,1111\,1000$ (drop leading zeros: $1111111000$).
+        To octal: regroup from the right in threes: $001\,111\,111\,000=1\,7\,7\,0$. So $\texttt{3F8}=\bsub{1770}{8}$.
+  \item $\bsub{101101}{2}\to$ hex: pad to $0010\,1101=\texttt{2D}$ ($=45$).
+  \item $\texttt{2C}\to$ octal: $0010\,1100\to 000\,101\,100=\bsub{54}{8}$ ($=44$).
+  \item Grouping must start from the right (the binary point for fractions: left of it from the point leftwards, right of it from the point rightwards).
+\end{itemize}
+
+\subsection{Fractions (Brookshear 1.7)}
+\begin{rulebox}[title={Binary $\to$ decimal: place values $\tfrac12,\tfrac14,\tfrac18,\dots$}]
+  Right of the point the positions are $2^{-1},2^{-2},2^{-3},\dots$
+\end{rulebox}
+$\bsub{10.011}{2}=2+\tfrac14+\tfrac18=2.375$. \quad
+$\bsub{0.\texttt{A8}}{16}=\tfrac{10}{16}+\tfrac{8}{256}=0.625+0.03125=0.65625$ (binary $0.1010\,1000$).
+\begin{rulebox}[title={Decimal fraction $\to$ binary: repeated multiplication}]
+  Multiply the fraction by 2; the integer part (0 or 1) is the next bit; keep only the fractional part and repeat
+  until it is 0 (or you have enough bits). Bits are read \emph{top to bottom}.
+\end{rulebox}
+\noindent\textbf{$0.8125$:} $0.8125\cdot2=1.625$ (1); $0.625\cdot2=1.25$ (1); $0.25\cdot2=0.5$ (0); $0.5\cdot2=1.0$ (1). So $\bsub{0.1101}{2}$.
+Check: $\tfrac12+\tfrac14+\tfrac1{16}=0.8125$. \checkmark\\
+\textbf{$0.1$ never ends:} $0.2\,(0)$, $0.4\,(0)$, $0.8\,(0)$, $1.6\,(1)$, $1.2\,(1)$, $0.4\dots$ gives $0.0\overline{0011}$.
+That is why 0.1 cannot be stored exactly in a floating-point format (round-off error).\\
+\textbf{$13.25$:} integer part $13=1101$, fraction $0.25=0.01$, so $\bsub{1101.01}{2}$.
+
+\subsection{Practice (answers at the end)}
+\begin{enumerate}
+  \item $\bsub{10110111}{2}\to$ decimal, hex, octal.
+  \item $\texttt{9E}\to$ binary and decimal.
+  \item $200\to$ binary and hex.
+  \item $\bsub{745}{8}\to$ binary, hex and decimal.
+  \item $0.375\to$ binary; $\bsub{110.101}{2}\to$ decimal.
+  \item $-20$ in 8-bit two's complement, written in hex.
+\end{enumerate}
+\textbf{Answers.}
+(1) $128+32+16+4+2+1=183$; $\texttt{B7}$; $10\,110\,111\to 267_8$.
+(2) $1001\,1110$; $9\cdot16+14=158$.
+(3) $200=128+64+8$: $11001000=\texttt{C8}$.
+(4) $111\,100\,101=\bsub{111100101}{2}\to 0001\,1110\,0101=\texttt{1E5}$; $7\cdot64+4\cdot8+5=485$ ($=256+224+5$, \texttt{1E5} $=256+14\cdot16+5=485$ \checkmark).
+(5) $0.375=\tfrac38\to0.011$; $4+2+\tfrac12+\tfrac18=6.625$.
+(6) $20=00010100\to11101011+1=11101100=\texttt{EC}$ (check $256-20=236=\texttt{EC}$).
+
+
 \subsection{Two's complement}
-\begin{rulebox}[title={Method: reading an 8-bit pattern as two's complement}]
+\textbf{The idea:} a counter that wraps around. Count \emph{down} from $0000$ and you get
+$1111$, so $1111$ is $-1$; one more step gives $1110=-2$, and so on. The positive numbers
+are ordinary binary with a leading $0$; the patterns with a leading $1$ are the negatives.
+(It is exactly C\#'s \texttt{byte} versus \texttt{sbyte}: \texttt{unchecked((sbyte)0xFF)} is $-1$.)
+
+\begin{center}
+  \small
+  \begin{tabular}{@{}l*{8}{c}@{}}
+    \toprule
+    pattern (leading $1$) & 1000 & 1001 & 1010 & 1011 & 1100 & 1101 & 1110 & 1111 \\
+    value                 & $-8$ & $-7$ & $-6$ & $-5$ & $-4$ & $-3$ & $-2$ & $-1$ \\
+    \midrule
+    pattern (leading $0$) & 0000 & 0001 & 0010 & 0011 & 0100 & 0101 & 0110 & 0111 \\
+    value                 & $\mathbf{0}$ & $+1$ & $+2$ & $+3$ & $+4$ & $+5$ & $+6$ & $+7$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{rulebox}[title={Method: two's complement with $n$ bits}]
   \begin{enumerate}[nosep]
-    \item Leading bit $0$: positive, read it as unsigned.
-    \item Leading bit $1$: negative. \textbf{Invert all bits, add 1, read
-            the result and put a minus sign in front} (or: unsigned value $-256$).
-    \item Range with $n$ bits: $-2^{n-1}\dots2^{n-1}-1$ (4 bits: $-8\dots7$, 8 bits: $-128\dots127$).
+    \item \textbf{Pattern $\to$ number}, leading bit $0$: positive, read it as ordinary unsigned binary.
+    \item \textbf{Pattern $\to$ number}, leading bit $1$: negative. \textbf{Invert all bits, add 1,
+          read the result and put a minus sign in front.}
+          Check: unsigned value $-2^n$ (4 bits: $-16$, 8 bits: $-256$).
+    \item \textbf{Number $\to$ pattern}, positive: ordinary binary, padded with $0$s to $n$ bits.
+    \item \textbf{Number $\to$ pattern}, negative: write the \emph{positive} number in binary
+          ($n$ bits), then \textbf{invert all bits and add 1}. Check: $2^n-|x|$ in unsigned binary.
+    \item \textbf{Shortcut for ``invert and add 1'':} from the right, copy every bit up to and
+          including the first $1$; invert everything left of it. ($0110\to1010$.)
+    \item Range: $-2^{n-1}\dots2^{n-1}-1$ (4 bits: $-8\dots7$, 8 bits: $-128\dots127$).
+          There is one more negative than positive, so $-8$ in 4 bits has no positive partner.
     \item \textbf{Hex shortcut:} first hex digit $\hx{0}$--$\hx{7}$ means non-negative,
           $\hx{8}$--$\hx{F}$ negative. (Test 1 \S1.2: $\hx{6A}$ and $\hx{21}$ are
           non-negative; $\hx{D4}$ and $\hx{EF}$ are not.)
   \end{enumerate}
 \end{rulebox}
-\textbf{Example:} $10011100$ unsigned $=128+16+8+4=156$.
-As two's complement: invert $\to01100011$, add 1 $\to01100100=100$, so $-100$
-(check: $156-256=-100$).
+\textbf{Traps:} inverting without adding 1 is \emph{one's} complement and gives an answer off
+by one. Same pattern, different system: $1101$ is $-3$ here but $13$ unsigned and $+5$ in excess-8.
+
+\needspace{6\baselineskip}\noindent\textbf{Pattern $\to$ number (4 bits):}
+\begin{itemize}[nosep]
+  \item $0101$: leading $0$, so plain binary: $4+1=\mathbf{+5}$.
+  \item $1101$: leading $1$. Invert $\to0010$, add 1 $\to0011=3$, so $\mathbf{-3}$. Check: $13-16=-3$. \checkmark
+  \item $1111$: invert $\to0000$, add 1 $\to0001=1$, so $\mathbf{-1}$. Check: $15-16=-1$. \checkmark
+  \item $1000$: invert $\to0111$, add 1 $\to1000=8$, so $\mathbf{-8}$ (the smallest value).
+\end{itemize}
+\needspace{6\baselineskip}\noindent\textbf{Number $\to$ pattern (4 bits):}
+\begin{itemize}[nosep]
+  \item $+6$: plain binary $\mathbf{0110}$.
+  \item $-6$: $+6=0110$, invert $\to1001$, add 1 $\to\mathbf{1010}$. Check: $16-6=10=1010$. \checkmark
+  \item $-1$: $+1=0001$, invert $\to1110$, add 1 $\to\mathbf{1111}$.
+  \item $+7$: $\mathbf{0111}$ (the largest value; $+8$ does not fit in 4 bits).
+\end{itemize}
+\needspace{6\baselineskip}\noindent\textbf{8 bits:}
+\begin{itemize}[nosep]
+  \item $+100$: $64+32+4=\mathbf{01100100}$.
+  \item $-100$: invert $01100100\to10011011$, add 1 $\to\mathbf{10011100}$. Check: $256-100=156=128+16+8+4$. \checkmark
+  \item $10011100$ read back: invert $\to01100011$, add 1 $\to01100100=100$, so $\mathbf{-100}$.
+  \item $-25$: $+25=00011001$, invert $\to11100110$, add 1 $\to\mathbf{11100111}$.
+  \item $11111110$: invert $\to00000001$, add 1 $\to00000010=2$, so $\mathbf{-2}$.\quad
+        $10000000$: $\mathbf{-128}$ (the smallest value).
+\end{itemize}
 
 \textbf{Subtraction = add the negative.} Test 1 \S1.3: $1-4$ in 4 bits:
 $-4=1100$ (invert $0100\to1011$, add 1 $\to1100$), so
 $0001+1100=1101=-3$.
+When the addition carries out of the leftmost bit, \textbf{drop the carry}: $7-3$ is
+$0111+1101=10100$; drop the fifth bit, leaving $0100=+4$.
 
 \begin{rulebox}[title={Overflow in two's complement addition}]
   Overflow happens \emph{only} when you add two numbers of the \textbf{same sign}
@@ -170,14 +334,74 @@ $0001+1100=1101=-3$.
 \end{rulebox}
 
 \subsection{Excess notation}
-\begin{rulepar}
-  $k$-bit excess notation stores $\text{value}+\text{bias}$, with bias $2^{k-1}$.
-  So \textbf{value $=$ pattern (as unsigned) $-$ bias}. 3 bits, excess-4:
-  $000=-4,\ 001=-3,\ 010=-2,\ 011=-1,\ \mathbf{100=0},\ 101=1,\ 110=2,\ 111=3$.
-  (Test 2 \S2.1B: ``which 3-bit pattern is $0$ in excess notation'': $100$.)
-  6 bits, excess-32: $011111=31-32=-1$, $100110=38-32=6$, $111000=24$,
-  $000101=-27$, $010101=-11$.
-\end{rulepar}
+\textbf{The idea:} count the patterns up from $00\dots0$ as usual, but start the count at the
+\emph{most negative} number instead of at $0$. The pattern in the middle, $10\dots0$, is $0$.
+Every number is stored with a fixed amount, the \textbf{bias}, added to it, so that nothing
+stored is ever negative. With $k$ bits the bias is $2^{k-1}$, which is the value of the pattern $10\dots0$:
+3 bits $\to$ excess-4, 4 bits $\to$ excess-8, 6 bits $\to$ excess-32, 8 bits $\to$ excess-128.
+
+\begin{rulebox}[title={Method: excess notation (bias $=2^{k-1}$)}]
+  \begin{enumerate}[nosep]
+    \item \textbf{Pattern $\to$ number:} read the pattern as ordinary unsigned binary, then
+          \textbf{subtract the bias}.
+    \item \textbf{Number $\to$ pattern:} \textbf{add the bias}, then write the result as
+          ordinary unsigned binary with $k$ bits.
+    \item Leading bit $1$: zero or positive. Leading bit $0$: negative. (The \emph{opposite}
+          of two's complement.)
+    \item Range: $-\text{bias}\dots\text{bias}-1$ (4 bits: $-8\dots7$, the same range as two's complement).
+    \item \textbf{Shortcut:} excess pattern $=$ two's complement pattern with the
+          \textbf{first bit flipped}.
+  \end{enumerate}
+\end{rulebox}
+
+\begin{center}
+  \small
+  \begin{tabular}{@{}cccc@{\qquad}cccc@{}}
+    \toprule
+    pattern & unsigned & \textbf{excess-8} & two's c. & pattern & unsigned & \textbf{excess-8} & two's c. \\
+    \midrule
+    0000 & 0 & $-8$ & $0$    & 1000 & 8  & $\mathbf{0}$ & $-8$ \\
+    0001 & 1 & $-7$ & $+1$   & 1001 & 9  & $+1$ & $-7$ \\
+    0010 & 2 & $-6$ & $+2$   & 1010 & 10 & $+2$ & $-6$ \\
+    0011 & 3 & $-5$ & $+3$   & 1011 & 11 & $+3$ & $-5$ \\
+    0100 & 4 & $-4$ & $+4$   & 1100 & 12 & $+4$ & $-4$ \\
+    0101 & 5 & $-3$ & $+5$   & 1101 & 13 & $+5$ & $-3$ \\
+    0110 & 6 & $-2$ & $+6$   & 1110 & 14 & $+6$ & $-2$ \\
+    0111 & 7 & $-1$ & $+7$   & 1111 & 15 & $+7$ & $-1$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+Reading down the excess-8 column the values simply count up, $-8,-7,\dots,+7$:
+that is the whole trick. \textbf{Trap:} the same pattern means different numbers in
+the two systems, e.g.\ $1101$ is $+5$ in excess-8 but $-3$ in two's complement.
+Check which notation the question asks for.
+
+\needspace{6\baselineskip}\noindent\textbf{Pattern $\to$ number (4 bits, excess-8, subtract 8):}
+\begin{itemize}[nosep]
+  \item $1101$: unsigned $8+4+1=13$, so $13-8=\mathbf{+5}$.
+  \item $1000$: unsigned $8$, so $8-8=\mathbf{0}$.
+  \item $0101$: unsigned $4+1=5$, so $5-8=\mathbf{-3}$.
+  \item $0000$: unsigned $0$, so $0-8=\mathbf{-8}$ (the smallest value).
+\end{itemize}
+\needspace{6\baselineskip}\noindent\textbf{Number $\to$ pattern (4 bits, excess-8, add 8):}
+\begin{itemize}[nosep]
+  \item $+6$: $6+8=14=\mathbf{1110}$.
+  \item $+7$: $7+8=15=\mathbf{1111}$ (the largest value).
+  \item $-2$: $-2+8=6=\mathbf{0110}$.
+  \item $-7$: $-7+8=1=\mathbf{0001}$.
+\end{itemize}
+\needspace{5\baselineskip}\noindent\textbf{8 bits, excess-128:}
+\begin{itemize}[nosep]
+  \item $+25$: $25+128=153=128+16+8+1=\mathbf{10011001}$.
+  \item $-25$: $-25+128=103=64+32+4+2+1=\mathbf{01100111}$.
+        Shortcut check: two's complement of $-25$ is $11100111$; flip the first bit to get $01100111$. \checkmark
+  \item $10000011$: $131-128=\mathbf{+3}$.\quad $01111110$: $126-128=\mathbf{-2}$.
+\end{itemize}
+\textbf{From the tests:} 3 bits, excess-4: $000=-4,\ 001=-3,\ 010=-2,\ 011=-1,\ \mathbf{100=0},\ 101=1,\ 110=2,\ 111=3$
+(Test 2 \S2.1B: ``which 3-bit pattern is $0$ in excess notation'': $100$).
+6 bits, excess-32: $011111=31-32=-1$, $100110=38-32=6$, $111000=56-32=24$,
+$000101=5-32=-27$, $010101=21-32=-11$.
+The exponent field of the 8-bit float below is 3-bit excess-4.
 
 \subsection{Fixed point and the 8-bit floating-point format}
 Binary fractions: $.1=\frac12,\ .01=\frac14,\ .001=\frac18,\ .0001=\frac1{16}$.
@@ -185,20 +409,165 @@ Fixed point (4+4 bits): \texttt{0101.1010} $=5+\frac12+\frac18=5.625$.
 
 \begin{rulebox}[title={The course's 8-bit float: sign (1) | exponent (3, excess-4) | mantissa (4)}]
   $\text{value}=(-1)^{\text{sign}}\times 0.\text{mmmm}_2\times2^{\,e-4}$ where $e$ is the exponent field as unsigned.
-  \textbf{Decode:} sign; exponent field $-4$; mantissa $=.mmmm$ (a leading
-  $0.$); move the point that many places (right if positive).
-  \textbf{Encode:} write the number in binary, move the point to the left of the leading $1$ ($\to$ mantissa $.1xxx$, 4 bits, \emph{truncate} the rest) and count the places moved $=k$; exponent field $=k+4$.
+  Decoding (bits $\to$ number) and encoding (number $\to$ bits) are worked step by step below.
 \end{rulebox}
+
+% One 8-bit float drawn as boxes: sign | exponent | mantissa.
+\newcommand{\floatbits}[8]{%
+  \begin{tabular}{|c|ccc|cccc|}
+    \hline
+    #1 & #2 & #3 & #4 & #5 & #6 & #7 & #8 \\
+    \hline
+    \multicolumn{1}{c}{\scriptsize sign} & \multicolumn{3}{c}{\scriptsize exponent} & \multicolumn{4}{c}{\scriptsize mantissa}
+  \end{tabular}}
+
+\begin{rulebox}[title={Method: decode an 8-bit float (signed) into a fraction and hex}]
+  The 8 bits are cut \textbf{1 + 3 + 4}. Each part has its own job:
+  \begin{center}
+    \begin{tabular}{@{}lll@{}}
+      \textbf{1st bit} & \textbf{sign} & $0$ = positive, $1$ = negative \\
+      \textbf{next 3 bits} & \textbf{exponent} (excess-4) & how many places to move the point \\
+      \textbf{last 4 bits} & \textbf{mantissa} & the digits, with the point in front: $.mmmm$
+    \end{tabular}
+  \end{center}
+  \begin{enumerate}[nosep]
+    \item \textbf{Cut} the pattern into sign $|$ exponent $|$ mantissa.
+    \item \textbf{Sign:} remember $+$ or $-$ for the very end. Nothing else is inverted:
+          this is \emph{not} two's complement, the sign bit is just a $\pm$ switch.
+    \item \textbf{Exponent:} read the 3 bits as an ordinary number ($0$--$7$) and
+          \textbf{subtract 4}. Result $+$: move the point \textbf{right}; result $-$: move it
+          \textbf{left}. ($000{=}{-4}$, $001{=}{-3}$, $010{=}{-2}$, $011{=}{-1}$, $100{=}0$,
+          $101{=}{+1}$, $110{=}{+2}$, $111{=}{+3}$.)
+    \item \textbf{Mantissa:} write a point in front of the 4 bits, $.mmmm$, then move the point
+          as step 3 says, filling with $0$s if you run out of bits.
+    \item \textbf{Read} the binary number (left of the point $\dots,4,2,1$; right of it
+          $\frac12,\frac14,\frac18,\frac1{16},\frac1{32},\dots$) and put the sign in front.
+    \item \textbf{Hex} (separate job): cut the 8 bits into two halves of 4, one hex digit each.
+  \end{enumerate}
+\end{rulebox}
+
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+  \textbf{Positive: $01101100$} (practice exam \S1.3a)\\[2pt]
+  \floatbits{0}{1}{1}{0}{1}{1}{0}{0}\\[2pt]
+  Sign $0\to{+}$.\\
+  Exponent $110=6$; $6-4=+2$: point 2 right.\\
+  Mantissa $.1100\to 11.00$.\\
+  Read: $2+1=3$, so the value is $\mathbf{+3}$.\\
+  Hex: $0110\,|\,1100=\mathbf{\hx{6C}}$.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \textbf{Negative: $10111010$}\\[2pt]
+  \floatbits{1}{0}{1}{1}{1}{0}{1}{0}\\[2pt]
+  Sign $1\to{-}$.\\
+  Exponent $011=3$; $3-4=-1$: point 1 left.\\
+  Mantissa $.1010\to .01010$.\\
+  Read: $\frac14+\frac1{16}=\frac5{16}$, so the value is $\mathbf{-\frac5{16}}$.\\
+  Hex: $1011\,|\,1010=\mathbf{\hx{BA}}$.
+\end{minipage}
+
+\medskip
+\noindent\textbf{Two separate signs.} The \textbf{sign bit} decides only the minus in front of
+the answer. The \textbf{exponent} decides only whether the number is big (point moves right)
+or small (point moves left). They are independent, so all four combinations exist:
+\begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}l|l|l@{}}
+    & \textbf{exponent $+$} (point right, big) & \textbf{exponent $-$} (point left, small) \\
+    \hline
+    \textbf{sign $0$} (positive) & $0\,110\,1100=+3$ \ (\hx{6C}) & $0\,011\,1100=+\frac38$ \ (\hx{3C}) \\
+    \textbf{sign $1$} (negative) & $1\,101\,1100=-1\frac12$ \ (\hx{DC}) & $1\,010\,1000=-\frac18$ \ (\hx{A8}) \\
+  \end{tabular}
+\end{center}
+
+\noindent Same answers by formula: value $=\pm\,.mmmm\times2^{\text{exponent}}$, so
+$\frac34\times2^2=3$ and $-\frac58\times2^{-1}=-\frac5{16}$.
+Flip only the sign bit and only the sign changes: $11101100=-3$ (\hx{EC}).
+\textbf{Trap:} the same bits read as a two's complement \emph{integer} give
+$01101100=108$ and $10111010=-70$. The hex is the same either way (it only regroups the bits),
+so check which format the question names.
+
+\begin{rulebox}[title={Method: encode a number into an 8-bit float (decoding run backwards)}]
+  \begin{enumerate}[nosep]
+    \item \textbf{Sign:} $+\to0$, $-\to1$. Then drop the minus and work with the positive number.
+          The sign has no effect on the exponent: $-1\frac34$ gets the same exponent and mantissa as $1\frac34$.
+    \item \textbf{Binary:} write the number in binary, whole part and fraction separately
+          (whole: $\dots,4,2,1$; fraction: $\frac12,\frac14,\frac18,\frac1{16}$). E.g.\ $1\frac34=1.11$.
+    \item \textbf{Move the point} until it sits \textbf{just in front of the first $1$}
+          ($1.11\to.111$). Count the places:
+          \begin{itemize}[nosep]
+            \item moved \textbf{left} $k$ places: exponent $=+k$ (numbers $\geq1$);
+            \item moved \textbf{right} $k$ places: exponent $=-k$ (numbers below $\frac12$);
+            \item did not move: exponent $=0$ (numbers from $\frac12$ up to $1$).
+          \end{itemize}
+          It is the opposite direction of decoding, because decoding moves the point back.
+    \item \textbf{Mantissa:} the first 4 digits after the point (always starting with $1$).
+          Fewer than 4: pad with $0$s on the right. More than 4: cut off the rest
+          (\textbf{truncation}: the stored value comes out a little too small).
+    \item \textbf{Exponent field:} exponent $+\,4$, written as 3 bits
+          ($-3\to001$, \dots, $0\to100$, \dots, $+3\to111$). Do not forget the $+4$!
+          \textbf{Sanity check:} number $\geq\frac12$ $\Rightarrow$ field starts with $1$;
+          number $<\frac12$ $\Rightarrow$ field starts with $0$.
+    \item \textbf{Assemble} sign $|$ exponent $|$ mantissa, then hex (two halves of 4).
+          \textbf{Check:} decode your answer and you should get the number back.
+  \end{enumerate}
+\end{rulebox}
+
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+  \textbf{Positive: $1\frac34$}\\[2pt]
+  Sign $+\to0$.\\
+  Binary: $1\frac34=1+\frac12+\frac14=1.11$.\\
+  Point: $1.11\to.111$, moved 1 \textbf{left}, exponent $+1$.\\
+  Mantissa: $111$, padded to $1110$.\\
+  Exponent field: $1+4=5=101$.\\
+  \floatbits{0}{1}{0}{1}{1}{1}{1}{0}\\[2pt]
+  Hex: $0101\,|\,1110=\mathbf{\hx{5E}}$.\\
+  Check: $.1110$, point 1 right: $1.110=1\frac34$. \checkmark
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \textbf{Negative: $-\frac3{16}$}\\[2pt]
+  Sign $-\to1$; continue with $\frac3{16}$.\\
+  Binary: $\frac3{16}=\frac18+\frac1{16}=.0011$.\\
+  Point: $.0011\to.11$, moved 2 \textbf{right}, exponent $-2$.\\
+  Mantissa: $11$, padded to $1100$.\\
+  Exponent field: $-2+4=2=010$.\\
+  \floatbits{1}{0}{1}{0}{1}{1}{0}{0}\\[2pt]
+  Hex: $1010\,|\,1100=\mathbf{\hx{AC}}$.\\
+  Check: $.1100$, point 2 left: $.001100=\frac3{16}$. \checkmark
+\end{minipage}
+
+\medskip\noindent
+\begin{minipage}[t]{0.48\linewidth}
+  \textbf{Negative and big: $-2\frac12$} (practice exam \S1.3b)\\[2pt]
+  Sign $-\to1$; continue with $2\frac12$.\\
+  Binary: $2\frac12=2+\frac12=10.1$.\\
+  Point: $10.1\to.101$, moved 2 \textbf{left}, exponent $+2$.\\
+  Mantissa: $101$, padded to $1010$.\\
+  Exponent field: $2+4=6=110$.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \vspace{1.2\baselineskip}
+  \floatbits{1}{1}{1}{0}{1}{0}{1}{0}\\[2pt]
+  Hex: $1110\,|\,1010=\mathbf{\hx{EA}}$.\\
+  Check: $.1010$, point 2 right: $10.10=2\frac12$, sign $1$: $-2\frac12$. \checkmark\\
+  Same bits as $+2\frac12$ (\hx{6A}) except the first.
+\end{minipage}
+
+\medskip\noindent\textbf{More examples (decode and encode):}
 \begin{itemize}[nosep]
   \item \textbf{Decode} $11001010$ (Test 1 \S1.2): sign $1$, exponent $100=4\to0$, mantissa
         $.1010=\frac58$, so $-\frac58$ (answer C).
   \item \textbf{Decode} $01011010$: sign $0$, exponent $101=5\to+1$, mantissa
         $.1010=\frac58$, so $\frac58\cdot2^{1}=\frac54=1.25$.
-  \item \textbf{Encode} $6.75=110.11_2=.11011\times2^3$: mantissa truncated to
-        $.1101$, exponent $3+4=7=111$, sign $0$: $\texttt{0\,111\,1101}=\hx{7D}$, which
-        decodes to $.1101\times2^3=6.5$ (truncation lost the $\frac14$). A value that fits, $3.25=11.01_2=.1101\times2^2$:
-        $\texttt{0\,110\,1101}$ and no loss.
-  \item \textbf{Encode} $\frac{15}{16}=.1111_2$, exponent $0+4=100$: $\texttt{0\,100\,1111}=\hx{4F}$ (Test 2 \S2.1).
+  \item \textbf{Encode} $6\frac34$ (truncation): binary $110.11$; point to $.11011$, moved 3
+        left, exponent $+3$, field $3+4=7=111$; mantissa $11011$ has 5 digits, cut to $1101$;
+        sign $0$: $\texttt{0\,111\,1101}=\hx{7D}$. It decodes to $110.1=6\frac12$: the cut-off
+        bit was worth $\frac14$.
+  \item \textbf{Encode} $3\frac14$ (fits): binary $11.01$; point to $.1101$, moved 2 left,
+        field $2+4=6=110$; $\texttt{0\,110\,1101}=\hx{6D}$, no loss.
+  \item \textbf{Encode} $\frac{15}{16}$ (Test 2 \S2.1): binary $.1111$; the point is already in
+        front of the first $1$, exponent $0$, field $0+4=100$: $\texttt{0\,100\,1111}=\hx{4F}$.
   \item Which pattern \emph{is} $\frac{15}{16}$ in fixed point $xxxx.xxxx$: $0000.1111$ (Test 2 \S2.1A).
 \end{itemize}
 
@@ -237,6 +606,16 @@ $0,1,1,0=$ \textbf{XOR}.
   \textbf{odd parity}: an odd number. A pattern with the wrong count
   \textbf{definitely} has an error (an even number of flipped bits would go unnoticed,
   so a correct count is only ``no error detected'').
+
+  \textbf{Which bit is the parity bit?} An extra bit added to the data
+  pattern, in the book (Fig.~1.26) at the \textbf{high-order (leftmost) end}:
+  8-bit ASCII $+$ 1 parity bit $=$ a 9-bit pattern. Its value is chosen so
+  the \emph{whole} pattern has the right count. Example: A$=01000001$ has two
+  1s, so odd parity needs parity bit $1$ ($\mathbf{1}\,01000001$), and even
+  parity needs $0$ ($\mathbf{0}\,01000001$). F$=01000110$ has three 1s, so
+  odd parity $0$ and even parity $1$.\\
+  \textbf{To check} a received pattern you don't need to know which bit it
+  is: count the 1s in \emph{all} the bits, the parity bit included.
 \end{rulebox}
 \begin{itemize}[nosep]
   \item Test 1 \S1.5, even parity: $101110101$ (six 1s) fine; $111110000$ (five) \textbf{error};

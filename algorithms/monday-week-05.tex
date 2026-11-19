@@ -1,0 +1,241 @@
+\documentclass{fkt-notes}
+\usepackage{macros}
+\usepackage[most]{tcolorbox}
+\usepackage{needspace}
+
+\course{Algoritmur og dátustrukturar}
+\coursecode{005024.24}
+\semester{Fall 2026}
+\author{Oddmar Dam}
+\title{Monday Group Session --- Week 5}
+\date{Monday 23 November 2026, 13:00--17:00}
+
+\newcommand{\Oh}{\mathcal{O}}
+\emergencystretch=3em
+
+\lstdefinestyle{pseudo}{
+  numbers=none, frame=leftline, columns=fullflexible, keepspaces=true,
+  morekeywords={if,then,else,for,to,downto,while,do,begin,end,repeat,until,
+    return,output,input,and,or,not,swap,copy,set,Move,Algorithm,true,false},
+  morecomment=[l]{//}
+}
+\lstset{style=pseudo}
+
+\newtcolorbox{tip}[1][]{colback=yellow!12,colframe=black,boxrule=0.5pt,arc=0pt,left=4pt,right=4pt,top=3pt,bottom=3pt,#1}
+\newtcolorbox{roundbox}[1]{colback=blue!4,colframe=blue!50!black,boxrule=0.5pt,arc=0pt,
+  left=4pt,right=4pt,top=3pt,bottom=3pt,fonttitle=\bfseries,title={#1}}
+
+\begin{document}
+\maketitle
+
+\noindent
+Exercises for the Monday afternoon self-study slot, written for a group of three or four working on paper or at a whiteboard. They cover weeks 1--4 (growth, recurrences, divide and conquer, Tower of Hanoi, Fibonacci) and last Thursday's quicksort, everything the final exam can already ask about before graphs start on Tuesday. None of the problems repeats one from \texttt{practice-problems.tex} or the tutorial sheets. \textbf{Solutions are in a separate file}, \texttt{monday-week-05-solutions.pdf}, so this sheet can be handed round on its own; every number in them was checked by running the algorithms.
+
+\begin{tip}
+\textbf{How to run it as a group.} Three roles, rotated every round:
+\textbf{Scribe} writes the group's answer on the board;
+\textbf{Checker} plugs small numbers into every formula ($n=1,2,4$) before anyone believes it;
+\textbf{Skeptic} asks ``why?'' at every step, and that is where the marks are on the exam.
+With four people, the fourth keeps time and joins as a second Checker.
+Rounds marked \emph{individual} are done alone and in silence first, \emph{then} compared, because the exam is individual and pen-and-paper with no notes. \textbf{No notes during the session either}; look things up only after a round, to settle an argument.
+\end{tip}
+
+\begin{center}
+\begin{tabular}{@{}lp{2.2cm}p{10.6cm}@{}}
+\toprule
+Time & Round & What \\
+\midrule
+13:00 & 0 & Blank-page warm-up (individual, 15 min) \\
+13:15 & 1 & Read the recurrence off the code (individual, then compare; 40 min) \\
+13:55 & 2 & Quicksort by hand (pairs, 45 min) \\
+14:40 & & Break \\
+14:50 & 3 & Iteration relay at the board (whole group, 45 min) \\
+15:35 & 4 & Design problems: discuss, then write (40 min) \\
+16:15 & 5 & Mock exam question, timed, then peer-marked (individual, 35 min) \\
+16:50 & & Wrap-up: everyone names one trap they fell into today (10 min) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%====================================================================
+\section*{Round 0 --- Blank-page warm-up \hfill\normalsize\emph{individual, 15 min}}
+
+On an empty sheet, without looking anything up:
+\begin{enumerate}[label=\textbf{0.\arabic*},leftmargin=2.5em]
+  \item Write the four-row summary table: recurrence, exact solution, order, and the algorithm it belongs to. The left column, to get you started: $T(n/2)+1$, $2T(n/2)+1$, $2T(n/2)+n$, $2T(n-1)+1$, all with $T(1)=1$.
+  \item List the 7 moves of the Tower of Hanoi for 3 discs from A to C.
+  \item Write \texttt{Partition} and \texttt{Quicksort} as in Thursday's lecture.
+  \item Define \emph{divide and conquer} in one sentence.
+\end{enumerate}
+Swap sheets and mark each other's against the handouts (A\_6\_2 slide~21) or \texttt{notes/week-04.tex}. Every mistake goes on a list for the wrap-up.
+
+%====================================================================
+\section*{Round 1 --- Recurrences from code \hfill\normalsize\emph{individual, then compare, 40 min}}
+
+For each algorithm write (a) the recurrence for its running time, with a base case, (b) the order, $\Oh(\dots)$. Use Rule~3 of the study guide: \emph{number of calls $\times$ size of each $+$ work outside the calls}. Give yourself 20 minutes for all nine, then compare. Wherever you disagree, the Skeptic makes each side explain which line of the code gives which term.
+
+\begin{enumerate}[label=\textbf{1.\arabic*},leftmargin=2.5em]
+\item \begin{lstlisting}
+Max(A, i, j)                  // largest of A[i..j]
+  if i == j then return A[i]
+  m = floor((i + j) / 2)
+  a = Max(A, i, m)
+  b = Max(A, m + 1, j)
+  if a > b then return a else return b
+\end{lstlisting}
+
+\item \begin{lstlisting}
+Find(A, n, x)                 // is x in A[1..n]?
+  if n == 0 then return false
+  if A[n] == x then return true
+  return Find(A, n - 1, x)
+\end{lstlisting}
+
+\item \textbf{Ternary search} on a sorted array: compare $x$ with the elements at $1/3$ and $2/3$ of the range (two comparisons), then recurse into the one third where $x$ must be.
+
+\item \begin{lstlisting}
+SelSort(A, i, n)              // sort A[i..n]
+  if i < n then begin
+    k = position of the smallest of A[i..n]    // n - i comparisons
+    swap A[i], A[k]
+    SelSort(A, i + 1, n)
+  end
+\end{lstlisting}
+
+\item \begin{lstlisting}
+Power(x, n)                   // x to the power n, n >= 0
+  if n == 0 then return 1
+  h = Power(x, floor(n / 2))
+  if n is even then return h * h
+  else return x * h * h
+\end{lstlisting}
+
+\item \begin{lstlisting}
+Power2(x, n)
+  if n == 0 then return 1
+  if n is even then return Power2(x, n / 2) * Power2(x, n / 2)
+  else return x * Power2(x, floor(n / 2)) * Power2(x, floor(n / 2))
+\end{lstlisting}
+\textbf{Group question:} \texttt{Power} and \texttt{Power2} compute the same thing and differ by one line. How many calls does each make for $n=1024$? Which row of the summary table is each?
+
+\item \begin{lstlisting}
+Mystery(n)
+  if n <= 1 then return
+  for i = 1 to n do output i
+  Mystery(n / 2)
+  Mystery(n / 2)
+\end{lstlisting}
+
+\item \begin{lstlisting}
+Triple(n)
+  if n <= 1 then return 1
+  return Triple(n - 1) + Triple(n - 1) + Triple(n - 1)
+\end{lstlisting}
+\textbf{Group question:} change one line so it returns the same value in $\Oh(n)$ time. Which idea from week~7 is this a tiny case of?
+
+\item \begin{lstlisting}
+Quad(n)
+  if n <= 1 then return
+  for i = 1 to n do
+    for j = 1 to n do x = x + 1
+  Quad(n / 2)
+  Quad(n / 2)
+\end{lstlisting}
+\textbf{Group question:} 1.7 and 1.9 both make two half-size calls. Why is one $\Oh(n\log n)$ and the other not? Use Rule~5 (does the work per level grow, stay the same, or shrink going down?).
+\end{enumerate}
+
+%====================================================================
+\section*{Round 2 --- Quicksort by hand \hfill\normalsize\emph{pairs, 45 min}}
+
+Use the \texttt{Partition} from Thursday's lecture. The solutions give both common versions: \textbf{Lomuto} (pivot $=$ last element, CLRS ch.~7, as in \texttt{notes/week-04.tex}) and \textbf{pivot-first} (pivot $=$ first element, as in the MIT lecture). If the lecture used something else, solve it with that and check each other.
+
+\begin{enumerate}[label=\textbf{2.\arabic*},leftmargin=2.5em]
+  \item Trace one call of \texttt{Partition} on
+  \[A=(6,\ 3,\ 9,\ 1,\ 8,\ 2,\ 7,\ 5).\]
+  Use a trace table with columns $j$, $A[j]$, ``$\le$ pivot?'', $i$, and the array after the step. Finish with the final swap and the returned~$q$. One partner traces, the other checks each row before the next is written; swap roles halfway.
+  \item Finish the sort. Draw the recursion tree: each node shows the sub-array it receives, the pivot, and the sub-array after partitioning. Count the comparisons $A[j]\le x$ in every call and add them up.
+  \item Run quicksort on the sorted input $(1,2,3,4,5,6,7,8)$. How many comparisons? How deep is the recursion? Write the recurrence for the worst case and solve it by iteration.
+  \item \textbf{Challenge:} construct an input of the 7 numbers $1,\dots,7$ on which \emph{every} pivot is the median of its sub-array. How many comparisons does it take? Which recurrence describes this case?
+  \item Discuss and write one sentence each:
+    \begin{enumerate}[label=(\alph*)]
+      \item Merge sort and quicksort are both divide and conquer. Where does each do its real work: dividing or combining?
+      \item Is quicksort stable? Give a 3-element counterexample or an argument.
+      \item Why does picking the pivot at random protect against the sorted-input worst case?
+    \end{enumerate}
+\end{enumerate}
+
+%====================================================================
+\section*{Round 3 --- Iteration relay \hfill\normalsize\emph{whole group at the board, 45 min}}
+
+Each recurrence is solved by the iterative method in four legs, one person per leg, passing the pen:
+\textbf{Leg 1}: unroll three times, every line in full.
+\textbf{Leg 2}: the general line after $k$ steps (\emph{the line the examiner looks for}).
+\textbf{Leg 3}: choose $k$ to reach the base case, substitute, simplify to a closed form and a $\Oh$.
+\textbf{Leg 4}: prove the closed form by induction (Rule~8, all four labelled steps).
+The Checker tests the closed form against the recurrence for $n=1,2,4$ (or $1,4,16$) before Leg~4 starts. Rotate who starts, so everyone does a Leg~2 once.
+
+\begin{enumerate}[label=\textbf{3.\arabic*},leftmargin=2.5em]
+  \item $T(n)=4T(n/2)+n$, $T(1)=1$, $n$ a power of 2. \emph{Then:} compare with merge sort's $2T(n/2)+n$. What did doubling the number of calls do, and why (count the leaves)?
+  \item $T(n)=2T(n/4)+1$, $T(1)=1$, $n$ a power of 4. \emph{Hint for Leg 3:} what is $2^k$ when $4^k=n$?
+  \item $T(n)=T(n-1)+2n-1$, $T(1)=1$. \emph{Then:} you have just proved a fact about odd numbers. Which?
+\end{enumerate}
+
+%====================================================================
+\section*{Round 4 --- Design problems \hfill\normalsize\emph{discuss 10 min, write alone, compare; 40 min}}
+
+\begin{enumerate}[label=\textbf{4.\arabic*},leftmargin=2.5em]
+  \item \textbf{Minimum and maximum together.} The obvious way to find both the minimum and the maximum of $n$ numbers takes $2(n-1)$ comparisons: $n-1$ for each.
+    \begin{enumerate}[label=(\alph*)]
+      \item Write a divide-and-conquer \texttt{MinMax(A, i, j)} that returns both. Treat ranges of size 1 and 2 as base cases.
+      \item Count comparisons: $T(1)=0$, $T(2)=1$, and the recurrence for larger $n$.
+      \item Solve it by iteration for $n$ a power of 2. \emph{Careful:} the base case is $T(2)$, so stop at $n/2^k=2$, not at~1.
+      \item For $n=1024$, how many comparisons does each method make? Both are $\Oh(n)$. What does that say about what Big-O hides?
+    \end{enumerate}
+  \item \textbf{Tower of Hanoi, adjacent pegs only.} Same puzzle, but a disc may only move between neighbouring pegs: A$\leftrightarrow$B and B$\leftrightarrow$C, never directly A$\leftrightarrow$C. Use coins of different sizes on the table.
+    \begin{enumerate}[label=(\alph*)]
+      \item Play $n=1$ and $n=2$ with the coins. How many moves does each take?
+      \item Find the recursive strategy for $n$ discs from A to C. \emph{Hint:} the largest disc must stop on B on its way. Where must the other $n-1$ discs be at that moment, and where must they be when it moves on to C?
+      \item Write the recurrence for the number of moves and solve it by iteration.
+      \item There are $3^n$ ways to place $n$ discs legally on three pegs (each disc picks a peg; the order on a peg is forced). Compare with your answer to (c). What does it say about the configurations the solution goes through?
+    \end{enumerate}
+  \item \textbf{(If time) Counting Fibonacci calls.} With the course convention $F(0)=F(1)=1$, let $C(n)$ be the number of calls the recursive \texttt{F(n)} makes in total, the first call included.
+    \begin{enumerate}[label=(\alph*)]
+      \item Explain why $C(0)=C(1)=1$ and $C(n)=C(n-1)+C(n-2)+1$.
+      \item Fill in a table of $F(n)$ and $C(n)$ for $n=0,\dots,6$, guess a formula for $C(n)$ in terms of $F(n)$, and prove it by strong induction.
+      \item How many calls does \texttt{F(30)} make, given $F(30)=1\,346\,269$?
+    \end{enumerate}
+\end{enumerate}
+
+%====================================================================
+\section*{Round 5 --- Mock exam question \hfill\normalsize\emph{individual, 35 min}}
+
+In the style of the 2013--14 paper: one question of 25 marks in three parts. 25 minutes writing alone in silence, no notes; then 10 minutes: swap papers and mark each other's with the scheme in the solutions file.
+
+\begin{roundbox}{Question (25 marks)}
+\textbf{A (4 marks).} Give the least order of growth of each:
+(i) $5n^2+3n\log n$; \quad (ii) $2^{n+3}+n^5$; \quad (iii) $n\log(n^3)+7n$; \quad (iv) $\sqrt n+(\log n)^2$.
+
+\smallskip
+\textbf{B (8 marks).} \emph{Three-way merge sort} sorts $n$ numbers ($n$ a power of 3) by splitting them into three thirds, sorting each third recursively, and merging the three sorted thirds with a procedure \texttt{Merge3} that uses at most $2n$ comparisons. A list of one element needs no sorting; take $T(1)=1$ as in the handouts.
+\begin{enumerate}[label=(\roman*),leftmargin=2em,itemsep=0pt]
+  \item Write the recurrence $T(n)$ for the number of comparisons. \hfill (2)
+  \item Explain where each term of the recurrence comes from. \hfill (4)
+  \item Without solving it, which algorithm from the course has a similar recurrence, and what order of growth do you expect? \hfill (2)
+\end{enumerate}
+
+\smallskip
+\textbf{C (13 marks).}
+\begin{enumerate}[label=(\roman*),leftmargin=2em,itemsep=0pt]
+  \item Solve it by the iterative method, showing the general line after $k$ steps. \hfill (7)
+  \item Prove your closed form by mathematical induction for $n=3^m$. \hfill (4)
+  \item Ordinary merge sort makes $n\log_2 n+n$ comparisons by the same count. For large $n$, which of the two makes fewer comparisons? Justify. \hfill (2)
+\end{enumerate}
+\end{roundbox}
+
+%====================================================================
+\section*{Wrap-up \hfill\normalsize\emph{10 min}}
+Everyone names one mistake they made today. Add the ones that would cost marks to the \emph{Traps} section of \texttt{notes/study-guide.tex}. Anything unresolved becomes a question for Tuesday's lecture.
+
+\paragraph{Finished early?} \texttt{practice-problems.tex} \S5 (5.2, 5.3 and 5.6), or question~1 of \texttt{exams/Exam2014\_Jan07\_V2.pdf} under exam conditions.
+
+\end{document}

@@ -117,7 +117,7 @@
 
 \begin{rulepar}\noindent\textbf{Yellow shading} marks the rules, laws and theorems.\end{rulepar}
 
-\noindent\textbf{Exam method} subsections are step-by-step recipes for the typical MC question types (own notes). \textbf{Not on the slides} = from Kolman; \textbf{Slide erratum} = a mistake on a slide. The multiplication table and a list of primes are on the last page before the index.
+\noindent\textbf{Exam method} subsections are step-by-step recipes for the typical MC question types (own notes). \textbf{Not on the slides} = from Kolman; \textbf{Slide erratum} = a mistake on a slide. A \textbf{Maths toolkit} (powers, logarithms, factoring, quadratics, limits, series, common graphs) follows the exam review. The multiplication table and a list of primes are on the last page before the index.
 
 \tableofcontents
 
@@ -136,11 +136,14 @@
     How many selections? & Does order matter? Repetition? & \S\ref{qg:count}, p.~\pageref{qg:count} \\
     ``How many to be sure\ldots'' & Objects vs.\ categories, worst case plus one & \S\ref{qg:pigeon}, p.~\pageref{qg:pigeon} \\
     Chance of an event & Equally likely? Overlap? Complement easier? & \S\ref{qg:prob}, p.~\pageref{qg:prob} \\
+    Chance of $A$ ``given that'' $B$ & $P(A\cap B)/P(B)$: Venn or tree? & \S\ref{qg:cond}, p.~\pageref{qg:cond} \\
     Closed form of a recurrence & Linear, homogeneous, degree~2? & \S\ref{qg:recipe}, p.~\pageref{qg:recipe} \\
     Compare running times & Which term dominates as $n\to\infty$? & \S\ref{qg:growth}, p.~\pageref{qg:growth} \\
     Equivalence relation or partial order & Reflexive, symmetric/antisymmetric, transitive? & \S\ref{qg:equiv}, p.~\pageref{qg:equiv} \\
     Injective, surjective, invertible & Table, formula, or matrix? & \S\ref{qg:func}, p.~\pageref{qg:func} \\
     Lattice, Boolean algebra, Hasse diagram, trees & See the one-page recap & p.~\pageref{sec:examreview} \\
+    Hasse-diagram statements, composition, MST, circuits (a full past paper) & Which habit did I skip? & MC2 2026 worked, p.~\pageref{sec:mc2-2026} \\
+    Stuck on powers, logs, factoring, a quadratic, a limit & Which identity or technique applies? & Maths toolkit, p.~\pageref{sec:toolkit} \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -651,7 +654,11 @@ multiply by $b$ and add the digit --- Horner's rule\index{Horner's rule}, a sing
 \begin{example}
   $(\mathrm{1EF})_{16}$: $\;0 \cdot 16 + 1 = 1$, $\;1 \cdot 16 + 14 = 30$,
   $\;30 \cdot 16 + 15 = 495$ \checkmark\\
-  $(2101)_3 = 2 \cdot 27 + 1 \cdot 9 + 0 \cdot 3 + 1 = 64$.
+  $(2101)_3 = 2 \cdot 3^3 + 1 \cdot 3^2 + 0 \cdot 3^1 + 1 \cdot 3^0
+  = 2 \cdot 27 + 1 \cdot 9 + 0 \cdot 3 + 1 = 64$ (the place values are
+  powers of the base, rightmost $=b^0$).\\
+  $(344)_8 = 3 \cdot 8^2 + 4 \cdot 8^1 + 4 \cdot 8^0
+  = 3 \cdot 64 + 4 \cdot 8 + 4 = 228$.
 \end{example}
 
 \paragraph{Binary $\leftrightarrow$ hex shortcut.} $16 = 2^4$, so each hex
@@ -671,6 +678,16 @@ The same trick works for octal with groups of three ($8 = 2^3$).
   \textbf{Check via decimal:} $(123)_{16}=256+32+3=291$, and
   $291=4\cdot64+4\cdot8+3$ \checkmark. The distractors are the same digits
   shuffled, so a reversed grouping (starting from the left) lands on one.
+\end{example}
+
+\begin{example}[MC practice: $(344)_8$ in base 16]
+  \index{base conversion!octal to hex}%
+  \textbf{Via binary:} $3\to011$, $4\to100$, $4\to100$, so
+  $(344)_8=(011100100)_2$. Regroup from the right in fours:
+  $0\,|\,1110\,|\,0100 = 0,\mathrm{E},4$, i.e.\ $(\mathrm{E4})_{16}$.\\
+  \textbf{Check via decimal} (Horner): $0\cdot8+3=3$, $3\cdot8+4=28$,
+  $28\cdot8+4=228$, and $228=14\cdot16+4$ \checkmark. Distractors are
+  $\mathrm{E4}$ reversed ($4\mathrm{E}$) or swapped ($\mathrm{D4}=212$).
 \end{example}
 
 \paragraph{Binary addition.} Add column by column from the right, carrying
@@ -721,29 +738,101 @@ rows and columns).
   $A^{-1}=\dfrac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}$.
 \end{rulebox}
 
-\subsection{Boolean (0/1) matrices}
-\index{Boolean matrix}\index{join!of matrices}\index{meet!of matrices}\index{Boolean product of matrices}%
-\begin{itemize}
-  \item \textbf{Join} $A\vee B$: element-wise OR.
-  \item \textbf{Meet} $A\wedge B$: element-wise AND.
-  \item \textbf{Boolean product} $A\odot B$: like ordinary multiplication,
-        with AND for $\times$ and OR for $+$:
-        $c_{ij}=(a_{i1}\wedge b_{1j})\vee\dots\vee(a_{ik}\wedge b_{kj})$.
-        Needs columns of $A$ = rows of $B$.
-\end{itemize}
+\subsection{Boolean (0/1) matrices}\label{qg:boolmat}
+\index{Boolean matrix}\index{join!of matrices}\index{meet!of matrices}\index{Boolean product of matrices}\index{Boolean product!row rule}\index{matrix!Boolean product, step by step}%
+A Boolean matrix has only $0$s and $1$s, and the arithmetic is logic:
+$1+1=1$ (OR) and $1\cdot1=1$ (AND), so \emph{no entry is ever $2$}.
+
+\begin{rulebox}[title={The three operations}]
+  \textbf{Join} $A\vee B$: OR the entries in the same position.\quad
+  \textbf{Meet} $A\wedge B$: AND the entries in the same position.\\
+  (Both need $A$ and $B$ of the \emph{same size}.)\\[3pt]
+  \textbf{Boolean product} $A\odot B$: like ordinary matrix multiplication
+  with AND for $\times$ and OR for $+$:
+  $c_{ij}=(a_{i1}\wedge b_{1j})\vee\dots\vee(a_{ik}\wedge b_{kj})$.\\
+  \textbf{Size check first:} $A$ is $m\times k$ and $B$ is $k\times n$ (columns of $A$ $=$ rows of $B$);
+  the result is $m\times n$.
+\end{rulebox}
 \begin{rulepar}
   Theorem 1.5.5: $\vee$ and $\wedge$ are commutative and associative;
-  $\odot$ is associative (not commutative).
+  $\odot$ is associative but \textbf{not commutative}: $A\odot B\neq B\odot A$ in general.
 \end{rulepar}
 
+\begin{rulebox}[title={How to compute $A\odot B$ by hand: the row rule}]
+  \begin{enumerate}[nosep,label=\arabic*.]
+    \item Look at \textbf{row $i$ of $A$}. Mark the positions that hold a $1$.
+    \item Take the rows of $B$ with \emph{those same numbers} (a $1$ in
+          position $2$ means ``take row $2$ of $B$'').
+    \item \textbf{OR those rows together} entry by entry. That is row $i$
+          of $A\odot B$.
+    \item A row of $A$ with no $1$s gives a row of zeros. A row of $A$ with
+          a single $1$ just \emph{copies} one row of $B$.
+  \end{enumerate}
+  \textbf{Independent check} (any size): multiply as ordinary numbers, then
+  turn every nonzero entry into $1$. $\;(1\cdot1+1\cdot1=2\to1.)$
+\end{rulebox}
 
-\begin{example}
-  \[A=\begin{bmatrix}1&0\\0&1\end{bmatrix},\ B=\begin{bmatrix}0&1\\1&0\end{bmatrix}:\qquad
-    A\vee B=\begin{bmatrix}1&1\\1&1\end{bmatrix},\
-    A\wedge B=\begin{bmatrix}0&0\\0&0\end{bmatrix},\
-    A\odot B=\begin{bmatrix}0&1\\1&0\end{bmatrix}.\]
+\begin{example}[Step by step, $3\times3$ (this is MC2 2026 Q2)]
+  \[
+    A=\begin{bmatrix}1&0&1\\0&1&0\\1&1&0\end{bmatrix},\qquad
+    B=\begin{bmatrix}0&1&0\\1&0&1\\0&1&1\end{bmatrix}.
+  \]
+  Rows of $B$: $b_1=010$, $b_2=101$, $b_3=011$. Now go through $A$ row by row.
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{@{}c@{\quad}c@{\quad}l@{\quad}c@{}}
+      \toprule
+      row of $A$ & $1$s at & take and OR these rows of $B$ & row of $A\odot B$ \\
+      \midrule
+      $101$ & $1,3$ & $b_1\vee b_3=010\vee011$ & $011$ \\
+      $010$ & $2$   & $b_2=101$ (copy)          & $101$ \\
+      $110$ & $1,2$ & $b_1\vee b_2=010\vee101$ & $111$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \[
+    A\odot B=\begin{bmatrix}0&1&1\\1&0&1\\1&1&1\end{bmatrix}.
+  \]
+  \textbf{Check with the entry formula} for $c_{12}$: row $1$ of $A$ is
+  $(1,0,1)$, column $2$ of $B$ is $(1,0,1)$; $(1\wedge1)\vee(0\wedge0)\vee(1\wedge1)=1$ \checkmark.
+  And $c_{11}$: column $1$ of $B$ is $(0,1,0)$; $(1\wedge0)\vee(0\wedge1)\vee(1\wedge0)=0$ \checkmark.\\
+  \textbf{Check with ordinary numbers:} the first row of $A\cdot B$ is
+  $(0,\,2,\,1)$ (the $2$ is $1\cdot1+1\cdot1$), and $2\to1$ gives $011$ \checkmark.
 \end{example}
-\begin{example}[1.5 Ex.~12, answers not on slides]
+
+\begin{example}[Order matters: $B\odot A$ for the same matrices]
+  Now the rows of $A$ are $a_1=101$, $a_2=010$, $a_3=110$, and we read
+  the \emph{rows of $B$} for the $1$s:
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{@{}c@{\quad}c@{\quad}l@{\quad}c@{}}
+      \toprule
+      row of $B$ & $1$s at & OR these rows of $A$ & row of $B\odot A$ \\
+      \midrule
+      $010$ & $2$   & $a_2=010$ (copy)        & $010$ \\
+      $101$ & $1,3$ & $a_1\vee a_3=101\vee110$ & $111$ \\
+      $011$ & $2,3$ & $a_2\vee a_3=010\vee110$ & $110$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  $B\odot A=\begin{bmatrix}0&1&0\\1&1&1\\1&1&0\end{bmatrix}\neq A\odot B$.
+  When a question says ``$S\circ R$'', the order decides which of these two
+  you need (see the box below).
+\end{example}
+
+\begin{example}[Non-square: a $2\times3$ times a $3\times2$ gives $2\times2$]
+  \[
+    \begin{bmatrix}1&0&1\\0&1&1\end{bmatrix}\odot
+    \begin{bmatrix}0&1\\1&1\\1&0\end{bmatrix}
+    =\begin{bmatrix}1&1\\1&1\end{bmatrix}.
+  \]
+  Row $1$ is $101$: $b_1\vee b_3=01\vee10=11$. Row $2$ is $011$:
+  $b_2\vee b_3=11\vee10=11$. (The other order, $3\times2$ times $2\times3$,
+  would give a $3\times3$ matrix; $2\times3$ times $2\times3$ is
+  \emph{not defined}: $3\neq2$.)
+\end{example}
+
+\begin{example}[Join and meet (1.5 Ex.~12, answers not on slides)]
   \[
     A=\begin{bmatrix}1&0&1\\0&1&1\\1&1&0\\0&0&0\end{bmatrix},\quad
     B=\begin{bmatrix}1&1&0\\1&0&1\\0&0&1\\1&1&0\end{bmatrix}:\qquad
@@ -751,14 +840,51 @@ rows and columns).
     A\wedge B=\begin{bmatrix}1&0&0\\0&0&1\\0&0&0\\0&0&0\end{bmatrix}.
   \]
 \end{example}
-\begin{example}
-  \[
-    \begin{bmatrix}1&0&1\\0&1&1\end{bmatrix}\odot
-    \begin{bmatrix}0&1\\1&1\\1&0\end{bmatrix}
-    =\begin{bmatrix}1&1\\1&1\end{bmatrix},
-    \qquad c_{11}=(1\wedge0)\vee(0\wedge1)\vee(1\wedge1)=1\text{, likewise the rest.}
-  \]
+
+\begin{rulebox}[title={Where Boolean products appear in relations}]
+  \begin{itemize}[nosep]
+    \item \textbf{Composition:} $R$ from $A$ to $B$, $S$ from $B$ to $C$.
+          $S\circ R$ means \textbf{$R$ first}, and
+          $M_{S\circ R}=M_R\odot M_S$. \emph{Rows of $M_R$ pick which rows
+          of $M_S$ to OR.} (Writing $S\circ R$ left to right puts the
+          matrices in the opposite order: this is the usual trap.)
+    \item \textbf{Square of a relation:} $M_{R^2}=M_R\odot M_R$.
+    \item \textbf{Transitive:} $M_R\odot M_R\le M_R$, i.e.\ every $1$ in
+          the product is already a $1$ in $M_R$.
+    \item \textbf{Reflexive:} diagonal all $1$. \textbf{Symmetric:}
+          $M_R=M_R^{T}$.
+  \end{itemize}
+\end{rulebox}
+
+\begin{example}[Practice, with answers]
+  \begin{enumerate}[label=(\alph*),nosep]
+    \item $A=\begin{bmatrix}1&1\\0&1\end{bmatrix}$,
+          $B=\begin{bmatrix}0&1\\1&0\end{bmatrix}$.
+          $A\odot B$: row $11$ gives $b_1\vee b_2=01\vee10=11$; row $01$
+          gives $b_2=10$. So $A\odot B=\begin{bmatrix}1&1\\1&0\end{bmatrix}$.
+          $B\odot A$: row $01$ gives $a_2=01$; row $10$ gives $a_1=11$, so
+          $B\odot A=\begin{bmatrix}0&1\\1&1\end{bmatrix}$.
+    \item The 3-cycle $M=\begin{bmatrix}0&1&0\\0&0&1\\1&0&0\end{bmatrix}$:
+          each row has one $1$, so $M\odot M$ just copies rows:
+          row 1 copies row 2, row 2 copies row 3, row 3 copies row 1,
+          $M\odot M=\begin{bmatrix}0&0&1\\1&0&0\\0&1&0\end{bmatrix}$, and
+          one more step gives $M^{3}=I$.
+    \item Is $M=\begin{bmatrix}0&1&0\\0&0&1\\0&0&0\end{bmatrix}$
+          transitive? $M\odot M=\begin{bmatrix}0&0&1\\0&0&0\\0&0&0\end{bmatrix}$
+          has a $1$ at position $(1,3)$ where $M$ has $0$ ($1\to2\to3$ but
+          not $1\to3$): \textbf{not transitive}. By contrast
+          $\begin{bmatrix}1&1&0\\0&1&0\\0&0&1\end{bmatrix}\odot\text{itself}$
+          returns the same matrix, so that one \textbf{is} transitive.
+  \end{enumerate}
 \end{example}
+
+\begin{rulepar}
+  \textbf{Common slips:} (1) reading a \emph{column} of $B$ when the row
+  rule needs a \emph{row}; (2) writing $1+1=2$; (3) forgetting that a zero
+  row in $A$ gives a zero row in the product; (4) composing in the wrong
+  order ($M_R\odot M_S$, not $M_S\odot M_R$, for $S\circ R$); (5) not
+  writing the partial ORs down --- do them on paper, one row at a time.
+\end{rulepar}
 
 % =====================================================================
 \newpage
@@ -938,6 +1064,24 @@ $(p\to q)\to(\neg q\to\neg p)$ as their (f) (also a tautology).
   \emph{negation}; (j) chains two conditionals.
 \end{example}
 
+\begin{example}[MC practice: ``I will become famous or I will be the president; I will not be the president; $\therefore$ I will become famous'']
+  \index{disjunctive syllogism!identifying from an English argument}%
+  Let $p$ = ``I will be the president'' and $q$ = ``I will become famous''.
+  The first premise is an ``or'': $q\vee p$ (order does not matter, $\vee$ is
+  commutative). The second knocks one side out: $\neg p$. The conclusion is
+  the other side, $q$:
+  \[
+    \begin{array}{c} p\vee q\\ \neg p\\\hline \therefore q\end{array}
+  \]
+  This is \textbf{disjunctive syllogism}, tautology (h):
+  $(\neg p\wedge(p\vee q))\to q$. \emph{Recognise it by:} the first premise
+  contains ``\ldots or \ldots'', the second \emph{denies} one of the two
+  halves, and the conclusion is the half that is left (``it's one or the
+  other, and it isn't this one, so it's that one'').
+  Don't confuse it with modus tollens (i): that one has an ``if \ldots then''
+  premise, not an ``or''.
+\end{example}
+
 % =====================================================================
 \kolman{3}
 \section{Methods of proof}\src{Kolman 2.3}\label{qg:proof}
@@ -953,7 +1097,9 @@ argument forms:
     \begin{array}{c} \neg q\\ p\to q\\\hline \therefore \neg p\end{array}
     \ \text{(modus tollens)}\qquad
     \begin{array}{c} p\to q\\ q\to r\\\hline \therefore p\to r\end{array}
-    \ \text{(hypothetical syllogism)}
+    \ \text{(hypothetical syllogism)}\qquad
+    \begin{array}{c} p\vee q\\ \neg p\\\hline \therefore q\end{array}
+    \ \text{(disjunctive syllogism)}
   \]
 \end{rulepar}
 
@@ -1314,6 +1460,21 @@ group and the rest, then count each part:
   $C(52, 5) - C(48, 5)$.
 \end{example}
 
+\begin{example}[MC practice: 5-card hand with exactly 3 aces, \emph{not} a full house]
+  \index{poker!full house}\index{counting!subtract the bad case}%
+  \textbf{Method:} count all hands with exactly $3$ aces, then subtract
+  those that are a full house.\\
+  Exactly $3$ aces: $C(4,3)\cdot C(48,2)=4\cdot1128=4512$.\\
+  Full house among them: the $3$ aces are the triple, so the other two
+  cards must be a \emph{pair} of one other value: choose the value
+  ($12$ ways), then $2$ of its $4$ suits ($C(4,2)=6$):
+  $12\cdot6=72$.\\
+  Answer: $4512-72=\mathbf{4440}$.\\
+  (The two non-ace cards form a pair exactly when they share a value;
+  ``exactly $3$ aces'' already rules out a pair of aces, so there are
+  $12$ values, not $13$.)
+\end{example}
+
 \subsection{When the MC options are products of primes}
 \index{MC options as products of primes}\index{exponents!multiplying powers}Options like $7^2 \cdot 5 \cdot 3 \cdot 2^3$ are the answer in prime
 factorized form. Do \emph{not} multiply out --- factor each piece into
@@ -1514,6 +1675,41 @@ $\gcd$.
   So also $P(\text{odd}) = 1 - \frac23 = \frac13$.
 \end{example}
 
+\subsection{Conditional probability and tree diagrams}\label{qg:cond}
+\index{conditional probability}\index{probability!conditional}\index{independent events}\index{multiplication rule (probability)}\index{tree diagram!probability}\index{Venn diagram!probability}\index{sampling without replacement}%
+\notslides{Not in Kolman 3.4 either: an extra tool from my maths notes, for
+  questions that say ``given that\ldots''.}
+\begin{rulebox}[title={Conditional probability}]
+  $\displaystyle P(A\mid B)=\frac{P(A\cap B)}{P(B)}$ \quad ($P(B)>0$): the
+  chance of $A$ once you know $B$ happened, i.e.\ the sample space shrinks
+  to $B$. Equally likely outcomes: $P(A\mid B)=\dfrac{|A\cap B|}{|B|}$.\\[3pt]
+  \textbf{Multiplication rule:} $P(A\cap B)=P(B)\,P(A\mid B)=P(A)\,P(B\mid A)$.\\[3pt]
+  \textbf{Independent} events: $P(A\mid B)=P(A)$, equivalently
+  $P(A\cap B)=P(A)\,P(B)$.
+\end{rulebox}
+\begin{itemize}[nosep]
+  \item \textbf{Venn diagram:} fill in the overlap $A\cap B$ first; then
+        $P(A\mid B)$ divides it by the whole of $B$, and $P(B\mid A)$ by the
+        whole of $A$.
+  \item \textbf{Tree diagram} (stepwise experiments, drawing without
+        replacement): put the first-step probabilities on the first
+        branches and the \emph{conditional} probabilities on the second
+        ones (the branches leaving a node add to $1$). \textbf{Multiply
+        along a path} for a joint probability; \textbf{add the paths} that
+        make up the event.
+\end{itemize}
+\begin{example}[Venn: 100 students, 60 take Maths ($M$), 45 Physics ($P$), 20 both]
+  $P(P\mid M)=\dfrac{20}{60}=\dfrac13$ and $P(M\mid P)=\dfrac{20}{45}=\dfrac49$.
+  Same numerator, different denominator: what you divide by is the
+  condition.
+\end{example}
+\begin{example}[Tree: bag with 3 red and 2 blue balls, two drawn without replacement; both red]
+  $P(R_1)=\frac35$; with one red gone, $P(R_2\mid R_1)=\frac24$. So
+  $P(\text{both red})=\frac35\cdot\frac24=\frac3{10}$. Check by counting:
+  $\binom32/\binom52=\frac3{10}$ \checkmark. (With replacement the draws
+  would be independent: $\frac35\cdot\frac35=\frac9{25}$.)
+\end{example}
+
 
 % =====================================================================
 \kolman{5}
@@ -1555,7 +1751,8 @@ Because the recurrence is linear, any combination $us_1^n+vs_2^n$ does too.
 
 \notslides{The roots can be complex (negative discriminant); the same
   formula (a) still applies with complex $s_1,s_2$ and $u,v$. Quadratic
-  formula: $x=\dfrac{r_1\pm\sqrt{r_1^2+4r_2}}{2}$.}
+  formula: $x=\dfrac{r_1\pm\sqrt{r_1^2+4r_2}}{2}$. The three discriminant
+  cases with an example of each: Maths toolkit, p.~\pageref{qg:quad}.}
 
 \begin{example}[3.5 Ex.~7: $c_n=3c_{n-1}-2c_{n-2}$, $c_1=5$, $c_2=3$]
   $x^2-3x+2=(x-1)(x-2)=0$, so $c_n=u+v2^n$. Then $u+2v=5$, $u+4v=3$
@@ -2582,6 +2779,10 @@ $100n^2=O(n^3)$ but $100n^2=\Theta(n^2)$, not $\Theta(n^3)$.
   $=\lim\frac{1/x}{kx^{k-1}}=\lim\frac1{kx^k}=0$: $\ln x$ grows slower
   than every positive power of $x$.
 \end{example}
+
+\noindent More limit techniques (conjugates, $x\ln x$, and when L'Hôpital
+does \emph{not} apply) and the power series: Maths toolkit,
+p.~\pageref{qg:limits}.
 
 % =====================================================================
 \newpage
@@ -5691,7 +5892,7 @@ A weighted graph's matrix holds the weight $w$ at $(i,j)$ and $0$ for
 
 \newpage
 \phantomsection
-\addcontentsline{toc}{part}{Exam review and 2023/2024 practice}
+\addcontentsline{toc}{part}{Exam review and past-paper practice (2023, 2024, 2026)}
 \section*{Exam review and past-paper practice}\label{sec:examreview}
 \index{exam review}\index{past MC questions!2023}\index{past MC questions!2024}%
 The last lecture reviews the course and works questions from the 2023 and
@@ -5731,6 +5932,485 @@ the reasoning is added here.
     \bottomrule
   \end{tabular}
 \end{center}
+
+% =====================================================================
+\clearpage
+\subsection*{MC2 2026 (16 October): all twelve questions, worked}\label{sec:mc2-2026}
+\index{past MC questions!2026}\index{MC2 2026}%
+Chapters 1--7, 12 questions, 75 minutes, no penalty for a wrong answer; the
+paper prints ``final score $=\min(\text{correct},10)$''. Every question
+below is solved from scratch, with the tempting wrong option and the habit
+that avoids it. Most of the lost marks on this paper were slips in
+\emph{carrying out} a method that is already in this document, so the
+\textbf{Trap} lines matter more than the answers.
+
+\begin{example}[Q1: reflexive / symmetric / transitive on $\{1,2,3,4\}$]
+  \[R=\{(1,1),(2,2),(3,3),(4,4),(1,2),(2,1),(3,4),(4,3)\}\]
+  Matrix (rows/columns $1..4$): two $2\times2$ blocks of ones,
+  $\begin{bmatrix}1&1&0&0\\1&1&0&0\\0&0&1&1\\0&0&1&1\end{bmatrix}$.
+  Diagonal all $1$: \textbf{reflexive}. Matrix equal to its transpose:
+  \textbf{symmetric}. \textbf{Transitive}: for every chain $aRb,\,bRc$ the
+  pair $(a,c)$ must be in $R$: $(1,2),(2,1)\Rightarrow(1,1)$;
+  $(2,1),(1,2)\Rightarrow(2,2)$; $(1,2),(2,2)\Rightarrow(1,2)$;
+  $(3,4),(4,3)\Rightarrow(3,3)$; and so on --- always present. So $R$ is an
+  equivalence relation with classes $\{1,2\}$ and $\{3,4\}$.
+  \textbf{Answer: (d).}\\
+  \textbf{Trap:} ``but not transitive'' is the claim to \emph{test}, not to
+  assume: go through every pair of pairs that chain, including the ones
+  that return to the start. Block-diagonal all-ones matrices are always
+  equivalence relations.
+\end{example}
+
+\begin{example}[Q2: matrix of $S\circ R$]
+  $M_R=\begin{bmatrix}1&0&1\\0&1&0\\1&1&0\end{bmatrix}$,
+  $M_S=\begin{bmatrix}0&1&0\\1&0&1\\0&1&1\end{bmatrix}$.
+  $S\circ R$ means $R$ first, so $M_{S\circ R}=M_R\odot M_S$. \textbf{Row
+  rule:} row $i$ of the answer is the OR of those rows of $M_S$ that sit
+  under a $1$ in row $i$ of $M_R$.
+  \begin{itemize}[nosep]
+    \item row 1 of $M_R$ is $101$: row 1 $\vee$ row 3 of $M_S$ $=010\vee011=011$
+    \item row 2 is $010$: row 2 of $M_S$ $=101$
+    \item row 3 is $110$: row 1 $\vee$ row 2 $=010\vee101=111$
+  \end{itemize}
+  $M_{S\circ R}=\begin{bmatrix}0&1&1\\1&0&1\\1&1&1\end{bmatrix}$.
+  \textbf{Answer: (a).}\\
+  \textbf{Trap:} do not mix AND/OR by position inside a row. Work one row
+  at a time with the row rule, and write each partial OR down. Full
+  step-by-step method and more examples: \S\ref{qg:boolmat}, p.~\pageref{qg:boolmat}.\\
+  \textbf{$S\circ R$ vs $R\circ S$:} the circle reads right to left, like
+  function composition. $S\circ R$ = ``$R$ first, then $S$'' $\Rightarrow$
+  $M_R\odot M_S$ (the relation applied first is the \emph{left} matrix).
+  $R\circ S$ = ``$S$ first'' $\Rightarrow$ $M_S\odot M_R=
+  \begin{bmatrix}0&1&0\\1&1&1\\1&1&0\end{bmatrix}$, which is \emph{not} among
+  the options. How the matrices are printed on the page decides nothing;
+  only the name of the composition does.
+\end{example}
+
+\begin{example}[Q3: Hasse diagram of a lattice --- which statement is \emph{false}?]\leavevmode
+  \begin{center}
+    \begin{tikzpicture}[x=1cm,y=0.75cm]
+      \node[tn] (a) at (0,0) {$a$};
+      \node[tn] (b) at (-1,1) {$b$};
+      \node[tn] (c) at (1,1) {$c$};
+      \node[tn] (d) at (-1,2) {$d$};
+      \node[tn] (e) at (1,2) {$e$};
+      \node[tn] (f) at (0,3) {$f$};
+      \draw (a)--(b) (a)--(c) (b)--(d) (b)--(e) (c)--(e) (d)--(f) (e)--(f);
+    \end{tikzpicture}
+  \end{center}
+  Edges: $a\!-\!b$, $a\!-\!c$, $b\!-\!d$, $b\!-\!e$, $c\!-\!e$, $d\!-\!f$, $e\!-\!f$.
+  \textbf{Comparable} means there is a path going only \emph{upward}
+  from one to the other. Up-sets: $b\to\{d,e,f\}$, $c\to\{e,f\}$,
+  $d\to\{f\}$, $e\to\{f\}$.
+  \begin{itemize}[nosep]
+    \item (a) $a$ least, $f$ greatest: \textbf{true}.
+    \item (b) $b,c$ incomparable ($c\notin$ up-set of $b$ and vice versa): \textbf{true}.
+    \item (c) $d\wedge e$: common lower bounds $\{b,a\}$, greatest $=b$; $d\vee c$: common upper bounds $\{f\}$ $=f$: \textbf{true}.
+    \item (d) $\{a,b,d,f\}$ is a chain $a<b<d<f$, closed under $\vee,\wedge$: \textbf{true}.
+    \item (e) distributive: no diamond $M_3$ (needs three pairwise incomparable elements; the largest antichain has $2$) and no pentagon $N_5$: the near-miss $\{c<e\}$ with $d$ has $c\vee d=e\vee d=f$ but $c\wedge d=a\neq b=e\wedge d$, so it is not a pentagon: \textbf{true}.
+    \item (f) $d,e$: neither is in the other's up-set, so \textbf{incomparable}. ``$d$ and $e$ are comparable'' is \textbf{false}.
+  \end{itemize}
+  \textbf{Answer: (f).}\\
+  \textbf{Trap:} two elements on the same height, or both touching one
+  element, are \emph{not} comparable. Always list the up-set of each
+  element and test membership.
+\end{example}
+
+\begin{example}[Q4: lattice with $0,1,a,b,c,d,e$ --- which statement is \emph{true}?]\leavevmode
+  \begin{center}
+    \begin{tikzpicture}[x=1cm,y=0.75cm]
+      \node[tn] (z) at (1,0) {$0$};
+      \node[tn] (a) at (-1,1.4) {$a$};
+      \node[tn] (b) at (1,1.4) {$b$};
+      \node[tn] (c) at (3,1) {$c$};
+      \node[tn] (d) at (3,2.4) {$d$};
+      \node[tn] (e) at (4.4,2.4) {$e$};
+      \node[tn] (t) at (1.7,3.8) {$1$};
+      \draw (z)--(a) (z)--(b) (z)--(c) (a)--(t) (b)--(t) (d)--(t) (e)--(t) (c)--(d) (c)--(e);
+    \end{tikzpicture}
+  \end{center}
+  Edges: $0\!-\!a$, $0\!-\!b$, $0\!-\!c$, $a\!-\!1$, $b\!-\!1$, $d\!-\!1$, $e\!-\!1$, $c\!-\!d$, $c\!-\!e$.
+  A \textbf{complement} $x'$ of $x$ needs \emph{both} $x\wedge x'=0$ and
+  $x\vee x'=1$.
+  \begin{itemize}[nosep]
+    \item (a) complements of $b$: $a$ ($a\wedge b=0$, $a\vee b=1$) \emph{and} $c$, $d$, $e$: not unique. \textbf{False.}
+    \item (b) $c<d$, so they are comparable. \textbf{False.}
+    \item (c) $d\wedge e$: common lower bounds $\{c,0\}$, greatest $c$; $d\vee e$: only upper bound $1$. \textbf{True.}
+    \item (d) $a\wedge d=0\ne a$. \textbf{False.}
+    \item (e) $d\vee e=1$ but $d\wedge e=c\neq0$: not complements. \textbf{False.}
+    \item (f) $\{0,c,d,1\}$ is a chain, hence a sublattice, so ``is not a sublattice'' is \textbf{false.}
+  \end{itemize}
+  \textbf{Answer: (c).}\\
+  \textbf{Trap:} a ``which is true'' question has exactly one true option:
+  check \emph{all} six and cross off, don't stop at one that looks plausible.
+  For (f), a chain is always a sublattice.
+\end{example}
+
+\begin{example}[Q5: simplify $(p\vee q)\wedge(\neg p\vee q)$ and give the truth column]
+  Factor out $q$: $(q\vee p)\wedge(q\vee\neg p)=q\vee(p\wedge\neg p)=q\vee0=q$.
+  Table check: rows $(p,q)=(0,0),(0,1),(1,0),(1,1)$ give
+  $0\wedge1=0$, $1\wedge1=1$, $1\wedge0=0$, $1\wedge1=1$: column
+  $0,1,0,1$. \textbf{Answer: (b).}\\
+  \textbf{Trap:} option (a) pairs $p$ with the column $0,1,0,1$, but $p$'s
+  own column is $0,0,1,1$: always check that the simplified expression
+  \emph{and} the column belong together.
+\end{example}
+
+\begin{example}[Q6: $f(x)=2x+1$, $g(x)=x^2-3$; find $f\circ g$ and $g\circ f$]
+  $(f\circ g)(x)=f(g(x))=2(x^2-3)+1=2x^2-6+1=\mathbf{2x^2-5}$.\\
+  $(g\circ f)(x)=g(f(x))=(2x+1)^2-3=4x^2+4x+1-3=\mathbf{4x^2+4x-2}$.
+  \textbf{Answer: (a).}\\
+  \textbf{Trap:} multiply the $2$ by \emph{both} terms of $g$ (not just
+  $x^2$), and expand $(2x+1)^2$ fully --- the middle term $4x$ is the
+  one that gets lost. Inner function first.
+\end{example}
+
+\begin{example}[Q7: same order of growth as $n^3+2^n+n^4\log n$]
+  Dominant term $2^n$ (the polynomial terms are all smaller), so we need
+  $\Theta(2^n)$.
+  \begin{itemize}[nosep]
+    \item (d) $3\cdot2^n+n^5=\Theta(2^n)$: constant factor, polynomial dropped. \textbf{Match.}
+    \item (b) $2^{n/2}=(\sqrt2)^n$: smaller base, ratio $2^{n/2}/2^n=2^{-n/2}\to0$, strictly slower.
+    \item (c) $n2^n$: extra polynomial factor, strictly faster.
+    \item (e) $3^n$ and (f) $2^{n^2}$: strictly faster. (a) $n^4\log n+n^5$: polynomial, strictly slower.
+  \end{itemize}
+  \textbf{Answer: (d).}\\
+  \textbf{Trap:} $a^n$ and $b^n$ have the same order only if $a=b$. A
+  constant added to the exponent is a constant factor ($2^{n+3}=8\cdot2^n$);
+  a constant \emph{multiplying} the exponent ($2^{n/2}$, $2^{2n}=4^n$) or
+  a power of $n$ in it ($2^{n^2}$) changes the class.
+\end{example}
+
+\begin{example}[Q8: $h(k)=(3k+5)\bmod 11$; which pair of keys collides?]
+  Shortcut: $h(a)=h(b)\iff11\mid3(a-b)\iff11\mid(a-b)$, because
+  $\gcd(3,11)=1$. So look for keys differing by a multiple of $11$: $7$ and
+  $18$ (difference $11$); the other pairs differ by $8,8,12,8,9$. Check:
+  $h(7)=26\bmod11=4$, $h(18)=59\bmod11=4$. \textbf{Answer: (a).}
+\end{example}
+
+\begin{example}[Q9: postorder of the expression tree and its value]
+  Tree: root $\times$; left child $+$ with children $3$ and $(-)$, where
+  $(-)$ has children $8,2$; right child of the root is $6$.
+  Postorder = left subtree, right subtree, root:
+  $[3,\ [8,2,-],\ +],\ 6,\ \times$, i.e.\ $3,8,2,-,+,6,\times$.
+  Value (stack): $8-2=6$; $3+6=9$; $9\times6=54$. \textbf{Answer: (c).}
+\end{example}
+
+\Needspace{16\baselineskip}
+\begin{example}[Q10: weight of a minimal spanning tree]\leavevmode
+  \begin{center}
+    \begin{tikzpicture}[x=1.5cm,y=1.1cm,ug]
+      \node[pt,label=above:$A$] (A) at (0,1) {};
+      \node[pt,label=above:$B$] (B) at (2,1) {};
+      \node[pt,label=above:$C$] (C) at (4,1) {};
+      \node[pt,label=below:$D$] (D) at (0,0) {};
+      \node[pt,label=below:$E$] (E) at (2,0) {};
+      \node[pt,label=below:$F$] (F) at (4,0) {};
+      \draw (B)--(C) node[w]{3};
+      \draw (D)--(E) node[w]{3};
+      \draw (E)--(F) node[w]{4};
+      \draw (B)--(E) node[w]{5};
+      \draw[mst] (A)--(B) node[w]{4};
+      \draw[mst] (A)--(D) node[w]{2};
+      \draw[mst] (A)--(E) node[w]{1};
+      \draw[mst] (B)--(F) node[w]{1};
+      \draw[mst] (C)--(F) node[w]{2};
+    \end{tikzpicture}
+  \end{center}
+  Kruskal, edges in order: $AE(1)$ \checkmark, $BF(1)$ \checkmark,
+  $AD(2)$ \checkmark, $CF(2)$ \checkmark; $BC(3)$: $B,C$ already joined
+  through $F$ --- skip; $DE(3)$: $D,E$ already joined through $A$ ---
+  skip. Now there are two components, $\{A,D,E\}$ and $\{B,C,F\}$, and
+  $6-1=5$ edges are needed, so one more edge: the \emph{cheapest edge
+  between the two components} is $AB(4)$ (or $EF(4)$), not $BE(5)$.
+  Total $1+1+2+2+4=\mathbf{10}$. \textbf{Answer: (c).}\\
+  \textbf{Trap:} after the cheap edges, re-read the whole edge list for
+  the cheapest \emph{connecting} edge; do not grab the last edge you
+  happened to see. Count the edges ($V-1$) and sanity-check that the
+  total is not larger than necessary.
+\end{example}
+
+\begin{example}[Q11: which relation on $\{1,2,3,4,6,12\}$ is a partial order?]
+  Partial order $=$ reflexive $+$ antisymmetric $+$ transitive. Kill the
+  options with the cheapest test first:
+  \begin{itemize}[nosep]
+    \item (a) $x<y$, (c) $x\neq y$, (f) $x=2y$: not reflexive ($x\,R\,x$ fails).
+    \item (d) $x+y\le12$: not reflexive ($12+12>12$), and not antisymmetric ($1R2$ and $2R1$ but $1\neq2$).
+    \item (e) $x+y$ even: not antisymmetric ($1R3$ and $3R1$).
+    \item (b) $x\mid y$: $x\mid x$; $x\mid y\wedge y\mid x\Rightarrow x=y$ (positive integers); $x\mid y\wedge y\mid z\Rightarrow x\mid z$. \textbf{Partial order.}
+  \end{itemize}
+  \textbf{Answer: (b).}\\
+  \textbf{Trap:} a \emph{symmetric} relation in which some $x\neq y$ are
+  related can never be antisymmetric. Symmetric-looking conditions like
+  $x+y\le12$ or ``$x+y$ even'' are equivalence-style, not order-style.
+\end{example}
+
+\begin{example}[Q12: Boolean expression of a logic circuit]
+  Label every wire, left to right: the top NOT gives $x'$; the OR gate on
+  $y$ and $z$ gives $y\vee z$; the AND gate combines them:
+  $x'\wedge(y\vee z)$; the bottom NOT gives $y'$; the final OR gate gives
+  $\bigl(x'\wedge(y\vee z)\bigr)\vee y'$. \textbf{Answer: (a).} Each
+  distractor changes one gate (AND$\leftrightarrow$OR) or a NOT.
+\end{example}
+
+\begin{rulebox}[title={Six habits from this paper}]
+  \begin{enumerate}[nosep,label=\arabic*.]
+    \item \textbf{Comparable $=$ an upward path.} Same height or a shared
+          neighbour does not count (Q3, Q4).
+    \item \textbf{Complement needs both} $\wedge=0$ \emph{and} $\vee=1$,
+          and ``unique'' needs a check of every element (Q4).
+    \item \textbf{Partial order: kill by reflexivity first}, then test
+          antisymmetry with the symmetric pair $xRy,\,yRx$ (Q11, Q1).
+    \item \textbf{Composition:} inner function (or first relation) first;
+          expand brackets fully; use the row rule for matrices (Q2, Q6).
+    \item \textbf{Growth:} base and exponent form decide the class, not
+          the look of the term; $2^{n/2}\not=\Theta(2^n)$ (Q7).
+    \item \textbf{Kruskal:} sort, tick, skip edges whose ends are already
+          connected, count $V-1$ edges, and take the \emph{cheapest
+          connecting} edge at the end (Q10).
+  \end{enumerate}
+\end{rulebox}
+
+% =====================================================================
+\clearpage
+\phantomsection
+\addcontentsline{toc}{part}{Maths toolkit}
+\section*{Maths toolkit: powers, logarithms, algebra, limits}\label{sec:toolkit}
+\index{maths toolkit}%
+\src{own maths notes (Gamma Maths study sheets); every formula re-checked, and the sheets' mistakes corrected here}
+Not a Kolman chapter: the school-maths tools that recurrences, Big-O and
+limits lean on. Look here when a step of a solution stalls on a power, a
+logarithm, a factorisation or a quadratic.
+
+\subsection*{Powers and roots}
+\index{exponent laws}\index{laws of exponents}\index{powers!laws of}\index{radicals}\index{square root!of a square (absolute value)}\index{rationalising a denominator}\index{conjugate}%
+\begin{rulebox}[title={Laws of exponents ($a,b\neq0$, $m,n$ real)}]
+  \renewcommand{\arraystretch}{1.7}
+  \begin{tabular}{@{}l@{\qquad}l@{\qquad}l@{}}
+    $a^m a^n=a^{m+n}$ & $\dfrac{a^m}{a^n}=a^{m-n}$ & $(a^m)^n=a^{mn}$ \\
+    $(ab)^n=a^nb^n$ & $\left(\dfrac ab\right)^n=\dfrac{a^n}{b^n}$ & $\left(\dfrac ab\right)^{-n}=\left(\dfrac ba\right)^n$ \\
+    $a^0=1$ \quad $a^1=a$ & $a^{-n}=\dfrac1{a^n}$ & $a^{1/n}=\sqrt[n]a$ \ ($a\ge0$ if $n$ even) \\
+    \multicolumn{3}{@{}l}{$a^{m/n}=\sqrt[n]{a^m}=\bigl(\sqrt[n]a\bigr)^m$ \qquad negative base, integer $n$: $(-a)^n=a^n$ for even $n$, $-a^n$ for odd $n$}
+  \end{tabular}
+\end{rulebox}
+E.g.\ $2^3\cdot2^4=2^7=128$; $(3^2)^4=3^8=6561$; $2^{-3}=\frac18$;
+$2^{3/2}=\sqrt8=2\sqrt2$; $(-4)^0=1$; $(-3)^2=9$ but $(-3)^3=-27$.
+(Dividing powers in the recurrence recipe: \S\ref{qg:rec}, ``Exponent rule''.)
+
+\begin{rulepar}
+  \textbf{Roots} ($a,b\ge0$): $\sqrt a\sqrt b=\sqrt{ab}$, \quad
+  $\dfrac{\sqrt a}{\sqrt b}=\sqrt{\dfrac ab}$ ($b>0$), \quad $(\sqrt a)^2=a$,
+  \quad $a\sqrt m\pm b\sqrt m=(a\pm b)\sqrt m$.\\
+  \textbf{Careful:} $\sqrt{a^2}=|a|$ for \emph{every} real $a$, so
+  $\sqrt{(-3)^2}=3$, not $-3$.\\
+  $(\sqrt a\pm\sqrt b)^2=a+b\pm2\sqrt{ab}$, \qquad
+  $(\sqrt a+\sqrt b)(\sqrt a-\sqrt b)=a-b$ \ (\textbf{conjugates}).\\
+  \textbf{Rationalising:} $\dfrac1{\sqrt a}=\dfrac{\sqrt a}a$, \quad
+  $\dfrac1{\sqrt a+\sqrt b}=\dfrac{\sqrt a-\sqrt b}{a-b}$, \quad
+  $\dfrac1{\sqrt a-\sqrt b}=\dfrac{\sqrt a+\sqrt b}{a-b}$.
+\end{rulepar}
+
+\subsection*{Logarithms}
+\index{logarithm!rules}\index{logarithm!change of base}\index{change of base}%
+\begin{rulebox}[title={Logarithm rules ($b>0$, $b\neq1$; every argument $>0$)}]
+  $\log_ba=c\iff b^c=a$; \qquad $\log_b1=0$, \quad $\log_bb=1$, \quad
+  $b^{\log_bx}=x$.\\[3pt]
+  \textbf{Product} $\log_b(MN)=\log_bM+\log_bN$ \qquad
+  \textbf{Quotient} $\log_b\dfrac MN=\log_bM-\log_bN$\\[3pt]
+  \textbf{Power} $\log_b(M^k)=k\log_bM$ \qquad
+  \textbf{Root} $\log_b\sqrt[k]M=\dfrac1k\log_bM$\\[3pt]
+  \textbf{Change of base} ($c>0$, $c\neq1$): \quad $\log_bM=\dfrac{\log_cM}{\log_cb}$
+\end{rulebox}
+E.g.\ $\log_28+\log_24=\log_232=5$; \ $\log_327-\log_33=\log_39=2$; \
+$\log_5(125^3)=3\log_5125=9$; \ $\log_7\sqrt[3]{343}=\frac13\cdot3=1$; \
+$\log_29=\dfrac{\log_39}{\log_32}=\dfrac2{\log_32}$.
+\textbf{Trap:} $\log_b(M+N)$ does \emph{not} split into $\log_bM+\log_bN$.
+Change of base is only a constant factor, which is why the base never
+matters for $\Theta$ (\S\ref{qg:growth}).
+
+\Needspace{16\baselineskip}
+\subsection*{Expanding and factoring}
+\index{factoring}\index{difference of squares}\index{sum of cubes}\index{difference of cubes}\index{binomial expansion}\index{expanding brackets}%
+\begin{rulepar}
+  \renewcommand{\arraystretch}{1.6}
+  \begin{tabular}{@{}l@{\qquad}l@{}}
+    $(a\pm b)^2=a^2\pm2ab+b^2$ & $(a+b+c)^2=a^2+b^2+c^2+2ab+2ac+2bc$ \\
+    $(a\pm b)^3=a^3\pm3a^2b+3ab^2\pm b^3$ & $(a\pm b)^4=a^4\pm4a^3b+6a^2b^2\pm4ab^3+b^4$ \\
+    $a^2-b^2=(a-b)(a+b)$ & $(x+a)(x+b)=x^2+(a+b)x+ab$ \\
+    $a^3-b^3=(a-b)(a^2+ab+b^2)$ & $a^3+b^3=(a+b)(a^2-ab+b^2)$ \\
+    $a^4-b^4=(a-b)(a+b)(a^2+b^2)$ & $a^4+b^4=(a^2+b^2)^2-2a^2b^2$
+  \end{tabular}\\[4pt]
+  \textbf{Any} $n\ge1$: $a^n-b^n=(a-b)\bigl(a^{n-1}+a^{n-2}b+\dots+ab^{n-2}+b^{n-1}\bigr)$
+  (with $b=1$ this is the geometric sum, \S\ref{qg:rec}).\\
+  \textbf{Odd} $n$ only: $a^n+b^n=(a+b)\bigl(a^{n-1}-a^{n-2}b+\dots-ab^{n-2}+b^{n-1}\bigr)$,
+  signs alternating (e.g.\ $a^5+b^5$); $a^4+b^4$ does \emph{not} factor like this.
+\end{rulepar}
+The coefficients $1,3,3,1$ and $1,4,6,4,1$ are rows of Pascal's triangle
+(Chapter~3). $(x+a)(x+b)$ read backwards is the factoring trick of the
+four-step recipe: two numbers that \emph{multiply} to the constant and
+\emph{add} to the middle coefficient.
+
+\subsection*{Quadratic equations and the discriminant}\label{qg:quad}
+\index{quadratic formula}\index{discriminant}\index{complex roots}\index{characteristic equation!discriminant}\index{completing the square}%
+\begin{rulebox}[title={$ax^2+bx+c=0$, \ $a\neq0$}]
+  $\displaystyle x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$, \quad discriminant
+  $\Delta=b^2-4ac$.\\[3pt]
+  $\Delta>0$: two distinct real roots. \quad $\Delta=0$: one repeated root
+  $x=-\dfrac b{2a}$. \quad $\Delta<0$: two complex conjugate roots
+  $\dfrac{-b\pm i\sqrt{4ac-b^2}}{2a}$.\\[3pt]
+  Check: the roots add to $-\dfrac ba$ and multiply to $\dfrac ca$.
+\end{rulebox}
+\textbf{Where it comes from} (completing the square): divide by $a$, move the
+constant, add $\bigl(\frac b{2a}\bigr)^2$ to both sides:
+$x^2+\frac bax=-\frac ca\Rightarrow\bigl(x+\frac b{2a}\bigr)^2=\frac{b^2-4ac}{4a^2}$,
+then take square roots and isolate $x$.
+
+\textbf{For recurrences} the characteristic equation $x^2-r_1x-r_2=0$ has
+$a=1$, $b=-r_1$, $c=-r_2$, so $\Delta=r_1^2+4r_2$. $\Delta>0$: Theorem
+3.5.1(a); $\Delta=0$: Theorem 3.5.1(b); $\Delta<0$: complex roots, and
+(a) still applies.
+\begin{example}[the three cases]
+  $a_n=a_{n-1}+a_{n-2}$: $x^2-x-1=0$, $\Delta=5>0$, $x=\frac{1\pm\sqrt5}2$.\\
+  $a_n=6a_{n-1}-9a_{n-2}$: $x^2-6x+9=0$, $\Delta=0$, repeated root $x=3$.\\
+  $a_n=2a_{n-1}-2a_{n-2}$: $x^2-2x+2=0$, $\Delta=4-8=-4<0$,
+  $x=\frac{2\pm2i}2=1\pm i$, so $a_n=u(1+i)^n+v(1-i)^n$.
+\end{example}
+
+\subsection*{Two equations, two unknowns (substitution)}
+\index{simultaneous equations}\index{substitution method (equations)}\index{recurrence relation!fitting the constants}%
+\begin{rulepar}
+  Needed to fit $u,v$ (or $A,B$) to the two initial conditions. Solve the
+  easier equation for one unknown, substitute into the other, solve that
+  one-unknown equation, substitute back, and \textbf{check in both original
+    equations}. Elimination (as in the four-step recipe) is just as good;
+  take whichever has a coefficient $1$ to work with. Fractions are normal:
+  don't distrust an answer just because it isn't a whole number.
+\end{rulepar}
+\begin{example}[$4x+y=24$, \ $x+2y=12$]
+  From the first, $y=24-4x$. Into the second: $x+2(24-4x)=12\Rightarrow
+  -7x=-36\Rightarrow x=\frac{36}7$, then $y=24-\frac{144}7=\frac{24}7$.
+  Check: $4\cdot\frac{36}7+\frac{24}7=\frac{168}7=24$ and
+  $\frac{36}7+2\cdot\frac{24}7=\frac{84}7=12$ \checkmark.
+\end{example}
+
+\subsection*{Simplifying algebraic fractions}
+\index{algebraic fractions}\index{cancelling factors}\index{simplifying fractions}%
+\begin{rulepar}
+  \textbf{Factor} numerator and denominator completely (common factor,
+  $a^2-b^2$, $x^2+(a+b)x+ab$), then cancel common \emph{factors}. Never
+  cancel \emph{terms}: $\frac{x+4}{x+3}\neq\frac43$. A cancelled factor
+  still excludes its zero from the domain (below, $x\neq3$).
+\end{rulepar}
+$\dfrac{x^2-9}{x^2-6x+9}=\dfrac{(x-3)(x+3)}{(x-3)^2}=\dfrac{x+3}{x-3}$;
+\qquad
+$\dfrac{x^2+4x}{x^2-16}=\dfrac{x(x+4)}{(x-4)(x+4)}=\dfrac x{x-4}$;\\[4pt]
+$\dfrac{3x^2+12x}{6x^2+18x}=\dfrac{3x(x+4)}{6x(x+3)}=\dfrac{x+4}{2(x+3)}$;
+\qquad
+$\dfrac{x^2-5x+6}{x^2-x-6}=\dfrac{(x-2)(x-3)}{(x-3)(x+2)}=\dfrac{x-2}{x+2}$;\\[4pt]
+and \textbf{nothing cancels} in
+$\dfrac{2x+8}{x^2+5x+6}=\dfrac{2(x+4)}{(x+2)(x+3)}$ or in
+$\dfrac{x^2+7x+12}{x^2+4x-5}=\dfrac{(x+3)(x+4)}{(x+5)(x-1)}$:
+they are already in lowest terms.
+
+\subsection*{More on limits}\label{qg:limits}
+\index{limit!techniques}\index{indeterminate form}\index{difference quotient}\index{Lhopital's rule@L'H\^opital's rule!when it does not apply}\index{conjugate trick}%
+\begin{rulepar}
+  \small\renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}p{0.38\textwidth}p{0.54\textwidth}@{}}
+    \textbf{Form} & \textbf{Technique} \\\hline
+    $\frac00$ or $\frac\infty\infty$ & L'H\^opital: differentiate top and bottom \emph{separately} (no quotient rule), then take the limit again. \\
+    ratio of polynomials/roots, $x\to\infty$ & divide top and bottom by the highest power of $x$. \\
+    $\frac00$ with polynomials & factor and cancel (algebraic fractions, above). \\
+    $\infty-\infty$ with square roots & multiply and divide by the conjugate. \\
+    $0\cdot\infty$ & write $f\,g=\dfrac f{1/g}$ to get $\frac00$ or $\frac\infty\infty$, then L'H\^opital. \\
+    $\frac c0$ ($c\neq0$) or $\frac c\infty$ & \textbf{not} indeterminate: no L'H\^opital, read the limit off ($\pm\infty$, or $0$). \\
+  \end{tabular}
+\end{rulepar}
+\textbf{Derivative as a limit:} $f'(a)=\displaystyle\lim_{x\to a}\frac{f(x)-f(a)}{x-a}$.
+For $f(x)=4x^2+3x$, $a=-2$: $f(-2)=10$ and
+$\dfrac{4x^2+3x-10}{x+2}=\dfrac{(x+2)(4x-5)}{x+2}=4x-5\to-13$
+\ (check: $f'(x)=8x+3$, $f'(-2)=-13$).
+
+\begin{example}[$\infty-\infty$ with roots: conjugate, then divide by $x$]
+  \begin{align*}
+    \lim_{x\to\infty}\Bigl(\sqrt{x^2+6x+1}-\sqrt{x^2+1}\Bigr)
+      &=\lim\frac{(x^2+6x+1)-(x^2+1)}{\sqrt{x^2+6x+1}+\sqrt{x^2+1}}
+       =\lim\frac{6x}{\sqrt{x^2+6x+1}+\sqrt{x^2+1}}\\
+      &=\lim\frac{6}{\sqrt{1+\frac6x+\frac1{x^2}}+\sqrt{1+\frac1{x^2}}}
+       =\frac62=3.
+  \end{align*}
+  (For $x>0$: $\sqrt{x^2+\cdots}/x=\sqrt{1+\cdots}$.)
+\end{example}
+\begin{example}[$0\cdot\infty$: $\lim_{x\to0^+}x\ln x$]
+  $x\ln x=\dfrac{\ln x}{1/x}$ is $\frac{-\infty}\infty$, so
+  $\lim\dfrac{1/x}{-1/x^2}=\lim(-x)=0$. A power beats a logarithm even as
+  $x\to0^+$.
+\end{example}
+\begin{example}[trap: check the form \emph{before} using L'H\^opital]
+  $\displaystyle\lim_{x\to0^+}\frac{1+x\ln x}x$: the top tends to $1$
+  (since $x\ln x\to0$) and the bottom to $0^+$, so this is $\frac10$, not
+  $\frac00$. The limit is $+\infty$ (indeed $\frac{1+x\ln x}x=\frac1x+\ln x$,
+  and $\frac1x$ wins). Applying L'H\^opital anyway gives $1+\ln x\to-\infty$,
+  the wrong sign. Likewise $\displaystyle\lim_{x\to0^+}\frac1{x(1+x\ln x)}=+\infty$
+  (the denominator tends to $0^+$).
+\end{example}
+
+\subsection*{Power series (Maclaurin)}
+\index{power series}\index{Maclaurin series}\index{Taylor series}\index{series!exponential, sine, cosine}%
+\begin{rulepar}
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{@{}l@{\quad}l@{}}
+    $e^x=1+x+\dfrac{x^2}{2!}+\dfrac{x^3}{3!}+\dots=\displaystyle\sum_{n\ge0}\dfrac{x^n}{n!}$ & all $x$ \\
+    $a^x=1+\dfrac{x\ln a}{1!}+\dfrac{(x\ln a)^2}{2!}+\dots=\displaystyle\sum_{n\ge0}\dfrac{(x\ln a)^n}{n!}$ & all $x$ \\
+    $\sin x=x-\dfrac{x^3}{3!}+\dfrac{x^5}{5!}-\dots=\displaystyle\sum_{n\ge0}(-1)^n\dfrac{x^{2n+1}}{(2n+1)!}$ & all $x$ \\
+    $\cos x=1-\dfrac{x^2}{2!}+\dfrac{x^4}{4!}-\dots=\displaystyle\sum_{n\ge0}(-1)^n\dfrac{x^{2n}}{(2n)!}$ & all $x$ \\
+    $\sinh x=x+\dfrac{x^3}{3!}+\dfrac{x^5}{5!}+\dots$ \qquad $\cosh x=1+\dfrac{x^2}{2!}+\dfrac{x^4}{4!}+\dots$ & all $x$ \\
+    $\dfrac1{1-x}=1+x+x^2+x^3+\dots$ (the geometric series) & $|x|<1$ \\
+    $\ln(1+x)=x-\dfrac{x^2}2+\dfrac{x^3}3-\dfrac{x^4}4+\dots=\displaystyle\sum_{n\ge1}(-1)^{n+1}\dfrac{x^n}n$ & $-1<x\le1$ \\
+    $\ln\dfrac{1+x}{1-x}=2\Bigl(x+\dfrac{x^3}3+\dfrac{x^5}5+\dots\Bigr)$ & $|x|<1$ \\
+    $\tan x=x+\dfrac{x^3}3+\dfrac{2x^5}{15}+\dfrac{17x^7}{315}+\dots$ & $|x|<\frac\pi2$ \\
+  \end{tabular}
+\end{rulepar}
+\textbf{Uses.} Limits: $\frac{\sin x}x=1-\frac{x^2}{3!}+\frac{x^4}{5!}-\dots\to1$
+as $x\to0$. Growth: for $x>0$ every term of $e^x$ is positive, so
+$e^x\ge\frac{x^n}{n!}$ and $\frac{e^x}{x^{n-1}}\ge\frac x{n!}\to\infty$:
+\emph{the exponential beats every polynomial} (\S\ref{qg:growth}).
+
+\subsection*{Common functions: domain, range, shape}
+\index{function graphs!common functions}\index{even function}\index{odd function}\index{domain!of common functions}\index{range!of common functions}\index{asymptote}\index{sigmoid function}%
+\begin{center}
+  \small\renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{@{}lllp{0.46\textwidth}@{}}
+    \toprule
+    $f(x)$ & Domain & Range & Shape \\
+    \midrule
+    $x$ & $\R$ & $\R$ & straight line, slope $1$; odd \\
+    $x^2$ & $\R$ & $[0,\infty)$ & parabola, vertex $(0,0)$; even \\
+    $x^3$ & $\R$ & $\R$ & S-shaped, inflection at $(0,0)$; odd \\
+    $a^x$ \ ($a>1$) & $\R$ & $(0,\infty)$ & always increasing; asymptote $y=0$ \\
+    $\log_ax$ \ ($a>1$) & $(0,\infty)$ & $\R$ & increasing; vertical asymptote $x=0$; inverse of $a^x$ \\
+    $1/x$ & $\R\setminus\{0\}$ & $\R\setminus\{0\}$ & hyperbola, asymptotes $x=0$ and $y=0$; odd \\
+    $1/x^2$ & $\R\setminus\{0\}$ & $(0,\infty)$ & always positive; asymptotes $x=0$ and $y=0$; even \\
+    $\sqrt x$ & $[0,\infty)$ & $[0,\infty)$ & starts at the origin, increasing, flattening; inverse of $x^2$ on $[0,\infty)$ \\
+    $\sqrt[3]x$ & $\R$ & $\R$ & S-shaped, increasing; odd; inverse of $x^3$ \\
+    $1/(1+e^{-x})$ & $\R$ & $(0,1)$ & sigmoid: S-shaped, increasing, asymptotes $y=0$ and $y=1$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+\textbf{Even:} $f(-x)=f(x)$, mirror-symmetric about the $y$-axis.
+\textbf{Odd:} $f(-x)=-f(x)$, symmetric about the origin.
+A point outside the domain is ``undefined'': for $f(x)=\frac1{2x}$,
+$f(0)$ does not exist, while $f(-3)=-\frac16$.
+
+\subsection*{Stationary points (second-derivative test)}
+\index{stationary point}\index{second derivative test}\index{maximum and minimum}\index{local maximum and minimum}%
+\begin{rulepar}
+  Solve $f'(x)=0$. At such a point: $f''>0$ \textbf{local minimum};
+  $f''<0$ \textbf{local maximum}; $f''=0$ inconclusive.
+\end{rulepar}
+E.g.\ $y=x^3-3x^2+2$: $y'=3x^2-6x=3x(x-2)=0\Rightarrow x=0$ or $x=2$;
+$y''=6x-6$ gives $y''(0)=-6<0$, a local maximum at $(0,2)$, and
+$y''(2)=6>0$, a local minimum at $(2,-2)$.
 
 \clearpage
 \newgeometry{margin=1cm,top=1.8cm,bottom=1.4cm,headheight=14pt}
